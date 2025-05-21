@@ -1,0 +1,21 @@
+# Ignore image files in datasets directory
+datasets/**/*.jpg
+datasets/**/*.jpeg
+datasets/**/*.png
+datasets/**/*.gif
+datasets/**/*.bmp
+datasets/**/*.tiff
+datasets/**/*.webp
+
+#ignore model files
+outputs/**/*.pth
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# OS specific
+.DS_Store
+Thumbs.db 
