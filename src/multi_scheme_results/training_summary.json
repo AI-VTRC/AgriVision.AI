@@ -1,0 +1,122 @@
+[
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'corn', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/corn/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "corn",
+    "scheme": "binary",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'corn', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/corn/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "corn",
+    "scheme": "generation",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'corn', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/corn/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "corn",
+    "scheme": "combined",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'pepper', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/pepper/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "pepper",
+    "scheme": "binary",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'pepper', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/pepper/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "pepper",
+    "scheme": "generation",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'pepper', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/pepper/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "pepper",
+    "scheme": "combined",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "potato",
+    "scheme": "binary",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "potato",
+    "scheme": "generation",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "potato",
+    "scheme": "combined",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'strawberry', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/strawberry/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "strawberry",
+    "scheme": "binary",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'strawberry', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/strawberry/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "strawberry",
+    "scheme": "generation",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'strawberry', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/strawberry/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "strawberry",
+    "scheme": "combined",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'tomato', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/tomato/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "tomato",
+    "scheme": "binary",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'tomato', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/tomato/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "tomato",
+    "scheme": "generation",
+    "loss_type": "weighted"
+  },
+  {
+    "status": "failed",
+    "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'tomato', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/tomato/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+    "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n",
+    "plant": "tomato",
+    "scheme": "combined",
+    "loss_type": "weighted"
+  }
+]

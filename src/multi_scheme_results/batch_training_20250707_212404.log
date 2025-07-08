@@ -1,0 +1,63 @@
+2025-07-07 21:24:04,907 - INFO - Starting batch training for 15 configurations
+2025-07-07 21:24:04,907 - INFO - 
+Configuration 1/15
+2025-07-07 21:24:04,907 - INFO - Training corn - binary - weighted
+2025-07-07 21:24:04,922 - ERROR - Failed corn - binary - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'corn', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/corn/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:04,922 - INFO - 
+Configuration 2/15
+2025-07-07 21:24:04,922 - INFO - Training corn - generation - weighted
+2025-07-07 21:24:04,937 - ERROR - Failed corn - generation - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'corn', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/corn/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:04,938 - INFO - 
+Configuration 3/15
+2025-07-07 21:24:04,939 - INFO - Training corn - combined - weighted
+2025-07-07 21:24:04,951 - ERROR - Failed corn - combined - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'corn', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/corn/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:04,951 - INFO - 
+Configuration 4/15
+2025-07-07 21:24:04,952 - INFO - Training pepper - binary - weighted
+2025-07-07 21:24:04,963 - ERROR - Failed pepper - binary - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'pepper', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/pepper/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:04,963 - INFO - 
+Configuration 5/15
+2025-07-07 21:24:04,964 - INFO - Training pepper - generation - weighted
+2025-07-07 21:24:04,975 - ERROR - Failed pepper - generation - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'pepper', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/pepper/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:04,976 - INFO - 
+Configuration 6/15
+2025-07-07 21:24:04,976 - INFO - Training pepper - combined - weighted
+2025-07-07 21:24:04,988 - ERROR - Failed pepper - combined - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'pepper', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/pepper/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:04,988 - INFO - 
+Configuration 7/15
+2025-07-07 21:24:04,988 - INFO - Training potato - binary - weighted
+2025-07-07 21:24:05,001 - ERROR - Failed potato - binary - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,001 - INFO - 
+Configuration 8/15
+2025-07-07 21:24:05,002 - INFO - Training potato - generation - weighted
+2025-07-07 21:24:05,013 - ERROR - Failed potato - generation - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,014 - INFO - 
+Configuration 9/15
+2025-07-07 21:24:05,014 - INFO - Training potato - combined - weighted
+2025-07-07 21:24:05,027 - ERROR - Failed potato - combined - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,027 - INFO - 
+Configuration 10/15
+2025-07-07 21:24:05,027 - INFO - Training strawberry - binary - weighted
+2025-07-07 21:24:05,039 - ERROR - Failed strawberry - binary - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'strawberry', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/strawberry/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,039 - INFO - 
+Configuration 11/15
+2025-07-07 21:24:05,039 - INFO - Training strawberry - generation - weighted
+2025-07-07 21:24:05,052 - ERROR - Failed strawberry - generation - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'strawberry', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/strawberry/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,052 - INFO - 
+Configuration 12/15
+2025-07-07 21:24:05,052 - INFO - Training strawberry - combined - weighted
+2025-07-07 21:24:05,064 - ERROR - Failed strawberry - combined - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'strawberry', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/strawberry/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,064 - INFO - 
+Configuration 13/15
+2025-07-07 21:24:05,065 - INFO - Training tomato - binary - weighted
+2025-07-07 21:24:05,076 - ERROR - Failed tomato - binary - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'tomato', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/tomato/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,077 - INFO - 
+Configuration 14/15
+2025-07-07 21:24:05,077 - INFO - Training tomato - generation - weighted
+2025-07-07 21:24:05,088 - ERROR - Failed tomato - generation - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'tomato', '--scheme', 'generation', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/tomato/generation/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,089 - INFO - 
+Configuration 15/15
+2025-07-07 21:24:05,089 - INFO - Training tomato - combined - weighted
+2025-07-07 21:24:05,101 - ERROR - Failed tomato - combined - weighted: Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'tomato', '--scheme', 'combined', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/tomato/combined/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.
+2025-07-07 21:24:05,102 - INFO - Generating comparison reports...
+2025-07-07 21:24:05,102 - INFO - Comparison reports generated successfully

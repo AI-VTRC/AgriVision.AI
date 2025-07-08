@@ -1,236 +1,309 @@
 import os
 import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
 import numpy as np
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_recall_fscore_support
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.metrics import precision_recall_fscore_support
 import seaborn as sns
-from tqdm import tqdm
+import json
+import logging
+from typing import List, Optional, Dict, Tuple
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
-def test_model(model, test_loader, device, criterion=None):
+def evaluate_model(
+    model: nn.Module,
+    test_loader: DataLoader,
+    device: torch.device,
+    class_names: List[str],
+    criterion: nn.Module,
+    save_dir: str
+) -> Dict[str, float]:
     """
-    Test the model on the test dataset.
-    
-    Args:
-        model: The model to test
-        test_loader: DataLoader for the test set
-        device: The device to test on (CPU or GPU)
-        criterion: Loss function (optional)
-        
-    Returns:
-        tuple: (test_loss, test_acc, predictions, targets)
-    """
-    model.eval()
-    running_loss = 0.0
-    correct = 0
-    total = 0
-    all_preds = []
-    all_targets = []
-    
-    with torch.no_grad():
-        test_pbar = tqdm(test_loader, desc="Testing")
-        
-        for inputs, targets in test_pbar:
-            inputs, targets = inputs.to(device), targets.to(device)
-            
-            # Forward pass
-            outputs = model(inputs)
-            
-            if criterion:
-                loss = criterion(outputs, targets)
-                running_loss += loss.item() * inputs.size(0)
-                
-            _, predicted = outputs.max(1)
-            
-            total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
-            
-            # Store predictions and targets for further analysis
-            all_preds.extend(predicted.cpu().numpy())
-            all_targets.extend(targets.cpu().numpy())
-            
-            # Update progress bar
-            test_acc = 100. * correct / total
-            test_pbar.set_postfix({
-                'acc': test_acc
-            })
-    
-    test_loss = running_loss / total if criterion else 0
-    test_acc = 100. * correct / total
-    
-    return test_loss, test_acc, np.array(all_preds), np.array(all_targets)
-
-
-def plot_confusion_matrix(predictions, targets, class_names, save_path=None):
-    """
-    Plot the confusion matrix for the model predictions.
-    
-    Args:
-        predictions: Model predictions
-        targets: Ground truth labels
-        class_names: Names of the classes
-        save_path: Path to save the plot (optional)
-    """
-    unique_classes = sorted(np.unique(np.concatenate([predictions, targets])))
-    class_indices = unique_classes
-    
-    # Filter class names to include only those present in the data
-    used_class_names = [class_names[i] for i in class_indices if i < len(class_names)]
-    
-    cm = confusion_matrix(targets, predictions, labels=class_indices)
-    
-    # Plot confusion matrix
-    plt.figure(figsize=(12, 10))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-                xticklabels=used_class_names, yticklabels=used_class_names)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
-    
-    # Save or show the plot
-    if save_path:
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        plt.savefig(save_path)
-        plt.close()
-    else:
-        plt.show()
-
-
-def compute_metrics(predictions, targets, class_names):
-    """
-    Compute various classification metrics.
-    
-    Args:
-        predictions: Model predictions
-        targets: Ground truth labels
-        class_names: Names of the classes
-        
-    Returns:
-        dict: Dictionary containing the metrics
-    """
-    unique_classes = sorted(np.unique(np.concatenate([predictions, targets])))
-    class_indices = unique_classes
-    
-    # Filter class names to include only those present in the data
-    used_class_names = [class_names[i] for i in class_indices if i < len(class_names)]
-    
-    report = classification_report(targets, predictions, 
-                                  target_names=used_class_names, 
-                                  output_dict=True)
-    
-    precision, recall, f1, support = precision_recall_fscore_support(
-        targets, predictions, average='weighted'
-    )
-    
-    metrics = {
-        'accuracy': report['accuracy'],
-        'precision': precision,
-        'recall': recall,
-        'f1_score': f1,
-        'per_class': report
-    }
-    
-    return metrics
-
-
-def visualize_predictions(model, dataloader, device, class_names, num_samples=5, save_dir=None):
-    """
-    Visualize model predictions on random samples from the dataset.
-    
-    Args:
-        model: The model to use for predictions
-        dataloader: DataLoader containing the samples
-        device: The device to run the model on
-        class_names: Names of the classes
-        num_samples: Number of samples to visualize
-        save_dir: Directory to save the visualizations (optional)
-    """
-    model.eval()
-    
-    dataiter = iter(dataloader)
-    images, labels = next(dataiter)
-    
-    indices = torch.randperm(len(images))[:num_samples]
-    images = images[indices]
-    labels = labels[indices]
-    
-    with torch.no_grad():
-        images = images.to(device)
-        outputs = model(images)
-        _, preds = outputs.max(1)
-    
-    # Convert images for display
-    images = images.cpu().numpy()
-    images = np.transpose(images, (0, 2, 3, 1))
-    
-    # Denormalize images
-    mean = np.array([0.485, 0.456, 0.406])
-    std = np.array([0.229, 0.224, 0.225])
-    images = std * images + mean
-    images = np.clip(images, 0, 1)
-    
-    fig, axes = plt.subplots(1, num_samples, figsize=(15, 3))
-    
-    for i, ax in enumerate(axes):
-        ax.imshow(images[i])
-        title_color = 'green' if preds[i] == labels[i] else 'red'
-        ax.set_title(f"True: {class_names[labels[i]]}\nPred: {class_names[preds[i]]}", 
-                    color=title_color)
-        ax.axis('off')
-    
-    plt.tight_layout()
-    
-    if save_dir:
-        os.makedirs(save_dir, exist_ok=True)
-        save_path = os.path.join(save_dir, 'predictions.png')
-        plt.savefig(save_path)
-        plt.close()
-    else:
-        plt.show()
-
-
-def evaluate_model(model, test_loader, device, class_names, criterion=None, save_dir=None):
-    """
-    Comprehensive evaluation of the model.
+    Evaluate the model on test data and generate comprehensive metrics.
     
     Args:
         model: The model to evaluate
-        test_loader: DataLoader for the test set
-        device: The device to evaluate on
-        class_names: Names of the classes
-        criterion: Loss function (optional)
-        save_dir: Directory to save the evaluation results (optional)
-        
+        test_loader: Test data loader
+        device: Device to run evaluation on
+        class_names: List of class names
+        criterion: Loss function
+        save_dir: Directory to save evaluation results
+    
     Returns:
-        tuple: (test_loss, test_acc, metrics)
+        Dictionary containing evaluation metrics
     """
-    test_loss, test_acc, predictions, targets = test_model(
-        model, test_loader, device, criterion
+    # Create save directory
+    os.makedirs(save_dir, exist_ok=True)
+    
+    logger.info("Starting model evaluation...")
+    logger.info(f"Number of test batches: {len(test_loader)}")
+    logger.info(f"Batch size: {test_loader.batch_size}")
+    
+    # Set model to evaluation mode
+    model.eval()
+    
+    # Initialize lists to store predictions and labels
+    all_predictions = []
+    all_labels = []
+    all_probs = []
+    running_loss = 0.0
+    
+    # Disable gradient computation
+    with torch.no_grad():
+        for batch_idx, (inputs, labels) in enumerate(test_loader):
+            inputs, labels = inputs.to(device), labels.to(device)
+            
+            # Forward pass
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            
+            # Get predictions
+            probs = torch.softmax(outputs, dim=1)
+            _, predicted = outputs.max(1)
+            
+            # Store results
+            all_predictions.extend(predicted.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+            all_probs.extend(probs.cpu().numpy())
+            running_loss += loss.item()
+            
+            # Log progress
+            if batch_idx % 10 == 0:
+                logger.info(f"Processed batch {batch_idx}/{len(test_loader)}")
+    
+    # Convert to numpy arrays
+    all_predictions = np.array(all_predictions)
+    all_labels = np.array(all_labels)
+    all_probs = np.array(all_probs)
+    
+    # Calculate metrics
+    avg_loss = running_loss / len(test_loader)
+    accuracy = accuracy_score(all_labels, all_predictions)
+    precision, recall, f1_score, support = precision_recall_fscore_support(
+        all_labels, all_predictions, average='weighted', zero_division=0
     )
     
-    print(f"Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}%")
+    # Log overall metrics
+    logger.info(f"\nOverall Metrics:")
+    logger.info(f"  Loss: {avg_loss:.4f}")
+    logger.info(f"  Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)")
+    logger.info(f"  Precision: {precision:.4f}")
+    logger.info(f"  Recall: {recall:.4f}")
+    logger.info(f"  F1-Score: {f1_score:.4f}")
     
-    unique_classes = sorted(np.unique(np.concatenate([predictions, targets])))
-    class_indices = unique_classes
-    
-    # Filter class names to include only those present in the data
-    used_class_names = [class_names[i] for i in class_indices if i < len(class_names)]
-    
-    metrics = compute_metrics(predictions, targets, class_names)
-    
-    print("\nClassification Report:")
-    print(classification_report(targets, predictions, target_names=used_class_names))
-    
-    if save_dir:
-        os.makedirs(save_dir, exist_ok=True)
-    
-    cm_save_path = os.path.join(save_dir, 'confusion_matrix.png') if save_dir else None
-    plot_confusion_matrix(predictions, targets, class_names, cm_save_path)
-    
-    visualize_predictions(
-        model, test_loader, device, class_names, 
-        num_samples=5, save_dir=save_dir
+    # Get per-class metrics
+    precision_per_class, recall_per_class, f1_per_class, support_per_class = precision_recall_fscore_support(
+        all_labels, all_predictions, average=None, zero_division=0
     )
     
-    return test_loss, test_acc, metrics 
+    # Adjust class names if binary classification
+    actual_num_classes = len(np.unique(all_labels))
+    if actual_num_classes == 2 and len(class_names) > 2:
+        # Binary classification case
+        class_names_to_use = ["Healthy", "Unhealthy"]
+    else:
+        class_names_to_use = class_names[:actual_num_classes]
+    
+    # Generate classification report
+    try:
+        report = classification_report(
+            all_labels, all_predictions,
+            target_names=class_names_to_use,
+            digits=4,
+            zero_division=0
+        )
+        logger.info(f"\nClassification Report:\n{report}")
+        
+        # Save classification report
+        report_path = os.path.join(save_dir, 'classification_report.txt')
+        with open(report_path, 'w') as f:
+            f.write(f"Evaluation Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Model Evaluation Results\n")
+            f.write("="*80 + "\n\n")
+            f.write(f"Overall Metrics:\n")
+            f.write(f"  Loss: {avg_loss:.4f}\n")
+            f.write(f"  Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)\n")
+            f.write(f"  Precision: {precision:.4f}\n")
+            f.write(f"  Recall: {recall:.4f}\n")
+            f.write(f"  F1-Score: {f1_score:.4f}\n\n")
+            f.write("Classification Report:\n")
+            f.write(report)
+        logger.info(f"Classification report saved to: {report_path}")
+    except Exception as e:
+        logger.error(f"Error generating classification report: {e}")
+    
+    # Generate confusion matrix
+    try:
+        cm = confusion_matrix(all_labels, all_predictions)
+        
+        # Plot confusion matrix
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=class_names_to_use,
+            yticklabels=class_names_to_use
+        )
+        plt.title('Confusion Matrix', fontsize=16)
+        plt.xlabel('Predicted Label', fontsize=12)
+        plt.ylabel('True Label', fontsize=12)
+        plt.tight_layout()
+        
+        # Save confusion matrix
+        cm_path = os.path.join(save_dir, 'confusion_matrix.png')
+        plt.savefig(cm_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"Confusion matrix saved to: {cm_path}")
+        
+        # Save normalized confusion matrix
+        cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            cm_normalized, annot=True, fmt='.2%', cmap='Blues',
+            xticklabels=class_names_to_use,
+            yticklabels=class_names_to_use
+        )
+        plt.title('Normalized Confusion Matrix', fontsize=16)
+        plt.xlabel('Predicted Label', fontsize=12)
+        plt.ylabel('True Label', fontsize=12)
+        plt.tight_layout()
+        
+        cm_norm_path = os.path.join(save_dir, 'confusion_matrix_normalized.png')
+        plt.savefig(cm_norm_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"Normalized confusion matrix saved to: {cm_norm_path}")
+    except Exception as e:
+        logger.error(f"Error generating confusion matrix: {e}")
+    
+    # Save per-class metrics
+    per_class_metrics = []
+    for i, class_name in enumerate(class_names_to_use):
+        if i < len(precision_per_class):
+            per_class_metrics.append({
+                'class': class_name,
+                'precision': float(precision_per_class[i]),
+                'recall': float(recall_per_class[i]),
+                'f1_score': float(f1_per_class[i]),
+                'support': int(support_per_class[i]) if i < len(support_per_class) else 0
+            })
+    
+    # Plot per-class metrics
+    if per_class_metrics:
+        try:
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+            
+            # Precision and Recall
+            class_labels = [m['class'] for m in per_class_metrics]
+            precisions = [m['precision'] for m in per_class_metrics]
+            recalls = [m['recall'] for m in per_class_metrics]
+            
+            x = np.arange(len(class_labels))
+            width = 0.35
+            
+            ax1.bar(x - width/2, precisions, width, label='Precision', alpha=0.8)
+            ax1.bar(x + width/2, recalls, width, label='Recall', alpha=0.8)
+            ax1.set_xlabel('Class')
+            ax1.set_ylabel('Score')
+            ax1.set_title('Precision and Recall per Class')
+            ax1.set_xticks(x)
+            ax1.set_xticklabels(class_labels, rotation=45, ha='right')
+            ax1.legend()
+            ax1.grid(axis='y', alpha=0.3)
+            
+            # F1-Score
+            f1_scores = [m['f1_score'] for m in per_class_metrics]
+            ax2.bar(x, f1_scores, alpha=0.8, color='green')
+            ax2.set_xlabel('Class')
+            ax2.set_ylabel('F1-Score')
+            ax2.set_title('F1-Score per Class')
+            ax2.set_xticks(x)
+            ax2.set_xticklabels(class_labels, rotation=45, ha='right')
+            ax2.grid(axis='y', alpha=0.3)
+            
+            plt.tight_layout()
+            metrics_plot_path = os.path.join(save_dir, 'per_class_metrics.png')
+            plt.savefig(metrics_plot_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            logger.info(f"Per-class metrics plot saved to: {metrics_plot_path}")
+        except Exception as e:
+            logger.error(f"Error generating per-class metrics plot: {e}")
+    
+    # Save all metrics to JSON
+    results = {
+        'timestamp': datetime.now().isoformat(),
+        'overall_metrics': {
+            'loss': float(avg_loss),
+            'accuracy': float(accuracy),
+            'precision': float(precision),
+            'recall': float(recall),
+            'f1_score': float(f1_score),
+            'num_samples': len(all_labels)
+        },
+        'per_class_metrics': per_class_metrics,
+        'confusion_matrix': cm.tolist() if 'cm' in locals() else None,
+        'class_names': class_names_to_use
+    }
+    
+    results_path = os.path.join(save_dir, 'evaluation_results.json')
+    with open(results_path, 'w') as f:
+        json.dump(results, f, indent=4)
+    logger.info(f"Evaluation results saved to: {results_path}")
+    
+    # Plot confidence distribution
+    try:
+        plt.figure(figsize=(10, 6))
+        
+        # Get the confidence of the predicted class
+        predicted_probs = []
+        for i, pred in enumerate(all_predictions):
+            predicted_probs.append(all_probs[i, pred])
+        
+        plt.hist(predicted_probs, bins=50, alpha=0.7, edgecolor='black')
+        plt.xlabel('Prediction Confidence')
+        plt.ylabel('Count')
+        plt.title('Distribution of Prediction Confidence')
+        plt.grid(axis='y', alpha=0.3)
+        
+        conf_dist_path = os.path.join(save_dir, 'confidence_distribution.png')
+        plt.savefig(conf_dist_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"Confidence distribution plot saved to: {conf_dist_path}")
+    except Exception as e:
+        logger.error(f"Error generating confidence distribution plot: {e}")
+    
+    # Create a summary report
+    summary_path = os.path.join(save_dir, 'evaluation_summary.txt')
+    with open(summary_path, 'w') as f:
+        f.write("="*80 + "\n")
+        f.write(f"Model Evaluation Summary\n")
+        f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write("="*80 + "\n\n")
+        
+        f.write("Test Set Information:\n")
+        f.write(f"  Total samples: {len(all_labels)}\n")
+        f.write(f"  Number of classes: {actual_num_classes}\n")
+        f.write(f"  Classes: {', '.join(class_names_to_use)}\n\n")
+        
+        f.write("Overall Performance:\n")
+        f.write(f"  Accuracy: {accuracy*100:.2f}%\n")
+        f.write(f"  Loss: {avg_loss:.4f}\n")
+        f.write(f"  Precision (weighted): {precision:.4f}\n")
+        f.write(f"  Recall (weighted): {recall:.4f}\n")
+        f.write(f"  F1-Score (weighted): {f1_score:.4f}\n\n")
+        
+        if per_class_metrics:
+            f.write("Per-Class Performance:\n")
+            for metrics in per_class_metrics:
+                f.write(f"\n  {metrics['class']}:\n")
+                f.write(f"    Precision: {metrics['precision']:.4f}\n")
+                f.write(f"    Recall: {metrics['recall']:.4f}\n")
+                f.write(f"    F1-Score: {metrics['f1_score']:.4f}\n")
+                f.write(f"    Support: {metrics['support']}\n")
+    
+    logger.info(f"Evaluation summary saved to: {summary_path}")
+    logger.info("Model evaluation completed successfully!")
+    
+    return results['overall_metrics']

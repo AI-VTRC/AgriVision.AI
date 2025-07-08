@@ -1,0 +1,5 @@
+{
+  "status": "failed",
+  "error": "Command '['/Users/mehmetyardimci/miniforge3/bin/python', 'src/enhanced_main.py', '--plant', 'potato', '--scheme', 'binary', '--loss_type', 'weighted', '--balance_strategy', 'inverse', '--batch_size', '32', '--epochs', '50', '--learning_rate', '0.001', '--scheduler', 'cosine', '--output_dir', 'multi_scheme_results/potato/binary/weighted', '--save_best', '--save_confusion_matrix', '--save_final']' returned non-zero exit status 2.",
+  "stderr": "/Users/mehmetyardimci/miniforge3/bin/python: can't open file '/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/src/enhanced_main.py': [Errno 2] No such file or directory\n"
+}
