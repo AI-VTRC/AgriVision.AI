@@ -67,7 +67,7 @@ def run_plant_training(plant_name, epochs=5, batch_size=32):
         sys.executable,  # Use the same Python interpreter
         "main.py",
         "--plant", plant_name,
-        "--data_dir", "../Dataset",
+        "--data_dir", "../datasets",
         "--output_dir", "./outputs",
         "--model_name", "clip",
         "--batch_size", str(batch_size),

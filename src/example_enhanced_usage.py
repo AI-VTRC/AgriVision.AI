@@ -82,7 +82,7 @@ def demo_enhanced_training_setup():
     
     # Configuration
     config = {
-        'root_dir': './Dataset',
+        'root_dir': './datasets',
         'plant_name': 'Apple',
         'batch_size': 32,
         'num_workers': 4,

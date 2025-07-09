@@ -1,0 +1,30 @@
+2025-07-09 09:08:33,676 - __main__ - INFO - ================================================================================
+2025-07-09 09:08:33,676 - __main__ - INFO - Starting training for Maize
+2025-07-09 09:08:33,676 - __main__ - INFO - Configuration: {'plant': 'Maize', 'data_dir': './Dataset', 'output_dir': './outputs-all', 'model_name': 'clip', 'batch_size': 32, 'epochs': 20, 'lr': 0.001, 'progress_interval': 10, 'weight_decay': 0.0001, 'num_workers': 4, 'train_ratio': 0.7, 'val_ratio': 0.15, 'random_seed': 42, 'eval': False, 'pretrained': 1, 'checkpoint': None}
+2025-07-09 09:08:33,677 - __main__ - INFO - ================================================================================
+2025-07-09 09:08:33,727 - __main__ - INFO - Using device: cpu
+2025-07-09 09:08:33,728 - __main__ - INFO - Output directory: ./outputs-all\Maize\Maize_training_20250709_090833
+2025-07-09 09:08:33,729 - __main__ - ERROR - Training failed with error: No directories found for plant: Maize
+Traceback (most recent call last):
+  File "C:\Users\A3GPU2\Documents\GitHub\CV_In_Ag\src\main.py", line 158, in main
+    train_loader, val_loader, test_loader = create_dataloaders(
+                                            ~~~~~~~~~~~~~~~~~~^
+        root_dir=args.data_dir,
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        model_type=model_type
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\A3GPU2\Documents\GitHub\CV_In_Ag\src\training.py", line 204, in create_dataloaders
+    full_dataset = PlantDiseaseDataset(
+        root_dir=root_dir,
+    ...<2 lines>...
+        model_type=model_type
+    )
+  File "C:\Users\A3GPU2\Documents\GitHub\CV_In_Ag\src\training.py", line 39, in __init__
+    self._load_dataset()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\A3GPU2\Documents\GitHub\CV_In_Ag\src\training.py", line 48, in _load_dataset
+    raise ValueError(f"No directories found for plant: {self.plant_name}")
+ValueError: No directories found for plant: Maize

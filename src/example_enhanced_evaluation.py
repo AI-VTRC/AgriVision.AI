@@ -295,7 +295,7 @@ def main():
     
     # Configuration
     config = {
-        'dataset_root': '../Dataset',
+        'dataset_root': '../datasets',
         'model_dir': 'outputs/models',  # Directory containing trained models
         'plant_names': ['Apple', 'Maize', 'Tomato'],
         'batch_size': 32,

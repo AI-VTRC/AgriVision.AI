@@ -123,7 +123,7 @@ def parse_args():
     # Basic parameters
     parser.add_argument('--plant', type=str, default='Maize', 
                         help='Plant name (e.g., Apple, Maize, Tomato)')
-    parser.add_argument('--data_dir', type=str, default='./Dataset', 
+    parser.add_argument('--data_dir', type=str, default='./datasets', 
                         help='Data directory')
     parser.add_argument('--output_dir', type=str, default='./outputs', 
                         help='Output directory')
