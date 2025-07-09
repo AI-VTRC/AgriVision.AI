@@ -46,31 +46,31 @@ class PlantDiseaseDataset(Dataset):
         logger.info(f"Looking for plant: {self.plant_name} in directory: {self.root_dir}")
         logger.info(f"Root directory exists: {os.path.exists(self.root_dir)}")
         
-        # Get all subdirectories for this plant
-        search_pattern = os.path.join(self.root_dir, f"{self.plant_name}-*")
-        logger.info(f"Search pattern: {search_pattern}")
-        
-        plant_dirs = glob(search_pattern)
-        logger.info(f"Found directories (before filtering): {plant_dirs}")
-        
-        plant_dirs = [d for d in plant_dirs if os.path.isdir(d)]
-        logger.info(f"Found directories (after filtering): {plant_dirs}")
-        
-        if not plant_dirs:
-            # Try alternative search patterns
-            all_dirs = glob(os.path.join(self.root_dir, "*"))
-            all_dirs = [d for d in all_dirs if os.path.isdir(d)]
-            logger.info(f"All directories in root: {[os.path.basename(d) for d in all_dirs]}")
+        # Get all subdirectories for this plant - improved Windows compatibility
+        # First, get all directories in root and filter manually for better cross-platform compatibility
+        try:
+            all_dirs = [d for d in os.listdir(self.root_dir) if os.path.isdir(os.path.join(self.root_dir, d))]
+            logger.info(f"All directories in root: {all_dirs}")
             
-            # Try case-insensitive search
-            plant_dirs_ci = [d for d in all_dirs if os.path.basename(d).lower().startswith(self.plant_name.lower() + "-")]
-            logger.info(f"Case-insensitive match: {plant_dirs_ci}")
+            # Filter directories that start with plant name
+            plant_dirs = [d for d in all_dirs if d.startswith(f"{self.plant_name}-")]
+            logger.info(f"Found directories for {self.plant_name}: {plant_dirs}")
             
-            if plant_dirs_ci:
-                plant_dirs = plant_dirs_ci
-                logger.info(f"Using case-insensitive matches: {plant_dirs}")
-            else:
-                raise ValueError(f"No directories found for plant: {self.plant_name}. Available directories: {[os.path.basename(d) for d in all_dirs]}")
+            if not plant_dirs:
+                # Try case-insensitive search
+                plant_dirs = [d for d in all_dirs if d.lower().startswith(f"{self.plant_name.lower()}-")]
+                logger.info(f"Case-insensitive match: {plant_dirs}")
+                
+                if not plant_dirs:
+                    raise ValueError(f"No directories found for plant: {self.plant_name}. Available directories: {all_dirs}")
+            
+            # Convert to full paths
+            plant_dirs = [os.path.join(self.root_dir, d) for d in plant_dirs]
+            logger.info(f"Full paths: {plant_dirs}")
+            
+        except Exception as e:
+            logger.error(f"Error scanning directory {self.root_dir}: {e}")
+            raise ValueError(f"Could not scan directory {self.root_dir}: {e}")
         
         # Sort for consistent ordering
         plant_dirs.sort()

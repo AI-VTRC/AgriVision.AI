@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 def parse_args():
     parser = argparse.ArgumentParser(description='Comprehensive Plant Disease Classification Experiment')
     
-    parser.add_argument('--data_dir', type=str, default='./Dataset', help='Data directory')
+    parser.add_argument('--data_dir', type=str, default='./datasets', help='Data directory')
     parser.add_argument('--output_dir', type=str, default='./outputs', help='Output directory')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size')
     parser.add_argument('--epochs', type=int, default=50, help='Number of epochs')
@@ -385,8 +385,8 @@ def main():
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
         
         plants = ['Apple', 'Maize', 'Tomato']
-        classification_types = ['binary', 'generation', 'detailed']
-        classification_names = ['2-way', '3-way', '10-way']
+        classification_types = ['detailed', 'generation', 'binary']
+        classification_names = ['10-way', '3-way', '2-way']
         models = ['efficientnet_b0', 'resnet50', 'clip']
         
         all_results = []
