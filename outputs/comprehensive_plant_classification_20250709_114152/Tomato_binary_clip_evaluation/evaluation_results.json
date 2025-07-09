@@ -1,0 +1,41 @@
+{
+    "timestamp": "2025-07-09T12:32:35.363637",
+    "overall_metrics": {
+        "loss": 0.02303601595956613,
+        "accuracy": 0.9936117936117936,
+        "precision": 0.9936128657241129,
+        "recall": 0.9936117936117936,
+        "f1_score": 0.9936120876977347,
+        "num_samples": 4070
+    },
+    "per_class_metrics": [
+        {
+            "class": "Healthy",
+            "precision": 0.9924201407688142,
+            "recall": 0.9934959349593496,
+            "f1_score": 0.9929577464788732,
+            "support": 1845
+        },
+        {
+            "class": "Unhealthy",
+            "precision": 0.9946018893387314,
+            "recall": 0.9937078651685394,
+            "f1_score": 0.9941546762589928,
+            "support": 2225
+        }
+    ],
+    "confusion_matrix": [
+        [
+            1833,
+            12
+        ],
+        [
+            14,
+            2211
+        ]
+    ],
+    "class_names": [
+        "Healthy",
+        "Unhealthy"
+    ]
+}

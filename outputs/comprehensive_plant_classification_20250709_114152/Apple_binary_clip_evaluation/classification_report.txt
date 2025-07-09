@@ -1,0 +1,20 @@
+Evaluation Date: 2025-07-09 11:51:08
+Model Evaluation Results
+================================================================================
+
+Overall Metrics:
+  Loss: 0.0729
+  Accuracy: 0.9729 (97.29%)
+  Precision: 0.9729
+  Recall: 0.9729
+  F1-Score: 0.9729
+
+Classification Report:
+              precision    recall  f1-score   support
+
+     Healthy     0.9695    0.9772    0.9734      2280
+   Unhealthy     0.9764    0.9685    0.9724      2220
+
+    accuracy                         0.9729      4500
+   macro avg     0.9730    0.9728    0.9729      4500
+weighted avg     0.9729    0.9729    0.9729      4500

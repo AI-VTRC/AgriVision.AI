@@ -110,15 +110,14 @@ def evaluate_model(
     
     # Generate classification report
     try:
-        report = classification_report(
+        report_str = classification_report(
             all_labels, all_predictions,
             target_names=class_names_to_use,
             digits=4,
             zero_division=0
         )
-        logger.info(f"\nClassification Report:\n{report}")
+        logger.info(f"\nClassification Report:\n{report_str}")
         
-        # Save classification report
         report_path = os.path.join(save_dir, 'classification_report.txt')
         with open(report_path, 'w') as f:
             f.write(f"Evaluation Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -131,12 +130,12 @@ def evaluate_model(
             f.write(f"  Recall: {recall:.4f}\n")
             f.write(f"  F1-Score: {f1_score:.4f}\n\n")
             f.write("Classification Report:\n")
-            f.write(report)
+            f.write(str(report_str))
         logger.info(f"Classification report saved to: {report_path}")
     except Exception as e:
         logger.error(f"Error generating classification report: {e}")
     
-    # Generate confusion matrix
+    cm = None
     try:
         cm = confusion_matrix(all_labels, all_predictions)
         
@@ -160,13 +159,16 @@ def evaluate_model(
         
         # Save normalized confusion matrix
         cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        cm_normalized = np.nan_to_num(cm_normalized)
+        
         plt.figure(figsize=(10, 8))
         sns.heatmap(
-            cm_normalized, annot=True, fmt='.2%', cmap='Blues',
+            cm_normalized * 100, annot=True, fmt='.1f', cmap='Blues',
             xticklabels=class_names_to_use,
-            yticklabels=class_names_to_use
+            yticklabels=class_names_to_use,
+            cbar_kws={'label': 'Percentage (%)'}
         )
-        plt.title('Normalized Confusion Matrix', fontsize=16)
+        plt.title('Confusion Matrix (Percentages)', fontsize=16)
         plt.xlabel('Predicted Label', fontsize=12)
         plt.ylabel('True Label', fontsize=12)
         plt.tight_layout()
@@ -180,15 +182,16 @@ def evaluate_model(
     
     # Save per-class metrics
     per_class_metrics = []
-    for i, class_name in enumerate(class_names_to_use):
-        if i < len(precision_per_class):
-            per_class_metrics.append({
-                'class': class_name,
-                'precision': float(precision_per_class[i]),
-                'recall': float(recall_per_class[i]),
-                'f1_score': float(f1_per_class[i]),
-                'support': int(support_per_class[i]) if i < len(support_per_class) else 0
-            })
+    if isinstance(precision_per_class, np.ndarray) and len(precision_per_class) > 0:
+        for i, class_name in enumerate(class_names_to_use):
+            if i < len(precision_per_class):
+                per_class_metrics.append({
+                    'class': class_name,
+                    'precision': float(precision_per_class[i]),
+                    'recall': float(recall_per_class[i]) if isinstance(recall_per_class, np.ndarray) else 0.0,
+                    'f1_score': float(f1_per_class[i]) if isinstance(f1_per_class, np.ndarray) else 0.0,
+                    'support': int(support_per_class[i]) if support_per_class is not None and i < len(support_per_class) else 0
+                })
     
     # Plot per-class metrics
     if per_class_metrics:
@@ -243,7 +246,7 @@ def evaluate_model(
             'num_samples': len(all_labels)
         },
         'per_class_metrics': per_class_metrics,
-        'confusion_matrix': cm.tolist() if 'cm' in locals() else None,
+        'confusion_matrix': cm.tolist() if cm is not None else None,
         'class_names': class_names_to_use
     }
     

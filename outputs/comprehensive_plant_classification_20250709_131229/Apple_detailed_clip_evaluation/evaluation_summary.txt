@@ -1,0 +1,78 @@
+================================================================================
+Model Evaluation Summary
+Date: 2025-07-09 13:40:04
+================================================================================
+
+Test Set Information:
+  Total samples: 4500
+  Number of classes: 10
+  Classes: Apple-Healthy-Diffusion-DS8, Apple-Healthy-Diffusion-SPx2Px, Apple-Healthy-GAN-StyleGAN2, Apple-Healthy-GAN-Stylegan3, Apple-Healthy-Real-Real, Apple-Unhealthy-Diffusion-DS8, Apple-Unhealthy-Diffusion-SPx2Px, Apple-Unhealthy-GAN-StyleGAN2, Apple-Unhealthy-GAN-Stylegan3, Apple-Unhealthy-Real-Real
+
+Overall Performance:
+  Accuracy: 55.44%
+  Loss: 1.0674
+  Precision (weighted): 0.6170
+  Recall (weighted): 0.5544
+  F1-Score (weighted): 0.5574
+
+Per-Class Performance:
+
+  Apple-Healthy-Diffusion-DS8:
+    Precision: 0.7455
+    Recall: 0.8311
+    F1-Score: 0.7859
+    Support: 148
+
+  Apple-Healthy-Diffusion-SPx2Px:
+    Precision: 0.4691
+    Recall: 0.7600
+    F1-Score: 0.5802
+    Support: 150
+
+  Apple-Healthy-GAN-StyleGAN2:
+    Precision: 0.5772
+    Recall: 0.7754
+    F1-Score: 0.6618
+    Support: 935
+
+  Apple-Healthy-GAN-Stylegan3:
+    Precision: 0.6427
+    Recall: 0.2726
+    F1-Score: 0.3828
+    Support: 884
+
+  Apple-Healthy-Real-Real:
+    Precision: 0.2182
+    Recall: 0.4847
+    F1-Score: 0.3010
+    Support: 163
+
+  Apple-Unhealthy-Diffusion-DS8:
+    Precision: 0.8333
+    Recall: 0.7285
+    F1-Score: 0.7774
+    Support: 151
+
+  Apple-Unhealthy-Diffusion-SPx2Px:
+    Precision: 0.3758
+    Recall: 0.3415
+    F1-Score: 0.3578
+    Support: 164
+
+  Apple-Unhealthy-GAN-StyleGAN2:
+    Precision: 0.7183
+    Recall: 0.5916
+    F1-Score: 0.6488
+    Support: 901
+
+  Apple-Unhealthy-GAN-Stylegan3:
+    Precision: 0.6853
+    Recall: 0.4977
+    F1-Score: 0.5766
+    Support: 862
+
+  Apple-Unhealthy-Real-Real:
+    Precision: 0.1889
+    Recall: 0.5986
+    F1-Score: 0.2872
+    Support: 142

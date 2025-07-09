@@ -7,20 +7,29 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 import matplotlib
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import logging
 from datetime import datetime
+from sklearn.utils.class_weight import compute_class_weight
+import seaborn as sns
+import json
+from typing import Dict, List, Tuple, Any
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from model import get_model
 from training import create_dataloaders, Trainer
 from validation import evaluate_model
 
-def setup_logging(output_dir, plant_name):
+def setup_logging(output_dir, experiment_name):
     """Set up logging configuration with file and console output."""
-    log_dir = os.path.join(output_dir, f"{plant_name}_training_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+    log_dir = os.path.join(output_dir, f"{experiment_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
     os.makedirs(log_dir, exist_ok=True)
     
-    log_file = os.path.join(log_dir, 'training.log')
+    log_file = os.path.join(log_dir, 'experiment.log')
     
     file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
@@ -35,6 +44,10 @@ def setup_logging(output_dir, plant_name):
     
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
+    
+    for handler in root_logger.handlers[:]:
+        root_logger.removeHandler(handler)
+        
     root_logger.addHandler(file_handler)
     root_logger.addHandler(console_handler)
     
@@ -44,79 +57,320 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Leaf Classification Training')
+    parser = argparse.ArgumentParser(description='Comprehensive Plant Disease Classification Experiment')
     
-    parser.add_argument('--plant', type=str, default='Maize', help='Plant name (e.g., Apple)')
     parser.add_argument('--data_dir', type=str, default='./Dataset', help='Data directory')
     parser.add_argument('--output_dir', type=str, default='./outputs', help='Output directory')
-    parser.add_argument('--model_name', type=str, default='clip',
-                        help='Base model name (efficientnet_b0, resnet50, clip)')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size')
-    parser.add_argument('--epochs', type=int, default=20, help='Number of epochs')
+    parser.add_argument('--epochs', type=int, default=50, help='Number of epochs')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
-    parser.add_argument('--progress_interval', type=int, default=10,
-                        help='Number of batches between detailed progress reports')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='Weight decay')
     parser.add_argument('--num_workers', type=int, default=4, help='Number of workers for data loading')
     parser.add_argument('--train_ratio', type=float, default=0.7, help='Ratio of training data')
     parser.add_argument('--val_ratio', type=float, default=0.15, help='Ratio of validation data')
     parser.add_argument('--random_seed', type=int, default=42, help='Random seed for reproducibility')
-    parser.add_argument('--eval', action='store_true', help='Evaluate the model instead of training')
-    parser.add_argument('--pretrained', type=int, default=1, help='Use pretrained weights (1=True, 0=False)')
-    parser.add_argument('--checkpoint', type=str, default=None, help='Path to model checkpoint')
     
     return parser.parse_args()
 
 
-def plot_training_metrics(metrics, save_path=None):
-    """
-    Plot training and validation metrics.
+def get_class_weights(dataset, device):
+    """Calculate class weights for imbalanced datasets."""
+    labels = [sample[1] for sample in dataset.samples]
+    unique_classes = np.unique(labels)
+    class_weights = compute_class_weight('balanced', classes=unique_classes, y=labels)
+    return torch.FloatTensor(class_weights).to(device)
+
+
+def train_model(
+    plant_name: str,
+    classification_type: str,
+    model_name: str,
+    args: Any,
+    device: torch.device,
+    output_dir: str
+) -> Dict[str, Any]:
+    """Train a single model configuration."""
     
-    Args:
-        metrics (dict): Dictionary containing training and validation metrics
-        save_path (str, optional): Path to save the plot
-    """
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+    logger.info(f"Training {model_name} for {plant_name} - {classification_type} classification")
     
-    epochs = range(1, len(metrics['train_loss']) + 1)
+    model_type = 'clip' if model_name == 'clip' or model_name.startswith('clip-') else None
     
-    # Plot loss
-    ax1.plot(epochs, metrics['train_loss'], label='Train Loss')
-    ax1.plot(epochs, metrics['val_loss'], label='Validation Loss')
-    ax1.set_xlabel('Epoch')
-    ax1.set_ylabel('Loss')
-    ax1.set_title('Training and Validation Loss')
-    ax1.legend()
-    ax1.grid(True)
+    train_loader, val_loader, test_loader = create_dataloaders(
+        root_dir=args.data_dir,
+        plant_name=plant_name,
+        classification_type=classification_type,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        train_ratio=args.train_ratio,
+        val_ratio=args.val_ratio,
+        random_state=args.random_seed,
+        model_type=model_type
+    )
     
-    # Plot accuracy
-    ax2.plot(epochs, metrics['train_acc'], label='Train Accuracy')
-    ax2.plot(epochs, metrics['val_acc'], label='Validation Accuracy')
-    ax2.set_xlabel('Epoch')
-    ax2.set_ylabel('Accuracy (%)')
-    ax2.set_title('Training and Validation Accuracy')
-    ax2.legend()
-    ax2.grid(True)
+    num_classes = len(train_loader.dataset.dataset.class_to_idx)  # type: ignore
+    class_names = list(train_loader.dataset.dataset.class_to_idx.keys())  # type: ignore
+    
+    model = get_model(
+        model_name=model_name,
+        num_classes=num_classes,
+        pretrained=True
+    ).to(device)
+    
+    class_weights = get_class_weights(train_loader.dataset.dataset, device)  # type: ignore
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    
+    if model_type == 'clip':
+        lr = args.lr * 0.1
+    else:
+        lr = args.lr
+
+    optimizer = optim.Adam(
+        model.parameters(),
+        lr=lr,
+        weight_decay=args.weight_decay
+    )
+    scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs)
+    
+    trainer = Trainer(
+        model=model,
+        device=device,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        criterion=criterion,
+        optimizer=optimizer,
+        scheduler=scheduler,  # type: ignore
+        plant_name=plant_name
+    )
+    
+    model_save_path = os.path.join(
+        output_dir, 
+        f"{plant_name}_{classification_type}_{model_name}_best_model.pth"
+    )
+    
+    training_metrics = trainer.train(
+        num_epochs=args.epochs,
+        save_path=model_save_path
+    )
+    
+    eval_dir = os.path.join(output_dir, f"{plant_name}_{classification_type}_{model_name}_evaluation")
+    evaluation_metrics = evaluate_model(
+        model=model,
+        test_loader=test_loader,
+        device=device,
+        class_names=class_names,
+        criterion=criterion,
+        save_dir=eval_dir
+    )
+    
+    return {
+        'plant': plant_name,
+        'classification_type': classification_type,
+        'model': model_name,
+        'num_classes': num_classes,
+        'class_names': class_names,
+        'training_metrics': training_metrics,
+        'evaluation_metrics': evaluation_metrics,
+        'model_path': model_save_path,
+        'eval_dir': eval_dir
+    }
+
+
+def create_comparison_table(results: List[Dict[str, Any]], output_dir: str):
+    """Create comprehensive comparison table of all results."""
+    
+    data = []
+    for result in results:
+        data.append({
+            'Plant': result['plant'],
+            'Classification': result.get('classification_display_name', result['classification_type']),
+            'Classification_Type': result['classification_type'],
+            'Model': result['model'],
+            'Num Classes': result['num_classes'],
+            'Test Accuracy': result['evaluation_metrics']['accuracy'],
+            'Test Precision': result['evaluation_metrics']['precision'],
+            'Test Recall': result['evaluation_metrics']['recall'],
+            'Test F1-Score': result['evaluation_metrics']['f1_score'],
+            'Best Val Accuracy': max(result['training_metrics']['val_acc']) / 100.0,
+            'Final Train Loss': result['training_metrics']['train_loss'][-1],
+            'Final Val Loss': result['training_metrics']['val_loss'][-1],
+        })
+    
+    df = pd.DataFrame(data)
+    
+    csv_path = os.path.join(output_dir, 'comprehensive_results.csv')
+    df.to_csv(csv_path, index=False)
+    logger.info(f"Results table saved to: {csv_path}")
+    
+    summary_stats = df.groupby(['Plant', 'Classification']).agg({
+        'Test Accuracy': ['mean', 'std', 'max'],
+        'Test F1-Score': ['mean', 'std', 'max'],
+        'Best Val Accuracy': ['mean', 'std', 'max']
+    }).round(4)
+    
+    summary_path = os.path.join(output_dir, 'summary_statistics.csv')
+    summary_stats.to_csv(summary_path)
+    logger.info(f"Summary statistics saved to: {summary_path}")
+    
+    return df
+
+
+def create_visualizations(results: List[Dict[str, Any]], df: pd.DataFrame, output_dir: str):
+    """Create comprehensive visualizations."""
+    
+    fig_dir = os.path.join(output_dir, 'figures')
+    os.makedirs(fig_dir, exist_ok=True)
+    
+    plt.style.use('default')
+    sns.set_palette("husl")
+    
+    fig, axes = plt.subplots(2, 3, figsize=(20, 12))
+    
+    accuracy_pivot = df.pivot_table(
+        values='Test Accuracy', 
+        index='Plant', 
+        columns='Model', 
+        aggfunc='mean'
+    )
+    sns.heatmap(accuracy_pivot, annot=True, fmt='.3f', cmap='viridis', ax=axes[0,0])
+    axes[0,0].set_title('Test Accuracy by Plant and Model')
+    
+    f1_pivot = df.pivot_table(
+        values='Test F1-Score', 
+        index='Plant', 
+        columns='Model', 
+        aggfunc='mean'
+    )
+    sns.heatmap(f1_pivot, annot=True, fmt='.3f', cmap='plasma', ax=axes[0,1])
+    axes[0,1].set_title('Test F1-Score by Plant and Model')
+    
+    class_pivot = df.pivot_table(
+        values='Test Accuracy', 
+        index='Classification', 
+        columns='Model', 
+        aggfunc='mean'
+    )
+    sns.heatmap(class_pivot, annot=True, fmt='.3f', cmap='coolwarm', ax=axes[0,2])
+    axes[0,2].set_title('Test Accuracy by Classification Type and Model')
+    
+    df_melted = df.melt(
+        id_vars=['Plant', 'Model', 'Classification'],
+        value_vars=['Test Accuracy', 'Test Precision', 'Test Recall', 'Test F1-Score'],
+        var_name='Metric',
+        value_name='Score'
+    )
+    
+    sns.boxplot(data=df_melted, x='Model', y='Score', hue='Metric', ax=axes[1,0])
+    axes[1,0].set_title('Performance Distribution by Model')
+    axes[1,0].tick_params(axis='x', rotation=45)
+    
+    sns.boxplot(data=df_melted, x='Plant', y='Score', hue='Metric', ax=axes[1,1])
+    axes[1,1].set_title('Performance Distribution by Plant')
+    
+    sns.boxplot(data=df_melted, x='Classification', y='Score', hue='Metric', ax=axes[1,2])
+    axes[1,2].set_title('Performance Distribution by Classification Type')
+    axes[1,2].tick_params(axis='x', rotation=45)
     
     plt.tight_layout()
+    overview_path = os.path.join(fig_dir, 'performance_overview.png')
+    plt.savefig(overview_path, dpi=300, bbox_inches='tight')
+    plt.close()
     
-    if save_path:
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        plt.savefig(save_path)
-        plt.close()
-    else:
-        plt.show()
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+    
+    for i, plant in enumerate(df['Plant'].unique()):
+        plant_data = df[df['Plant'] == plant]
+        
+        accuracy_data = []
+        labels = []
+        for _, row in plant_data.iterrows():
+            accuracy_data.append(row['Test Accuracy'])
+            labels.append(f"{row['Classification']}\n{row['Model']}")
+        
+        axes[i].bar(range(len(accuracy_data)), accuracy_data, alpha=0.7)
+        axes[i].set_xticks(range(len(labels)))
+        axes[i].set_xticklabels(labels, rotation=45, ha='right')
+        axes[i].set_ylabel('Test Accuracy')
+        axes[i].set_title(f'{plant} - Test Accuracy Comparison')
+        axes[i].grid(axis='y', alpha=0.3)
+        
+        for j, acc in enumerate(accuracy_data):
+            axes[i].text(j, acc + 0.01, f'{acc:.3f}', ha='center', va='bottom')
+    
+    plt.tight_layout()
+    plant_comparison_path = os.path.join(fig_dir, 'plant_comparison.png')
+    plt.savefig(plant_comparison_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    best_results = df.loc[df.groupby(['Plant', 'Classification'])['Test Accuracy'].idxmax()]
+    
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    classification_types = best_results['Classification'].unique()
+    plants = best_results['Plant'].unique()
+    
+    x = np.arange(len(plants))
+    width = 0.25
+    
+    for i, class_type in enumerate(classification_types):
+        class_data = best_results[best_results['Classification'] == class_type]
+        accuracies = []
+        for plant in plants:
+            plant_acc = class_data[class_data['Plant'] == plant]['Test Accuracy']
+            accuracies.append(plant_acc.iloc[0] if len(plant_acc) > 0 else 0)
+        
+        ax.bar(x + i*width, accuracies, width, label=class_type, alpha=0.8)
+        
+        for j, acc in enumerate(accuracies):
+            if acc > 0:
+                ax.text(x[j] + i*width, acc + 0.01, f'{acc:.3f}', 
+                       ha='center', va='bottom', fontsize=9)
+    
+    ax.set_xlabel('Plant')
+    ax.set_ylabel('Best Test Accuracy')
+    ax.set_title('Best Performance Comparison by Plant and Classification Type')
+    ax.set_xticks(x + width)
+    ax.set_xticklabels(plants)
+    ax.legend()
+    ax.grid(axis='y', alpha=0.3)
+    
+    plt.tight_layout()
+    best_performance_path = os.path.join(fig_dir, 'best_performance_comparison.png')
+    plt.savefig(best_performance_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    logger.info(f"Visualizations saved to: {fig_dir}")
+
+
+def save_experiment_summary(results: List[Dict[str, Any]], output_dir: str):
+    """Save comprehensive experiment summary."""
+    
+    summary = {
+        'experiment_info': {
+            'timestamp': datetime.now().isoformat(),
+            'total_experiments': len(results),
+            'plants': list(set(r['plant'] for r in results)),
+            'classification_types': list(set(r['classification_type'] for r in results)),
+            'models': list(set(r['model'] for r in results))
+        },
+        'results': results
+    }
+    
+    summary_path = os.path.join(output_dir, 'experiment_summary.json')
+    with open(summary_path, 'w') as f:
+        json.dump(summary, f, indent=2, default=str)
+    
+    logger.info(f"Experiment summary saved to: {summary_path}")
 
 
 def main():
     try:
         args = parse_args()
         
-        output_base_dir = os.path.join(args.output_dir, args.plant)
-        log_dir = setup_logging(output_base_dir, args.plant)
+        experiment_name = "comprehensive_plant_classification"
+        log_dir = setup_logging(args.output_dir, experiment_name)
         
         logger.info("="*80)
-        logger.info(f"Starting training for {args.plant}")
+        logger.info("Starting Comprehensive Plant Disease Classification Experiment")
         logger.info(f"Configuration: {vars(args)}")
         logger.info("="*80)
         
@@ -129,232 +383,98 @@ def main():
         if torch.cuda.is_available():
             logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
-            logger.info(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1024**3:.2f} GB")
         
-        model_dir = os.path.join(log_dir, 'models')
-        figures_dir = os.path.join(log_dir, 'figures')
-        results_dir = os.path.join(log_dir, 'results')
+        plants = ['Apple', 'Maize', 'Tomato']
+        classification_types = ['binary', 'generation', 'detailed']
+        classification_names = ['2-way', '3-way', '10-way']
+        models = ['efficientnet_b0', 'resnet50', 'clip']
         
-        for dir_path in [model_dir, figures_dir, results_dir]:
-            os.makedirs(dir_path, exist_ok=True)
+        all_results = []
         
-        logger.info(f"Output directory: {log_dir}")
+        total_experiments = len(plants) * len(classification_types) * len(models)
+        current_experiment = 0
         
-        class_names = [
-            f"{args.plant}-Healthy-Diffusion-DS8",
-            f"{args.plant}-Healthy-Diffusion-SPx2Px",
-            f"{args.plant}-Healthy-GAN-StyleGAN2",
-            f"{args.plant}-Healthy-GAN-StyleGAN3",
-            f"{args.plant}-Healthy-Real-Real",
-            f"{args.plant}-Unhealthy-Diffusion-DS8",
-            f"{args.plant}-Unhealthy-Diffusion-SPx2Px",
-            f"{args.plant}-Unhealthy-GAN-StyleGAN2",
-            f"{args.plant}-Unhealthy-GAN-StyleGAN3",
-            f"{args.plant}-Unhealthy-Real-Real"
-        ]
+        for plant in plants:
+            for i, classification_type in enumerate(classification_types):
+                classification_name = classification_names[i]
+                for model in models:
+                    current_experiment += 1
+                    logger.info(f"\n{'='*60}")
+                    logger.info(f"Experiment {current_experiment}/{total_experiments}")
+                    logger.info(f"Plant: {plant}, Classification: {classification_name} ({classification_type}), Model: {model}")
+                    logger.info(f"{'='*60}")
+                    
+                    try:
+                        result = train_model(
+                            plant_name=plant,
+                            classification_type=classification_type,
+                            model_name=model,
+                            args=args,
+                            device=device,
+                            output_dir=log_dir
+                        )
+                        result['classification_display_name'] = classification_name
+                        all_results.append(result)
+                        
+                        logger.info(f"✓ Completed: {plant} - {classification_name} - {model}")
+                        logger.info(f"  Test Accuracy: {result['evaluation_metrics']['accuracy']:.4f}")
+                        logger.info(f"  Test F1-Score: {result['evaluation_metrics']['f1_score']:.4f}")
+                        
+                    except Exception as e:
+                        logger.error(f"✗ Failed: {plant} - {classification_name} - {model}")
+                        logger.error(f"  Error: {str(e)}")
+                        continue
         
-        model_type = 'clip' if args.model_name == 'clip' or args.model_name.startswith('clip-') else None
-        
-        train_loader, val_loader, test_loader = create_dataloaders(
-            root_dir=args.data_dir,
-            plant_name=args.plant,
-            batch_size=args.batch_size,
-            num_workers=args.num_workers,
-            train_ratio=args.train_ratio,
-            val_ratio=args.val_ratio,
-            random_state=args.random_seed,
-            model_type=model_type
-        )
-        
-        model_num_classes = None
-        
-        if args.eval and args.checkpoint:
-            checkpoint_path = args.checkpoint
-            if not os.path.exists(checkpoint_path):
-                alt_path = os.path.join('../outputs', f'{args.plant}_best_model.pth')
-                if os.path.exists(alt_path):
-                    checkpoint_path = alt_path
-                else:
-                    raise FileNotFoundError(f"Checkpoint not found at {checkpoint_path} or {alt_path}")
-            
-            temp_checkpoint = torch.load(checkpoint_path, map_location='cpu')
-            # Find the output layer size
-            num_classes_in_checkpoint = None
-            for key in temp_checkpoint['model_state_dict'].keys():
-                if 'classifier.4.weight' in key:  # This is the final layer for CLIP model
-                    num_classes_in_checkpoint = temp_checkpoint['model_state_dict'][key].shape[0]
-                    break
-            
-            model_num_classes = num_classes_in_checkpoint
-            
-            if num_classes_in_checkpoint:
-                logger.info(f"Checkpoint was trained with {num_classes_in_checkpoint} classes")
-                model = get_model(
-                    model_name=args.model_name,
-                    num_classes=num_classes_in_checkpoint, 
-                    pretrained=bool(args.pretrained)
-                )
-            else:
-                model = get_model(
-                    model_name=args.model_name,
-                    num_classes=len(class_names),
-                    pretrained=bool(args.pretrained)
-                )
-            del temp_checkpoint 
-        else:
-            model = get_model(
-                model_name=args.model_name,
-                num_classes=len(class_names),
-                pretrained=bool(args.pretrained)
-            )
-        
-        model = model.to(device)
-        
-        if args.checkpoint:
-            checkpoint_path = args.checkpoint
-            if not os.path.exists(checkpoint_path):
-                logger.error(f"Checkpoint file does not exist: {checkpoint_path}")
-                alt_path = os.path.join('../outputs', f'{args.plant}_best_model.pth')
-                if os.path.exists(alt_path):
-                    logger.info(f"Found checkpoint at alternative path: {alt_path}")
-                    checkpoint_path = alt_path
-                else:
-                    raise FileNotFoundError(f"Checkpoint not found at {checkpoint_path} or {alt_path}")
-            
-            logger.info(f"Loading checkpoint from {checkpoint_path}")
-            logger.info(f"Checkpoint file size: {os.path.getsize(checkpoint_path) / 1024**2:.2f} MB")
-            
-            try:
-                checkpoint = torch.load(checkpoint_path, map_location=device)
-                
-                logger.info(f"Checkpoint keys: {list(checkpoint.keys())}")
-                
-                if 'class_names' in checkpoint:
-                    logger.info(f"Checkpoint class names: {checkpoint['class_names']}")
-                    logger.info(f"Number of classes in checkpoint: {len(checkpoint['class_names'])}")
-                
-                if 'model_state_dict' in checkpoint:
-                    model_state = checkpoint['model_state_dict']
-                    for key in model_state.keys():
-                        if 'fc' in key or 'classifier' in key or 'head' in key:
-                            if 'weight' in key:
-                                logger.info(f"Final layer {key} shape: {model_state[key].shape}")
-                                expected_classes = model_state[key].shape[0]
-                                if expected_classes != len(class_names):
-                                    logger.warning(f"Model expects {expected_classes} classes but got {len(class_names)}")
-                
-                model.load_state_dict(checkpoint['model_state_dict'])
-                logger.info("Checkpoint loaded successfully")
-                
-                if model_num_classes and model_num_classes > len(class_names):
-                    logger.warning(f"Model has {model_num_classes} classes but only {len(class_names)} class names provided")
-                    for i in range(len(class_names), model_num_classes):
-                        class_names.append(f"Unknown_Class_{i}")
-                    logger.info(f"Extended class names to: {class_names}")
-                
-            except Exception as e:
-                logger.error(f"Error loading checkpoint: {str(e)}")
-                raise
-        
-        criterion = nn.CrossEntropyLoss()
-        
-        if args.eval:
-            print("Evaluating model...")
-            logger.info("Starting evaluation mode")
-            logger.info(f"Class names: {class_names}")
-            logger.info(f"Number of classes: {len(class_names)}")
-            
-            eval_dir = os.path.join(log_dir, 'evaluation') 
-            logger.info(f"Evaluation results will be saved to: {eval_dir}")
-            
-            logger.info(f"Test dataset size: {len(test_loader.dataset)}")
-            logger.info(f"Test batch size: {test_loader.batch_size}")
-            logger.info(f"Number of test batches: {len(test_loader)}")
-            
-            try:
-                sample_batch = next(iter(test_loader))
-                logger.info(f"Sample batch shape: images={sample_batch[0].shape}, labels={sample_batch[1].shape}")
-                logger.info(f"Unique labels in sample batch: {torch.unique(sample_batch[1]).tolist()}")
-            except Exception as e:
-                logger.error(f"Error checking sample batch: {str(e)}")
-            
-            try:
-                evaluate_model(
-                    model=model,
-                    test_loader=test_loader,
-                    device=device,
-                    class_names=class_names,
-                    criterion=criterion,
-                    save_dir=eval_dir
-                )
-                logger.info("Evaluation completed successfully")
-            except Exception as e:
-                logger.error(f"Error during evaluation: {str(e)}")
-                raise
-        else:
-            if model_type == 'clip':
-                lr = args.lr * 0.1  # Use smaller learning rate for fine-tuning on top of CLIP
-            else:
-                lr = args.lr
-
-            optimizer = optim.Adam(
-                model.parameters(),
-                lr=lr,
-                weight_decay=args.weight_decay
-            )
-            scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs)
-            
-            trainer = Trainer(
-                model=model,
-                device=device,
-                train_loader=train_loader,
-                val_loader=val_loader,
-                criterion=criterion,
-                optimizer=optimizer,
-                scheduler=scheduler,
-                progress_interval=args.progress_interval,
-                plant_name=args.plant
-            )
-            
-            logger.info("Starting model training...")
-            metrics = trainer.train(
-                num_epochs=args.epochs,
-                save_path=os.path.join(model_dir, f"{args.plant}_best_model.pth")
-            )
-            
-            metrics_plot_path = os.path.join(figures_dir, f"{args.plant}_training_metrics.png")
-            plot_training_metrics(
-                metrics=metrics,
-                save_path=metrics_plot_path
-            )
-            logger.info(f"Training metrics plot saved to: {metrics_plot_path}")
-            
-            import json
-            metrics_data_path = os.path.join(results_dir, 'training_metrics.json')
-            with open(metrics_data_path, 'w') as f:
-                json.dump(metrics, f, indent=4)
-            logger.info(f"Training metrics data saved to: {metrics_data_path}")
-            
-            logger.info("\nEvaluating model after training...")
-            eval_dir = os.path.join(results_dir, 'evaluation')
-            evaluate_model(
-                model=model,
-                test_loader=test_loader,
-                device=device,
-                class_names=class_names,
-                criterion=criterion,
-                save_dir=eval_dir
-            )
-            
+        if all_results:
+            logger.info("\n" + "="*80)
+            logger.info("GENERATING COMPREHENSIVE ANALYSIS")
             logger.info("="*80)
-            logger.info("Training completed successfully!")
-            logger.info(f"All results saved to: {log_dir}")
+            
+            df = create_comparison_table(all_results, log_dir)
+            create_visualizations(all_results, df, log_dir)
+            save_experiment_summary(all_results, log_dir)
+            
+            logger.info("\n" + "="*80)
+            logger.info("EXPERIMENT SUMMARY")
             logger.info("="*80)
+            
+            best_overall = df.loc[df['Test Accuracy'].idxmax()]
+            logger.info(f"Best Overall Performance:")
+            logger.info(f"  Plant: {best_overall['Plant']}")
+            logger.info(f"  Classification: {best_overall['Classification']}")
+            logger.info(f"  Model: {best_overall['Model']}")
+            logger.info(f"  Test Accuracy: {best_overall['Test Accuracy']:.4f}")
+            
+            for plant in plants:
+                plant_best = df[df['Plant'] == plant].loc[df[df['Plant'] == plant]['Test Accuracy'].idxmax()]
+                logger.info(f"\nBest for {plant}:")
+                logger.info(f"  Classification: {plant_best['Classification']}")
+                logger.info(f"  Model: {plant_best['Model']}")
+                logger.info(f"  Test Accuracy: {plant_best['Test Accuracy']:.4f}")
+            
+            for i, class_type in enumerate(classification_types):
+                class_name = classification_names[i]
+                class_data = df[df['Classification'] == class_name]
+                if len(class_data) > 0:
+                    class_best = class_data.loc[class_data['Test Accuracy'].idxmax()]
+                    logger.info(f"\nBest for {class_name} classification:")
+                    logger.info(f"  Plant: {class_best['Plant']}")
+                    logger.info(f"  Model: {class_best['Model']}")
+                    logger.info(f"  Test Accuracy: {class_best['Test Accuracy']:.4f}")
+                else:
+                    logger.info(f"\nNo successful results for {class_name} classification")
+            
+            logger.info(f"\n✓ All results saved to: {log_dir}")
+            logger.info("="*80)
+            
+        else:
+            logger.error("No experiments completed successfully!")
         
     except Exception as e:
-        logger.error(f"Training failed with error: {str(e)}", exc_info=True)
+        logger.error(f"Experiment failed with error: {str(e)}", exc_info=True)
         raise
 
 
 if __name__ == '__main__':
-    main() 
+    main()
+    

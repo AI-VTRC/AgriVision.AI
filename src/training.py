@@ -17,18 +17,20 @@ logger = logging.getLogger(__name__)
 class PlantDiseaseDataset(Dataset):
     """Dataset class for plant disease classification."""
     
-    def __init__(self, root_dir: str, plant_name: str, transform=None, model_type: Optional[str] = None):
+    def __init__(self, root_dir: str, plant_name: str, classification_type: str = 'binary', transform=None, model_type: Optional[str] = None):
         """
         Initialize the dataset.
         
         Args:
             root_dir: Root directory containing the dataset
             plant_name: Name of the plant (e.g., 'Apple', 'Maize', 'Tomato')
+            classification_type: Type of classification ('binary', 'generation', 'detailed')
             transform: Torchvision transforms to apply
             model_type: Type of model being used (e.g., 'clip')
         """
         self.root_dir = root_dir
         self.plant_name = plant_name
+        self.classification_type = classification_type
         self.transform = transform
         self.model_type = model_type
         self.samples = []
@@ -63,11 +65,9 @@ class PlantDiseaseDataset(Dataset):
         for class_name, class_idx in self.class_to_idx.items():
             class_dir = os.path.join(self.root_dir, class_name)
             
-            # Support both .png and .JPG formats
-            image_files = glob(os.path.join(class_dir, "*.png"))
-            image_files.extend(glob(os.path.join(class_dir, "*.JPG")))
-            image_files.extend(glob(os.path.join(class_dir, "*.jpg")))
-            image_files.extend(glob(os.path.join(class_dir, "*.jpeg")))
+            image_files = []
+            for ext in ["*.png", "*.PNG", "*.jpg", "*.JPG", "*.jpeg", "*.JPEG"]:
+                image_files.extend(glob(os.path.join(class_dir, ext)))
             
             for img_path in image_files:
                 self.samples.append((img_path, class_idx))
@@ -76,11 +76,43 @@ class PlantDiseaseDataset(Dataset):
         
         logger.info(f"Total samples: {len(self.samples)}")
         
-        # Check for binary classification (healthy vs unhealthy)
-        self.is_binary = self._check_binary_classification()
-        if self.is_binary:
-            logger.info("Detected binary classification task (Healthy vs Unhealthy)")
+        if self.classification_type == 'binary':
+            logger.info("Converting to binary classification (Healthy vs Unhealthy)")
             self._convert_to_binary()
+        elif self.classification_type == 'generation':
+            logger.info("Converting to generation-based classification (Real vs GAN vs Diffusion)")
+            self._convert_to_generation()
+        elif self.classification_type == 'detailed':
+            logger.info("Using detailed classification (all subdirectories as separate classes)")
+        else:
+            raise ValueError(f"Unknown classification type: {self.classification_type}")
+    
+    def _convert_to_generation(self):
+        """Convert multi-class labels to generation-based (Real=0, GAN=1, Diffusion=2)."""
+        new_samples = []
+        for img_path, _ in self.samples:
+            dir_name = os.path.basename(os.path.dirname(img_path))
+            
+            if "Real" in dir_name:
+                label = 0  # Real
+            elif "GAN" in dir_name:
+                label = 1  # GAN
+            elif "Diffusion" in dir_name:
+                label = 2  # Diffusion
+            else:
+                logger.warning(f"Could not determine generation type for directory: {dir_name}")
+                label = 0  # Default to Real
+            
+            new_samples.append((img_path, label))
+        
+        self.samples = new_samples
+        self.class_to_idx = {"Real": 0, "GAN": 1, "Diffusion": 2}
+        self.idx_to_class = {0: "Real", 1: "GAN", 2: "Diffusion"}
+        
+        real_count = sum(1 for _, label in self.samples if label == 0)
+        gan_count = sum(1 for _, label in self.samples if label == 1)
+        diffusion_count = sum(1 for _, label in self.samples if label == 2)
+        logger.info(f"Generation classification: Real={real_count}, GAN={gan_count}, Diffusion={diffusion_count}")
     
     def _check_binary_classification(self) -> bool:
         """Check if this is a binary classification task."""
@@ -94,10 +126,18 @@ class PlantDiseaseDataset(Dataset):
         for img_path, _ in self.samples:
             # Determine binary label based on directory name
             dir_name = os.path.basename(os.path.dirname(img_path))
+            
+            # Check for Healthy vs Unhealthy in directory name
+            # Handle cases like "Tomato-Unhealthy--Real-Real" with double dashes
             if "Healthy" in dir_name and "Unhealthy" not in dir_name:
                 label = 0  # Healthy
-            else:
+            elif "Unhealthy" in dir_name:
                 label = 1  # Unhealthy
+            else:
+                # Fallback: if neither is explicitly found, log warning
+                logger.warning(f"Could not determine health status for directory: {dir_name}")
+                label = 1  # Default to unhealthy
+            
             new_samples.append((img_path, label))
         
         self.samples = new_samples
@@ -108,6 +148,12 @@ class PlantDiseaseDataset(Dataset):
         healthy_count = sum(1 for _, label in self.samples if label == 0)
         unhealthy_count = len(self.samples) - healthy_count
         logger.info(f"Binary classification: Healthy={healthy_count}, Unhealthy={unhealthy_count}")
+        
+        # Log class distribution for verification
+        if healthy_count == 0:
+            logger.warning("No healthy samples found!")
+        if unhealthy_count == 0:
+            logger.warning("No unhealthy samples found!")
     
     def __len__(self):
         return len(self.samples)
@@ -123,7 +169,6 @@ class PlantDiseaseDataset(Dataset):
             # Return a blank image in case of error
             image = Image.new('RGB', (224, 224), color='black')
         
-        # Apply transforms
         if self.transform:
             image = self.transform(image)
         
@@ -133,6 +178,7 @@ class PlantDiseaseDataset(Dataset):
 def create_dataloaders(
     root_dir: str,
     plant_name: str,
+    classification_type: str = 'binary',
     batch_size: int = 32,
     num_workers: int = 4,
     train_ratio: float = 0.7,
@@ -146,6 +192,7 @@ def create_dataloaders(
     Args:
         root_dir: Root directory containing the dataset
         plant_name: Name of the plant
+        classification_type: Type of classification ('binary', 'generation', 'detailed')
         batch_size: Batch size for data loaders
         num_workers: Number of workers for data loading
         train_ratio: Ratio of training data
@@ -156,30 +203,25 @@ def create_dataloaders(
     Returns:
         Tuple of (train_loader, val_loader, test_loader)
     """
-    # Set random seed for reproducibility
     torch.manual_seed(random_state)
     np.random.seed(random_state)
     
-    # Define transforms based on model type
     if model_type == 'clip':
-        # CLIP models typically use specific preprocessing
-        from torchvision.transforms import Normalize
-        
         train_transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.RandomHorizontalFlip(p=0.5),
             transforms.RandomRotation(degrees=15),
             transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
             transforms.ToTensor(),
-            Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
-                     std=[0.26862954, 0.26130258, 0.27577711])
+            transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
+                               std=[0.26862954, 0.26130258, 0.27577711])
         ])
         
         val_transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
-            Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
-                     std=[0.26862954, 0.26130258, 0.27577711])
+            transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
+                               std=[0.26862954, 0.26130258, 0.27577711])
         ])
     else:
         # Standard ImageNet normalization for other models
@@ -204,6 +246,7 @@ def create_dataloaders(
     full_dataset = PlantDiseaseDataset(
         root_dir=root_dir,
         plant_name=plant_name,
+        classification_type=classification_type,
         transform=train_transform,
         model_type=model_type
     )
@@ -228,6 +271,7 @@ def create_dataloaders(
     val_dataset_copy = PlantDiseaseDataset(
         root_dir=root_dir,
         plant_name=plant_name,
+        classification_type=classification_type,
         transform=val_transform,
         model_type=model_type
     )
@@ -236,6 +280,7 @@ def create_dataloaders(
     test_dataset_copy = PlantDiseaseDataset(
         root_dir=root_dir,
         plant_name=plant_name,
+        classification_type=classification_type,
         transform=val_transform,
         model_type=model_type
     )
@@ -280,7 +325,7 @@ class Trainer:
         val_loader: DataLoader,
         criterion: nn.Module,
         optimizer: torch.optim.Optimizer,
-        scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
+        scheduler: Optional[torch.optim.lr_scheduler.LRScheduler] = None,
         progress_interval: int = 10,
         plant_name: str = "Plant"
     ):
@@ -438,6 +483,18 @@ class Trainer:
                 logger.info(f"New best model! Saving to {save_path}")
                 
                 # Save checkpoint
+                # Try to get class names from the dataset
+                class_names = None
+                try:
+                    if hasattr(self.train_loader.dataset, 'dataset'):
+                        original_dataset = self.train_loader.dataset.dataset  # type: ignore
+                        if hasattr(original_dataset, 'class_to_idx'):
+                            class_names = list(original_dataset.class_to_idx.keys())  # type: ignore
+                    elif hasattr(self.train_loader.dataset, 'class_to_idx'):
+                        class_names = list(self.train_loader.dataset.class_to_idx.keys())  # type: ignore
+                except Exception as e:
+                    logger.warning(f"Could not extract class names: {e}")
+                
                 checkpoint = {
                     'epoch': epoch,
                     'model_state_dict': self.model.state_dict(),
@@ -446,7 +503,7 @@ class Trainer:
                     'best_val_acc': self.best_val_acc,
                     'metrics': self.metrics,
                     'plant_name': self.plant_name,
-                    'class_names': list(self.train_loader.dataset.dataset.class_to_idx.keys()) if hasattr(self.train_loader.dataset, 'dataset') else None
+                    'class_names': class_names
                 }
                 
                 os.makedirs(os.path.dirname(save_path), exist_ok=True)

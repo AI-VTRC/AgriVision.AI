@@ -1,0 +1,57 @@
+2025-07-09 10:01:09,658 - __main__ - INFO - ================================================================================
+2025-07-09 10:01:09,658 - __main__ - INFO - Starting training for Maize
+2025-07-09 10:01:09,658 - __main__ - INFO - Configuration: {'plant': 'Maize', 'data_dir': './Dataset', 'output_dir': './outputs', 'model_name': 'clip', 'batch_size': 32, 'epochs': 20, 'lr': 0.001, 'progress_interval': 10, 'weight_decay': 0.0001, 'num_workers': 4, 'train_ratio': 0.7, 'val_ratio': 0.15, 'random_seed': 42, 'eval': False, 'pretrained': 1, 'checkpoint': None}
+2025-07-09 10:01:09,658 - __main__ - INFO - ================================================================================
+2025-07-09 10:01:09,660 - __main__ - INFO - Using device: cpu
+2025-07-09 10:01:09,660 - __main__ - INFO - Output directory: ./outputs/Maize/Maize_training_20250709_100109
+2025-07-09 10:01:09,661 - training - INFO - Found 10 classes for Maize
+2025-07-09 10:01:09,661 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-09 10:01:09,664 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-09 10:01:09,667 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-09 10:01:09,681 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-09 10:01:09,682 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-09 10:01:09,685 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-09 10:01:09,688 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-09 10:01:09,690 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-09 10:01:09,703 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-09 10:01:09,703 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-09 10:01:09,705 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-09 10:01:09,705 - training - INFO - Total samples: 18465
+2025-07-09 10:01:09,705 - training - INFO - Detected binary classification task (Healthy vs Unhealthy)
+2025-07-09 10:01:09,713 - training - INFO - Binary classification: Healthy=9465, Unhealthy=9000
+2025-07-09 10:01:09,713 - training - INFO - Dataset split: train=12925, val=2769, test=2771
+2025-07-09 10:01:09,714 - training - INFO - Found 10 classes for Maize
+2025-07-09 10:01:09,714 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-09 10:01:09,716 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-09 10:01:09,718 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-09 10:01:09,731 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-09 10:01:09,732 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-09 10:01:09,734 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-09 10:01:09,737 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-09 10:01:09,739 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-09 10:01:09,752 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-09 10:01:09,752 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-09 10:01:09,754 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-09 10:01:09,755 - training - INFO - Total samples: 18465
+2025-07-09 10:01:09,755 - training - INFO - Detected binary classification task (Healthy vs Unhealthy)
+2025-07-09 10:01:09,762 - training - INFO - Binary classification: Healthy=9465, Unhealthy=9000
+2025-07-09 10:01:09,762 - training - INFO - Found 10 classes for Maize
+2025-07-09 10:01:09,762 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-09 10:01:09,765 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-09 10:01:09,767 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-09 10:01:09,780 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-09 10:01:09,781 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-09 10:01:09,783 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-09 10:01:09,785 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-09 10:01:09,787 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-09 10:01:09,800 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-09 10:01:09,800 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-09 10:01:09,802 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-09 10:01:09,802 - training - INFO - Total samples: 18465
+2025-07-09 10:01:09,802 - training - INFO - Detected binary classification task (Healthy vs Unhealthy)
+2025-07-09 10:01:09,810 - training - INFO - Binary classification: Healthy=9465, Unhealthy=9000
+2025-07-09 10:01:11,338 - __main__ - INFO - Starting model training...
+2025-07-09 10:01:11,338 - training - INFO - Starting training for 20 epochs
+2025-07-09 10:01:11,338 - training - INFO - 
+Epoch 1/20
+2025-07-09 10:01:11,338 - training - INFO - --------------------------------------------------
