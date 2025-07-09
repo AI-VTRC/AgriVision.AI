@@ -421,7 +421,7 @@ def main():
                         logger.info(f"  Test F1-Score: {result['evaluation_metrics']['f1_score']:.4f}")
                         
                     except Exception as e:
-                        logger.error(f"✗ Failed: {plant} - {classification_name} - {model}")
+                        logger.error(f"X Failed: {plant} - {classification_name} - {model}")
                         logger.error(f"  Error: {str(e)}")
                         continue
         
