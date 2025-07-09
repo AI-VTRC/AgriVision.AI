@@ -55,7 +55,9 @@ def evaluate_model(
     # Disable gradient computation
     with torch.no_grad():
         for batch_idx, (inputs, labels) in enumerate(test_loader):
-            inputs, labels = inputs.to(device), labels.to(device)
+            # Move data to device with non_blocking for CUDA optimization
+            inputs = inputs.to(device, non_blocking=True)
+            labels = labels.to(device, non_blocking=True)
             
             # Forward pass
             outputs = model(inputs)
@@ -70,6 +72,10 @@ def evaluate_model(
             all_labels.extend(labels.cpu().numpy())
             all_probs.extend(probs.cpu().numpy())
             running_loss += loss.item()
+            
+            # Clear cache periodically for CUDA memory optimization
+            if torch.cuda.is_available() and batch_idx % 50 == 0:
+                torch.cuda.empty_cache()
             
             # Log progress
             if batch_idx % 10 == 0:

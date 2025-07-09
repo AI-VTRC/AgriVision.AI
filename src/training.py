@@ -309,13 +309,19 @@ def create_dataloaders(
     )
     test_dataset_copy.samples = [full_dataset.samples[i] for i in test_dataset.indices]
     
-    # Create data loaders
+    # CUDA optimization settings
+    pin_memory = torch.cuda.is_available()
+    persistent_workers = num_workers > 0 and torch.cuda.is_available()
+    
+    # Create data loaders with CUDA optimizations
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
-        pin_memory=torch.cuda.is_available()
+        pin_memory=pin_memory,
+        persistent_workers=persistent_workers,
+        prefetch_factor=2 if num_workers > 0 else 2
     )
     
     val_loader = DataLoader(
@@ -323,7 +329,9 @@ def create_dataloaders(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=torch.cuda.is_available()
+        pin_memory=pin_memory,
+        persistent_workers=persistent_workers,
+        prefetch_factor=2 if num_workers > 0 else 2
     )
     
     test_loader = DataLoader(
@@ -331,7 +339,9 @@ def create_dataloaders(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=torch.cuda.is_available()
+        pin_memory=pin_memory,
+        persistent_workers=persistent_workers,
+        prefetch_factor=2 if num_workers > 0 else 2
     )
     
     return train_loader, val_loader, test_loader
@@ -398,7 +408,9 @@ class Trainer:
         pbar = tqdm(self.train_loader, desc=f'Epoch {epoch} - Training')
         
         for batch_idx, (inputs, labels) in enumerate(pbar):
-            inputs, labels = inputs.to(self.device), labels.to(self.device)
+            # Move data to device with non_blocking for CUDA optimization
+            inputs = inputs.to(self.device, non_blocking=True)
+            labels = labels.to(self.device, non_blocking=True)
             
             # Zero gradients
             self.optimizer.zero_grad()
@@ -416,6 +428,10 @@ class Trainer:
             _, predicted = outputs.max(1)
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
+            
+            # Clear cache periodically for CUDA memory optimization
+            if torch.cuda.is_available() and batch_idx % 50 == 0:
+                torch.cuda.empty_cache()
             
             # Update progress bar
             if batch_idx % self.progress_interval == 0:
@@ -442,8 +458,10 @@ class Trainer:
         with torch.no_grad():
             pbar = tqdm(self.val_loader, desc=f'Epoch {epoch} - Validation')
             
-            for inputs, labels in pbar:
-                inputs, labels = inputs.to(self.device), labels.to(self.device)
+            for batch_idx, (inputs, labels) in enumerate(pbar):
+                # Move data to device with non_blocking for CUDA optimization
+                inputs = inputs.to(self.device, non_blocking=True)
+                labels = labels.to(self.device, non_blocking=True)
                 
                 # Forward pass
                 outputs = self.model(inputs)
@@ -454,6 +472,10 @@ class Trainer:
                 _, predicted = outputs.max(1)
                 total += labels.size(0)
                 correct += predicted.eq(labels).sum().item()
+                
+                # Clear cache periodically for CUDA memory optimization
+                if torch.cuda.is_available() and batch_idx % 50 == 0:
+                    torch.cuda.empty_cache()
         
         # Calculate validation metrics
         val_loss = running_loss / len(self.val_loader)

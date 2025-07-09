@@ -113,8 +113,9 @@ def train_model(
     model = get_model(
         model_name=model_name,
         num_classes=num_classes,
-        pretrained=True
-    ).to(device)
+        pretrained=True,
+        device=device
+    )
     
     class_weights = get_class_weights(train_loader.dataset.dataset, device)  # type: ignore
     criterion = nn.CrossEntropyLoss(weight=class_weights)
@@ -380,9 +381,21 @@ def main():
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Using device: {device}")
         
+        # CUDA optimizations
         if torch.cuda.is_available():
             logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
+            
+            # Enable mixed precision training if available
+            torch.backends.cudnn.benchmark = True
+            torch.backends.cudnn.deterministic = False
+            
+            # Clear CUDA cache at start
+            torch.cuda.empty_cache()
+            
+            logger.info("CUDA optimizations enabled:")
+            logger.info("  - CuDNN benchmark mode enabled")
+            logger.info("  - Memory cache cleared")
         
         plants = ['Apple', 'Maize', 'Tomato']
         classification_types = ['detailed', 'generation', 'binary']

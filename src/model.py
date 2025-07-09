@@ -19,6 +19,9 @@ class LeafClassifier(nn.Module):
         """
         super(LeafClassifier, self).__init__()
         
+        # Set device
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        
         # Load the pretrained model
         self.backbone = timm.create_model(model_name, pretrained=pretrained)
         
@@ -41,6 +44,9 @@ class LeafClassifier(nn.Module):
             nn.Dropout(0.3),
             nn.Linear(512, num_classes)
         )
+        
+        # Move model to device
+        self.to(self.device)
         
     def forward(self, x):
         """
@@ -81,8 +87,10 @@ class CLIPClassifier(nn.Module):
         """
         super(CLIPClassifier, self).__init__()
         
-        # Load the pretrained CLIP model
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        # Set device - use torch.device for consistency
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        
+        # Load the pretrained CLIP model directly to the correct device
         self.clip_model, self.preprocess = clip.load(clip_model_name, device=self.device)
         
         # Freeze the CLIP model parameters
@@ -104,6 +112,9 @@ class CLIPClassifier(nn.Module):
             nn.Linear(512, num_classes)
         )
         
+        # Move classifier to device (CLIP model is already on device)
+        self.classifier.to(self.device)
+        
     def forward(self, x):
         """
         Forward pass through the model.
@@ -114,6 +125,9 @@ class CLIPClassifier(nn.Module):
         Returns:
             torch.Tensor: Logits for each class
         """
+        # Ensure input is on the correct device
+        x = x.to(self.device)
+        
         with torch.no_grad():
             features = self.clip_model.encode_image(x)
             
@@ -130,6 +144,9 @@ class CLIPClassifier(nn.Module):
         Returns:
             torch.Tensor: Extracted features
         """
+        # Ensure input is on the correct device
+        x = x.to(self.device)
+        
         with torch.no_grad():
             features = self.clip_model.encode_image(x)
         return features
@@ -144,7 +161,7 @@ class CLIPClassifier(nn.Module):
         return self.preprocess
 
 
-def get_model(model_name='efficientnet_b0', num_classes=10, pretrained=True):
+def get_model(model_name='efficientnet_b0', num_classes=10, pretrained=True, device=None):
     """
     Factory function to create and return the model.
     
@@ -152,10 +169,15 @@ def get_model(model_name='efficientnet_b0', num_classes=10, pretrained=True):
         model_name (str): Name of the base model to use
         num_classes (int): Number of classes to classify
         pretrained (bool): Whether to use pretrained weights
+        device (torch.device, optional): Device to place the model on
         
     Returns:
         nn.Module: Instantiated model
     """
+    # Set device if not provided
+    if device is None:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
     if model_name == 'clip' or model_name.startswith('clip-'):
         # For CLIP models, model_name can be in format 'clip-ViT-B/32' or just 'clip'
         if model_name == 'clip':
@@ -176,4 +198,7 @@ def get_model(model_name='efficientnet_b0', num_classes=10, pretrained=True):
             pretrained=pretrained
         )
     
-    return model 
+    # Ensure model is on the correct device
+    model = model.to(device)
+    
+    return model
