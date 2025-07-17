@@ -1,0 +1,25 @@
+2025-07-07 21:26:00,982 - __main__ - INFO - ================================================================================
+2025-07-07 21:26:00,983 - __main__ - INFO - Starting training for apple with binary classification
+2025-07-07 21:26:00,983 - __main__ - INFO - Configuration: {'plant': 'apple', 'data_dir': './Dataset', 'output_dir': 'multi_scheme_results/apple/binary/weighted', 'model_name': 'clip', 'scheme': 'binary', 'schemes': None, 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'weight_decay': 0.0001, 'num_workers': 4, 'train_ratio': 0.7, 'val_ratio': 0.15, 'random_seed': 42, 'weighting_strategy': 'inverse', 'beta': 0.9999, 'focal_loss': False, 'focal_gamma': 2.0, 'focal_alpha': 0.25, 'scheduler': 'cosine', 'patience': 5, 'early_stopping': False, 'early_stopping_patience': 10, 'progress_interval': 10, 'save_interval': 5, 'eval': False, 'checkpoint': None, 'pretrained': 1, 'percentage_matrix': False, 'compare': False, 'comparison_dir': None}
+2025-07-07 21:26:00,983 - __main__ - INFO - ================================================================================
+2025-07-07 21:26:00,985 - __main__ - INFO - Using device: cpu
+2025-07-07 21:26:00,985 - __main__ - INFO - Classification scheme: Binary classification: Healthy vs Unhealthy
+2025-07-07 21:26:00,985 - __main__ - INFO - Number of classes: 2
+2025-07-07 21:26:00,987 - __main__ - ERROR - Failed to train binary scheme: No directories found for plant: apple
+Traceback (most recent call last):
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_main.py", line 449, in main
+    results = train_single_scheme(args, scheme, output_base_dir)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_main.py", line 251, in train_single_scheme
+    train_loader, val_loader, test_loader, dataset_info = create_enhanced_dataloaders(
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_training.py", line 395, in create_enhanced_dataloaders
+    full_dataset = EnhancedPlantDiseaseDataset(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_training.py", line 61, in __init__
+    super().__init__(root_dir, plant_name, transform, model_type)
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/training.py", line 39, in __init__
+    self._load_dataset()
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_training.py", line 75, in _load_dataset
+    raise ValueError(f"No directories found for plant: {self.plant_name}")
+ValueError: No directories found for plant: apple

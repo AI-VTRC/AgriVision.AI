@@ -1,0 +1,23 @@
+{
+    "plant": "Apple",
+    "scheme": "binary",
+    "model": "clip",
+    "num_classes": 2,
+    "class_names": [
+        "Healthy",
+        "Unhealthy"
+    ],
+    "final_metrics": {
+        "train_loss": 0.05602112223299949,
+        "val_loss": 0.04235677257451024,
+        "train_acc": 97.83333333333333,
+        "val_acc": 98.42222222222222,
+        "test_acc": 98.73333333333333,
+        "test_balanced_acc": 98.73333333333333
+    },
+    "class_distribution": {
+        "0": 15000,
+        "1": 15000
+    },
+    "training_completed": "2025-07-08T11:32:55.312286"
+}

@@ -14,7 +14,7 @@ from datetime import datetime
 from sklearn.utils.class_weight import compute_class_weight
 import seaborn as sns
 import json
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Optional
 
 import sys
 import os
@@ -69,6 +69,7 @@ def parse_args():
     parser.add_argument('--train_ratio', type=float, default=0.7, help='Ratio of training data')
     parser.add_argument('--val_ratio', type=float, default=0.15, help='Ratio of validation data')
     parser.add_argument('--random_seed', type=int, default=42, help='Random seed for reproducibility')
+    parser.add_argument('--resume_from', type=str, default=None, help='Path to checkpoint to resume training from')
     
     return parser.parse_args()
 
@@ -87,12 +88,18 @@ def train_model(
     model_name: str,
     args: Any,
     device: torch.device,
-    output_dir: str
+    output_dir: str,
+    resume_path: Optional[str] = None
 ) -> Dict[str, Any]:
     """Train a single model configuration."""
     
     logger.info(f"Training {model_name} for {plant_name} - {classification_type} classification")
-    
+
+    checkpoint = None
+    if resume_path and os.path.exists(resume_path):
+        logger.info(f"Loading checkpoint for resumption: {resume_path}")
+        checkpoint = torch.load(resume_path, map_location=device)
+
     model_type = 'clip' if model_name == 'clip' or model_name.startswith('clip-') else None
     
     train_loader, val_loader, test_loader = create_dataloaders(
@@ -113,7 +120,7 @@ def train_model(
     model = get_model(
         model_name=model_name,
         num_classes=num_classes,
-        pretrained=True,
+        pretrained=not checkpoint,
         device=device
     )
     
@@ -139,8 +146,11 @@ def train_model(
         val_loader=val_loader,
         criterion=criterion,
         optimizer=optimizer,
-        scheduler=scheduler,  # type: ignore
-        plant_name=plant_name
+        scheduler=scheduler,
+        plant_name=plant_name,
+        classification_type=classification_type,
+        model_name=model_name,
+        checkpoint=checkpoint
     )
     
     model_save_path = os.path.join(
@@ -378,65 +388,95 @@ def main():
         torch.manual_seed(args.random_seed)
         np.random.seed(args.random_seed)
         
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        logger.info(f"Using device: {device}")
+        # Enhanced device detection with MPS support for Apple Silicon
+        if torch.cuda.is_available():
+            device = torch.device('cuda')
+            device_type = 'CUDA'
+        elif torch.backends.mps.is_available():
+            device = torch.device('mps')
+            device_type = 'MPS (Apple Silicon)'
+        else:
+            device = torch.device('cpu')
+            device_type = 'CPU'
         
-        # CUDA optimizations
+        logger.info(f"Using device: {device} ({device_type})")
+        
+        # Device-specific optimizations
         if torch.cuda.is_available():
             logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
             
-            # Enable mixed precision training if available
+            # Enable CUDA optimizations
             torch.backends.cudnn.benchmark = True
             torch.backends.cudnn.deterministic = False
-            
-            # Clear CUDA cache at start
             torch.cuda.empty_cache()
             
             logger.info("CUDA optimizations enabled:")
             logger.info("  - CuDNN benchmark mode enabled")
             logger.info("  - Memory cache cleared")
+            
+        elif torch.backends.mps.is_available():
+            # Apple Silicon MPS optimizations
+            logger.info("MPS (Metal Performance Shaders) acceleration enabled for Apple Silicon")
+            logger.info("Optimizations:")
+            logger.info("  - GPU acceleration via Metal")
+            logger.info("  - Optimized for Apple M-series chips")
+            
+        else:
+            logger.info("Using CPU - consider using a device with GPU acceleration")
         
-        plants = ['Apple', 'Maize', 'Tomato']
-        classification_types = ['detailed', 'generation', 'binary']
-        classification_names = ['10-way', '3-way', '2-way']
-        models = ['efficientnet_b0', 'resnet50', 'clip']
-        
+        experiments_to_run = [
+            {'plant': 'Maize', 'classification_type': 'detailed', 'model': 'efficientnet_b0'},
+            {'plant': 'Maize', 'classification_type': 'detailed', 'model': 'resnet50'},
+            {'plant': 'Maize', 'classification_type': 'detailed', 'model': 'clip'},
+            {'plant': 'Tomato', 'classification_type': 'binary', 'model': 'clip'},
+        ]
+
+        # Mapping for classification display names
+        classification_names_map = {
+            'detailed': '10-way',
+            'generation': '3-way',
+            'binary': '2-way'
+        }
+
         all_results = []
-        
-        total_experiments = len(plants) * len(classification_types) * len(models)
+        total_experiments = len(experiments_to_run)
         current_experiment = 0
         
-        for plant in plants:
-            for i, classification_type in enumerate(classification_types):
-                classification_name = classification_names[i]
-                for model in models:
-                    current_experiment += 1
-                    logger.info(f"\n{'='*60}")
-                    logger.info(f"Experiment {current_experiment}/{total_experiments}")
-                    logger.info(f"Plant: {plant}, Classification: {classification_name} ({classification_type}), Model: {model}")
-                    logger.info(f"{'='*60}")
-                    
-                    try:
-                        result = train_model(
-                            plant_name=plant,
-                            classification_type=classification_type,
-                            model_name=model,
-                            args=args,
-                            device=device,
-                            output_dir=log_dir
-                        )
-                        result['classification_display_name'] = classification_name
-                        all_results.append(result)
-                        
-                        logger.info(f"✓ Completed: {plant} - {classification_name} - {model}")
-                        logger.info(f"  Test Accuracy: {result['evaluation_metrics']['accuracy']:.4f}")
-                        logger.info(f"  Test F1-Score: {result['evaluation_metrics']['f1_score']:.4f}")
-                        
-                    except Exception as e:
-                        logger.error(f"X Failed: {plant} - {classification_name} - {model}")
-                        logger.error(f"  Error: {str(e)}")
-                        continue
+        for experiment in experiments_to_run:
+            plant = experiment['plant']
+            classification_type = experiment['classification_type']
+            model = experiment['model']
+            classification_name = classification_names_map.get(classification_type, classification_type)
+
+            current_experiment += 1
+            
+            logger.info(f"\n{'='*60}")
+            logger.info(f"Experiment {current_experiment}/{total_experiments}")
+            logger.info(f"Plant: {plant}, Classification: {classification_name} ({classification_type}), Model: {model}")
+            logger.info(f"{'='*60}")
+
+            try:
+                result = train_model(
+                    plant_name=plant,
+                    classification_type=classification_type,
+                    model_name=model,
+                    args=args,
+                    device=device,
+                    output_dir=log_dir,
+                    resume_path=None  # Not resuming for these specific runs
+                )
+                result['classification_display_name'] = classification_name
+                all_results.append(result)
+                
+                logger.info(f"✓ Completed: {plant} - {classification_name} - {model}")
+                logger.info(f"  Test Accuracy: {result['evaluation_metrics']['accuracy']:.4f}")
+                logger.info(f"  Test F1-Score: {result['evaluation_metrics']['f1_score']:.4f}")
+                
+            except Exception as e:
+                logger.error(f"X Failed: {plant} - {classification_name} - {model}")
+                logger.error(f"  Error: {str(e)}")
+                continue
         
         if all_results:
             logger.info("\n" + "="*80)
@@ -458,15 +498,20 @@ def main():
             logger.info(f"  Model: {best_overall['Model']}")
             logger.info(f"  Test Accuracy: {best_overall['Test Accuracy']:.4f}")
             
-            for plant in plants:
-                plant_best = df[df['Plant'] == plant].loc[df[df['Plant'] == plant]['Test Accuracy'].idxmax()]
-                logger.info(f"\nBest for {plant}:")
-                logger.info(f"  Classification: {plant_best['Classification']}")
-                logger.info(f"  Model: {plant_best['Model']}")
-                logger.info(f"  Test Accuracy: {plant_best['Test Accuracy']:.4f}")
-            
-            for i, class_type in enumerate(classification_types):
-                class_name = classification_names[i]
+            unique_plants = df['Plant'].unique()
+            for plant in unique_plants:
+                plant_df = df[df['Plant'] == plant]
+                if not plant_df.empty:
+                    plant_best = plant_df.loc[plant_df['Test Accuracy'].idxmax()]
+                    logger.info(f"\nBest for {plant}:")
+                    logger.info(f"  Classification: {plant_best['Classification']}")
+                    logger.info(f"  Model: {plant_best['Model']}")
+                    logger.info(f"  Test Accuracy: {plant_best['Test Accuracy']:.4f}")
+                else:
+                    logger.info(f"\nNo successful results for {plant}")
+
+            unique_class_names = df['Classification'].unique()
+            for class_name in unique_class_names:
                 class_data = df[df['Classification'] == class_name]
                 if len(class_data) > 0:
                     class_best = class_data.loc[class_data['Test Accuracy'].idxmax()]

@@ -84,20 +84,32 @@ class PlantDiseaseDataset(Dataset):
         logger.info(f"Found {len(plant_dirs)} classes for {self.plant_name}")
         logger.info(f"Classes: {list(self.class_to_idx.keys())}")
         
-        # Load all image files
-        for class_name, class_idx in self.class_to_idx.items():
+        # Load all image files and filter out classes with no images
+        valid_classes = {}
+        new_class_idx = 0
+        
+        for class_name, original_idx in self.class_to_idx.items():
             class_dir = os.path.join(self.root_dir, class_name)
             
             image_files = []
             for ext in ["*.png", "*.PNG", "*.jpg", "*.JPG", "*.jpeg", "*.JPEG"]:
                 image_files.extend(glob(os.path.join(class_dir, ext)))
             
-            for img_path in image_files:
-                self.samples.append((img_path, class_idx))
-            
             logger.info(f"  {class_name}: {len(image_files)} images")
+            
+            if image_files:
+                valid_classes[class_name] = new_class_idx
+                for img_path in image_files:
+                    self.samples.append((img_path, new_class_idx))
+                new_class_idx += 1
+            else:
+                logger.warning(f"  Skipping empty class directory: {class_name}")
+
+        self.class_to_idx = valid_classes
+        self.idx_to_class = {v: k for k, v in self.class_to_idx.items()}
         
-        logger.info(f"Total samples: {len(self.samples)}")
+        logger.info(f"Filtered to {len(self.class_to_idx)} non-empty classes.")
+        logger.info(f"Total samples across valid classes: {len(self.samples)}")
         
         if self.classification_type == 'binary':
             logger.info("Converting to binary classification (Healthy vs Unhealthy)")
@@ -309,9 +321,9 @@ def create_dataloaders(
     )
     test_dataset_copy.samples = [full_dataset.samples[i] for i in test_dataset.indices]
     
-    # CUDA optimization settings
-    pin_memory = torch.cuda.is_available()
-    persistent_workers = num_workers > 0 and torch.cuda.is_available()
+    # Device optimization settings (CUDA or MPS)
+    pin_memory = torch.cuda.is_available() or torch.backends.mps.is_available()
+    persistent_workers = num_workers > 0 and (torch.cuda.is_available() or torch.backends.mps.is_available())
     
     # Create data loaders with CUDA optimizations
     train_loader = DataLoader(
@@ -360,7 +372,10 @@ class Trainer:
         optimizer: torch.optim.Optimizer,
         scheduler: Optional[torch.optim.lr_scheduler.LRScheduler] = None,
         progress_interval: int = 10,
-        plant_name: str = "Plant"
+        plant_name: str = "Plant",
+        classification_type: str = "binary",
+        model_name: str = "efficientnet_b0",
+        checkpoint: Optional[dict] = None
     ):
         """
         Initialize the trainer.
@@ -375,6 +390,9 @@ class Trainer:
             scheduler: Learning rate scheduler (optional)
             progress_interval: Interval for progress updates
             plant_name: Name of the plant
+            classification_type: Type of classification
+            model_name: Name of the model
+            checkpoint: Checkpoint to resume from
         """
         self.model = model
         self.device = device
@@ -385,6 +403,9 @@ class Trainer:
         self.scheduler = scheduler
         self.progress_interval = progress_interval
         self.plant_name = plant_name
+        self.classification_type = classification_type
+        self.model_name = model_name
+        self.start_epoch = 1
         
         # Metrics storage
         self.metrics = {
@@ -396,6 +417,16 @@ class Trainer:
         
         self.best_val_acc = 0.0
         self.best_epoch = 0
+
+        if checkpoint:
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            if self.scheduler and checkpoint.get('scheduler_state_dict'):
+                self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            self.start_epoch = checkpoint['epoch'] + 1
+            self.metrics = checkpoint.get('metrics', self.metrics)
+            self.best_val_acc = checkpoint.get('best_val_acc', 0.0)
+            logger.info(f"Resumed from epoch {checkpoint['epoch']} with best val_acc: {self.best_val_acc:.2f}%")
     
     def train_epoch(self, epoch: int) -> Tuple[float, float]:
         """Train for one epoch."""
@@ -429,9 +460,12 @@ class Trainer:
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
             
-            # Clear cache periodically for CUDA memory optimization
-            if torch.cuda.is_available() and batch_idx % 50 == 0:
-                torch.cuda.empty_cache()
+            # Clear cache periodically for GPU memory optimization (CUDA or MPS)
+            if batch_idx % 50 == 0:
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                elif torch.backends.mps.is_available():
+                    torch.mps.empty_cache()
             
             # Update progress bar
             if batch_idx % self.progress_interval == 0:
@@ -473,9 +507,12 @@ class Trainer:
                 total += labels.size(0)
                 correct += predicted.eq(labels).sum().item()
                 
-                # Clear cache periodically for CUDA memory optimization
-                if torch.cuda.is_available() and batch_idx % 50 == 0:
-                    torch.cuda.empty_cache()
+                # Clear cache periodically for GPU memory optimization (CUDA or MPS)
+                if batch_idx % 50 == 0:
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                    elif torch.backends.mps.is_available():
+                        torch.mps.empty_cache()
         
         # Calculate validation metrics
         val_loss = running_loss / len(self.val_loader)
@@ -496,7 +533,7 @@ class Trainer:
         """
         logger.info(f"Starting training for {num_epochs} epochs")
         
-        for epoch in range(1, num_epochs + 1):
+        for epoch in range(self.start_epoch, num_epochs + 1):
             logger.info(f"\nEpoch {epoch}/{num_epochs}")
             logger.info("-" * 50)
             
@@ -548,11 +585,25 @@ class Trainer:
                     'best_val_acc': self.best_val_acc,
                     'metrics': self.metrics,
                     'plant_name': self.plant_name,
+                    'classification_type': self.classification_type,
+                    'model_name': self.model_name,
                     'class_names': class_names
                 }
                 
-                os.makedirs(os.path.dirname(save_path), exist_ok=True)
-                torch.save(checkpoint, save_path)
+                # Robust saving: save to temp file, then rename
+                save_dir = os.path.dirname(save_path)
+                os.makedirs(save_dir, exist_ok=True)
+                
+                temp_file_path = f"{save_path}.tmp"
+                try:
+                    torch.save(checkpoint, temp_file_path)
+                    os.rename(temp_file_path, save_path)
+                except Exception as e:
+                    logger.error(f"Failed to save checkpoint to {save_path}: {e}")
+                    # Clean up temp file if it exists
+                    if os.path.exists(temp_file_path):
+                        os.remove(temp_file_path)
+                    raise   # Re-raise the exception to stop the process if saving fails
         
         logger.info(f"\nTraining completed!")
         logger.info(f"Best validation accuracy: {self.best_val_acc:.2f}% at epoch {self.best_epoch}")

@@ -1,0 +1,188 @@
+{
+    "timestamp": "2025-07-16T02:56:29.068425",
+    "overall_metrics": {
+        "loss": 0.6317067300451213,
+        "accuracy": 0.7571273908336341,
+        "precision": 0.8638214630029818,
+        "recall": 0.7571273908336341,
+        "f1_score": 0.7843237414335955,
+        "num_samples": 2771
+    },
+    "per_class_metrics": [
+        {
+            "class": "Maize-Healthy-Diffusion-DS8",
+            "precision": 0.4110169491525424,
+            "recall": 0.6736111111111112,
+            "f1_score": 0.5105263157894737,
+            "support": 144
+        },
+        {
+            "class": "Maize-Healthy-Diffusion-SPx2Px",
+            "precision": 0.9037037037037037,
+            "recall": 0.8413793103448276,
+            "f1_score": 0.8714285714285714,
+            "support": 145
+        },
+        {
+            "class": "Maize-Healthy-GAN-StyleGAN2",
+            "precision": 0.9581749049429658,
+            "recall": 0.5581395348837209,
+            "f1_score": 0.7053883834849545,
+            "support": 903
+        },
+        {
+            "class": "Maize-Healthy-GAN-Stylegan3",
+            "precision": 0.16909620991253643,
+            "recall": 0.8169014084507042,
+            "f1_score": 0.28019323671497587,
+            "support": 71
+        },
+        {
+            "class": "Maize-Healthy-Real-Real",
+            "precision": 0.5246913580246914,
+            "recall": 0.5862068965517241,
+            "f1_score": 0.5537459283387622,
+            "support": 145
+        },
+        {
+            "class": "Maize-Unhealthy-Diffusion-DS8",
+            "precision": 0.6,
+            "recall": 0.8541666666666666,
+            "f1_score": 0.7048710601719198,
+            "support": 144
+        },
+        {
+            "class": "Maize-Unhealthy-Diffusion-SPx2Px",
+            "precision": 0.8424242424242424,
+            "recall": 0.9328859060402684,
+            "f1_score": 0.8853503184713376,
+            "support": 149
+        },
+        {
+            "class": "Maize-Unhealthy-GAN-StyleGAN2",
+            "precision": 1.0,
+            "recall": 0.9371614301191766,
+            "f1_score": 0.9675615212527964,
+            "support": 923
+        },
+        {
+            "class": "Maize-Unhealthy-Real-Real",
+            "precision": 0.7835820895522388,
+            "recall": 0.7142857142857143,
+            "f1_score": 0.7473309608540926,
+            "support": 147
+        }
+    ],
+    "confusion_matrix": [
+        [
+            97,
+            7,
+            11,
+            14,
+            15,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            12,
+            122,
+            0,
+            1,
+            4,
+            0,
+            6,
+            0,
+            0
+        ],
+        [
+            81,
+            3,
+            504,
+            260,
+            55,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            6,
+            0,
+            4,
+            58,
+            3,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            40,
+            3,
+            7,
+            10,
+            85,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            123,
+            1,
+            0,
+            20
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            139,
+            0,
+            7
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            38,
+            18,
+            865,
+            2
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            41,
+            1,
+            0,
+            105
+        ]
+    ],
+    "class_names": [
+        "Maize-Healthy-Diffusion-DS8",
+        "Maize-Healthy-Diffusion-SPx2Px",
+        "Maize-Healthy-GAN-StyleGAN2",
+        "Maize-Healthy-GAN-Stylegan3",
+        "Maize-Healthy-Real-Real",
+        "Maize-Unhealthy-Diffusion-DS8",
+        "Maize-Unhealthy-Diffusion-SPx2Px",
+        "Maize-Unhealthy-GAN-StyleGAN2",
+        "Maize-Unhealthy-Real-Real"
+    ]
+}

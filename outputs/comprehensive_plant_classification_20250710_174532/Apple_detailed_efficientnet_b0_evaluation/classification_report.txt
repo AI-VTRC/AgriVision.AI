@@ -1,0 +1,28 @@
+Evaluation Date: 2025-07-09 16:48:26
+Model Evaluation Results
+================================================================================
+
+Overall Metrics:
+  Loss: 0.0220
+  Accuracy: 0.9969 (99.69%)
+  Precision: 0.9970
+  Recall: 0.9969
+  F1-Score: 0.9969
+
+Classification Report:
+                                  precision    recall  f1-score   support
+
+     Apple-Healthy-Diffusion-DS8     1.0000    0.9730    0.9863       148
+  Apple-Healthy-Diffusion-SPx2Px     0.9434    1.0000    0.9709       150
+     Apple-Healthy-GAN-StyleGAN2     1.0000    1.0000    1.0000       935
+     Apple-Healthy-GAN-Stylegan3     1.0000    1.0000    1.0000       884
+         Apple-Healthy-Real-Real     0.9939    1.0000    0.9969       163
+   Apple-Unhealthy-Diffusion-DS8     0.9742    1.0000    0.9869       151
+Apple-Unhealthy-Diffusion-SPx2Px     1.0000    0.9451    0.9718       164
+   Apple-Unhealthy-GAN-StyleGAN2     1.0000    1.0000    1.0000       901
+   Apple-Unhealthy-GAN-Stylegan3     1.0000    1.0000    1.0000       862
+       Apple-Unhealthy-Real-Real     1.0000    0.9930    0.9965       142
+
+                        accuracy                         0.9969      4500
+                       macro avg     0.9911    0.9911    0.9909      4500
+                    weighted avg     0.9970    0.9969    0.9969      4500

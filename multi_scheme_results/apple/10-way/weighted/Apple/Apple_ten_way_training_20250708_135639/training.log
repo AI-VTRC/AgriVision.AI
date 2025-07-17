@@ -1,0 +1,120 @@
+2025-07-08 13:56:39,144 - __main__ - INFO - ================================================================================
+2025-07-08 13:56:39,144 - __main__ - INFO - Starting training for Apple with ten_way classification
+2025-07-08 13:56:39,144 - __main__ - INFO - Configuration: {'plant': 'Apple', 'data_dir': './Dataset', 'output_dir': 'multi_scheme_results/Apple/10-way/weighted', 'model_name': 'clip', 'scheme': '10-way', 'schemes': None, 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'weight_decay': 0.0001, 'num_workers': 4, 'train_ratio': 0.7, 'val_ratio': 0.15, 'random_seed': 42, 'weighting_strategy': 'inverse', 'beta': 0.9999, 'focal_loss': False, 'focal_gamma': 2.0, 'focal_alpha': 0.25, 'scheduler': 'cosine', 'patience': 5, 'early_stopping': False, 'early_stopping_patience': 10, 'progress_interval': 10, 'save_interval': 5, 'eval': False, 'checkpoint': None, 'pretrained': 1, 'percentage_matrix': False, 'compare': False, 'comparison_dir': None}
+2025-07-08 13:56:39,144 - __main__ - INFO - ================================================================================
+2025-07-08 13:56:39,146 - __main__ - INFO - Using device: cpu
+2025-07-08 13:56:39,147 - __main__ - INFO - Classification scheme: 10-way classification with health status and generation method
+2025-07-08 13:56:39,147 - __main__ - INFO - Number of classes: 10
+2025-07-08 13:56:39,148 - enhanced_training - INFO - Found 10 original classes for Apple
+2025-07-08 13:56:39,155 - enhanced_training - INFO -   Apple-Healthy-Diffusion-DS8: 1000 images
+2025-07-08 13:56:39,160 - enhanced_training - INFO -   Apple-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-08 13:56:39,194 - enhanced_training - INFO -   Apple-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-08 13:56:39,226 - enhanced_training - INFO -   Apple-Healthy-GAN-Stylegan3: 6000 images
+2025-07-08 13:56:39,232 - enhanced_training - INFO -   Apple-Healthy-Real-Real: 1000 images
+2025-07-08 13:56:39,238 - enhanced_training - INFO -   Apple-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-08 13:56:39,243 - enhanced_training - INFO -   Apple-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-08 13:56:39,264 - enhanced_training - INFO -   Apple-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-08 13:56:39,285 - enhanced_training - INFO -   Apple-Unhealthy-GAN-Stylegan3: 6000 images
+2025-07-08 13:56:39,290 - enhanced_training - INFO -   Apple-Unhealthy-Real-Real: 1000 images
+2025-07-08 13:56:39,290 - enhanced_training - INFO - Total samples: 30000
+2025-07-08 13:56:39,290 - enhanced_training - INFO - Applying ten_way classification scheme
+2025-07-08 13:56:39,290 - enhanced_training - INFO - Scheme: 10-way classification with health status and generation method
+2025-07-08 13:56:39,317 - classification_schemes - INFO - 10-way classification mapping: {'Healthy-Diffusion': 0, 'Healthy-GAN': 1, 'Healthy-Real': 2, 'Unhealthy-Diffusion': 3, 'Unhealthy-GAN': 4, 'Unhealthy-Real': 5}
+2025-07-08 13:56:39,318 - enhanced_training - INFO - Class distribution after scheme application:
+2025-07-08 13:56:39,318 - enhanced_training - INFO -   Healthy-Diffusion (idx=0): 1000 samples
+2025-07-08 13:56:39,318 - enhanced_training - INFO -   Healthy-GAN (idx=1): 0 samples
+2025-07-08 13:56:39,318 - enhanced_training - INFO -   Healthy-Real (idx=2): 12000 samples
+2025-07-08 13:56:39,318 - enhanced_training - INFO -   Unhealthy-Diffusion (idx=3): 1000 samples
+2025-07-08 13:56:39,318 - enhanced_training - INFO -   Unhealthy-GAN (idx=4): 0 samples
+2025-07-08 13:56:39,318 - enhanced_training - INFO -   Unhealthy-Real (idx=5): 12000 samples
+2025-07-08 13:56:39,319 - weighted_loss_utils - INFO - Class distribution analysis:
+2025-07-08 13:56:39,319 - weighted_loss_utils - INFO -   Class 0: 1000 samples (3.33%)
+2025-07-08 13:56:39,319 - weighted_loss_utils - INFO -   Class 1: 0 samples (0.00%)
+2025-07-08 13:56:39,319 - weighted_loss_utils - INFO -   Class 2: 12000 samples (40.00%)
+2025-07-08 13:56:39,320 - weighted_loss_utils - INFO -   Class 3: 1000 samples (3.33%)
+2025-07-08 13:56:39,320 - weighted_loss_utils - INFO -   Class 4: 0 samples (0.00%)
+2025-07-08 13:56:39,320 - weighted_loss_utils - INFO -   Class 5: 12000 samples (40.00%)
+2025-07-08 13:56:39,320 - weighted_loss_utils - INFO - Class imbalance ratio: 12.00
+2025-07-08 13:56:39,320 - weighted_loss_utils - INFO - Loss function recommendations: Severe class imbalance detected. Using effective number weighting with weighted sampling.
+2025-07-08 13:56:39,320 - enhanced_training - INFO - Dataset split: train=21000, val=4500, test=4500
+2025-07-08 13:56:39,321 - enhanced_training - INFO - Found 10 original classes for Apple
+2025-07-08 13:56:39,325 - enhanced_training - INFO -   Apple-Healthy-Diffusion-DS8: 1000 images
+2025-07-08 13:56:39,329 - enhanced_training - INFO -   Apple-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-08 13:56:39,353 - enhanced_training - INFO -   Apple-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-08 13:56:39,377 - enhanced_training - INFO -   Apple-Healthy-GAN-Stylegan3: 6000 images
+2025-07-08 13:56:39,382 - enhanced_training - INFO -   Apple-Healthy-Real-Real: 1000 images
+2025-07-08 13:56:39,387 - enhanced_training - INFO -   Apple-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-08 13:56:39,391 - enhanced_training - INFO -   Apple-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-08 13:56:39,417 - enhanced_training - INFO -   Apple-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-08 13:56:39,441 - enhanced_training - INFO -   Apple-Unhealthy-GAN-Stylegan3: 6000 images
+2025-07-08 13:56:39,445 - enhanced_training - INFO -   Apple-Unhealthy-Real-Real: 1000 images
+2025-07-08 13:56:39,445 - enhanced_training - INFO - Total samples: 30000
+2025-07-08 13:56:39,445 - enhanced_training - INFO - Applying ten_way classification scheme
+2025-07-08 13:56:39,445 - enhanced_training - INFO - Scheme: 10-way classification with health status and generation method
+2025-07-08 13:56:39,472 - classification_schemes - INFO - 10-way classification mapping: {'Healthy-Diffusion': 0, 'Healthy-GAN': 1, 'Healthy-Real': 2, 'Unhealthy-Diffusion': 3, 'Unhealthy-GAN': 4, 'Unhealthy-Real': 5}
+2025-07-08 13:56:39,472 - enhanced_training - INFO - Class distribution after scheme application:
+2025-07-08 13:56:39,472 - enhanced_training - INFO -   Healthy-Diffusion (idx=0): 1000 samples
+2025-07-08 13:56:39,473 - enhanced_training - INFO -   Healthy-GAN (idx=1): 0 samples
+2025-07-08 13:56:39,473 - enhanced_training - INFO -   Healthy-Real (idx=2): 12000 samples
+2025-07-08 13:56:39,473 - enhanced_training - INFO -   Unhealthy-Diffusion (idx=3): 1000 samples
+2025-07-08 13:56:39,473 - enhanced_training - INFO -   Unhealthy-GAN (idx=4): 0 samples
+2025-07-08 13:56:39,473 - enhanced_training - INFO -   Unhealthy-Real (idx=5): 12000 samples
+2025-07-08 13:56:39,473 - enhanced_training - INFO - Found 10 original classes for Apple
+2025-07-08 13:56:39,478 - enhanced_training - INFO -   Apple-Healthy-Diffusion-DS8: 1000 images
+2025-07-08 13:56:39,483 - enhanced_training - INFO -   Apple-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-08 13:56:39,507 - enhanced_training - INFO -   Apple-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-08 13:56:39,531 - enhanced_training - INFO -   Apple-Healthy-GAN-Stylegan3: 6000 images
+2025-07-08 13:56:39,535 - enhanced_training - INFO -   Apple-Healthy-Real-Real: 1000 images
+2025-07-08 13:56:39,540 - enhanced_training - INFO -   Apple-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-08 13:56:39,544 - enhanced_training - INFO -   Apple-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-08 13:56:39,571 - enhanced_training - INFO -   Apple-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-08 13:56:39,598 - enhanced_training - INFO -   Apple-Unhealthy-GAN-Stylegan3: 6000 images
+2025-07-08 13:56:39,604 - enhanced_training - INFO -   Apple-Unhealthy-Real-Real: 1000 images
+2025-07-08 13:56:39,604 - enhanced_training - INFO - Total samples: 30000
+2025-07-08 13:56:39,604 - enhanced_training - INFO - Applying ten_way classification scheme
+2025-07-08 13:56:39,604 - enhanced_training - INFO - Scheme: 10-way classification with health status and generation method
+2025-07-08 13:56:39,630 - classification_schemes - INFO - 10-way classification mapping: {'Healthy-Diffusion': 0, 'Healthy-GAN': 1, 'Healthy-Real': 2, 'Unhealthy-Diffusion': 3, 'Unhealthy-GAN': 4, 'Unhealthy-Real': 5}
+2025-07-08 13:56:39,631 - enhanced_training - INFO - Class distribution after scheme application:
+2025-07-08 13:56:39,631 - enhanced_training - INFO -   Healthy-Diffusion (idx=0): 1000 samples
+2025-07-08 13:56:39,631 - enhanced_training - INFO -   Healthy-GAN (idx=1): 0 samples
+2025-07-08 13:56:39,631 - enhanced_training - INFO -   Healthy-Real (idx=2): 12000 samples
+2025-07-08 13:56:39,631 - enhanced_training - INFO -   Unhealthy-Diffusion (idx=3): 1000 samples
+2025-07-08 13:56:39,631 - enhanced_training - INFO -   Unhealthy-GAN (idx=4): 0 samples
+2025-07-08 13:56:39,631 - enhanced_training - INFO -   Unhealthy-Real (idx=5): 12000 samples
+2025-07-08 13:56:39,632 - __main__ - INFO - Dataset statistics: {'num_classes': 6, 'class_names': ['Healthy-Diffusion', 'Healthy-GAN', 'Healthy-Real', 'Unhealthy-Diffusion', 'Unhealthy-GAN', 'Unhealthy-Real'], 'classification_scheme': 'ten_way', 'total_samples': 30000, 'class_distribution': {6: 1000, 7: 1000, 2: 12000, 0: 1000, 8: 1000, 9: 1000, 5: 12000, 3: 1000}, 'distribution_analysis': {'counts': {0: 1000, 1: 0, 2: 12000, 3: 1000, 4: 0, 5: 12000}, 'percentages': {0: 3.3333333333333335, 1: 0.0, 2: 40.0, 3: 3.3333333333333335, 4: 0.0, 5: 40.0}, 'imbalance_ratio': 12.0}, 'recommended_loss_params': {'imbalance_ratio': 12.0, 'dataset_size': 30000, 'num_classes': 8, 'strategy': 'effective_number', 'use_weighted_sampler': True, 'beta': 0.999, 'note': 'Severe class imbalance detected. Using effective number weighting with weighted sampling.'}}
+2025-07-08 13:56:39,632 - __main__ - INFO - Actual number of classes: 6
+2025-07-08 13:56:39,632 - __main__ - INFO - Class names: ['Healthy-Diffusion', 'Healthy-GAN', 'Healthy-Real', 'Unhealthy-Diffusion', 'Unhealthy-GAN', 'Unhealthy-Real']
+2025-07-08 13:56:41,196 - __main__ - INFO - Using class weights: [1.2972972393035889, 1.2972972393035889, 0.10810811072587967, 1.2972972393035889, 1.2972972393035889, 1.2972972393035889, 0.10810811072587967, 1.2972972393035889]
+2025-07-08 13:56:41,197 - __main__ - INFO - Using Cross Entropy Loss
+2025-07-08 13:56:41,197 - __main__ - INFO - Starting model training...
+2025-07-08 13:56:41,197 - training - INFO - Starting training for 50 epochs
+2025-07-08 13:56:41,197 - training - INFO - 
+Epoch 1/50
+2025-07-08 13:56:41,197 - training - INFO - --------------------------------------------------
+2025-07-08 13:57:01,157 - __main__ - ERROR - Failed to train ten_way scheme: weight tensor should be defined either for all 6 classes or no classes but got weight tensor of shape: [8]
+Traceback (most recent call last):
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_main.py", line 449, in main
+    results = train_single_scheme(args, scheme, output_base_dir)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/enhanced_main.py", line 351, in train_single_scheme
+    metrics = trainer.train(
+              ^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/training.py", line 414, in train
+    train_loss, train_acc = self.train_epoch(epoch)
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/Documents/GitHub/CV_In_Ag/src/training.py", line 340, in train_epoch
+    loss = self.criterion(outputs, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/miniforge3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/miniforge3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/miniforge3/lib/python3.12/site-packages/torch/nn/modules/loss.py", line 1297, in forward
+    return F.cross_entropy(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/mehmetyardimci/miniforge3/lib/python3.12/site-packages/torch/nn/functional.py", line 3494, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: weight tensor should be defined either for all 6 classes or no classes but got weight tensor of shape: [8]

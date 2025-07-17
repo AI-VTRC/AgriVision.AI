@@ -1,0 +1,27 @@
+Evaluation Date: 2025-07-16 02:56:28
+Model Evaluation Results
+================================================================================
+
+Overall Metrics:
+  Loss: 0.6317
+  Accuracy: 0.7571 (75.71%)
+  Precision: 0.8638
+  Recall: 0.7571
+  F1-Score: 0.7843
+
+Classification Report:
+                                  precision    recall  f1-score   support
+
+     Maize-Healthy-Diffusion-DS8     0.4110    0.6736    0.5105       144
+  Maize-Healthy-Diffusion-SPx2Px     0.9037    0.8414    0.8714       145
+     Maize-Healthy-GAN-StyleGAN2     0.9582    0.5581    0.7054       903
+     Maize-Healthy-GAN-Stylegan3     0.1691    0.8169    0.2802        71
+         Maize-Healthy-Real-Real     0.5247    0.5862    0.5537       145
+   Maize-Unhealthy-Diffusion-DS8     0.6000    0.8542    0.7049       144
+Maize-Unhealthy-Diffusion-SPx2Px     0.8424    0.9329    0.8854       149
+   Maize-Unhealthy-GAN-StyleGAN2     1.0000    0.9372    0.9676       923
+       Maize-Unhealthy-Real-Real     0.7836    0.7143    0.7473       147
+
+                        accuracy                         0.7571      2771
+                       macro avg     0.6881    0.7683    0.6918      2771
+                    weighted avg     0.8638    0.7571    0.7843      2771

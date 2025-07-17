@@ -1,0 +1,217 @@
+{
+    "timestamp": "2025-07-09T20:15:23.086920",
+    "overall_metrics": {
+        "loss": 0.04116168386192046,
+        "accuracy": 0.9935555555555555,
+        "precision": 0.9938138515316526,
+        "recall": 0.9935555555555555,
+        "f1_score": 0.9935582848992134,
+        "num_samples": 4500
+    },
+    "per_class_metrics": [
+        {
+            "class": "Apple-Healthy-Diffusion-DS8",
+            "precision": 0.9726027397260274,
+            "recall": 0.9594594594594594,
+            "f1_score": 0.9659863945578231,
+            "support": 148
+        },
+        {
+            "class": "Apple-Healthy-Diffusion-SPx2Px",
+            "precision": 0.9146341463414634,
+            "recall": 1.0,
+            "f1_score": 0.9554140127388535,
+            "support": 150
+        },
+        {
+            "class": "Apple-Healthy-GAN-StyleGAN2",
+            "precision": 0.9957401490947817,
+            "recall": 1.0,
+            "f1_score": 0.9978655282817502,
+            "support": 935
+        },
+        {
+            "class": "Apple-Healthy-GAN-Stylegan3",
+            "precision": 0.9988674971687429,
+            "recall": 0.997737556561086,
+            "f1_score": 0.99830220713073,
+            "support": 884
+        },
+        {
+            "class": "Apple-Healthy-Real-Real",
+            "precision": 0.9939024390243902,
+            "recall": 1.0,
+            "f1_score": 0.9969418960244648,
+            "support": 163
+        },
+        {
+            "class": "Apple-Unhealthy-Diffusion-DS8",
+            "precision": 0.9735099337748344,
+            "recall": 0.9735099337748344,
+            "f1_score": 0.9735099337748344,
+            "support": 151
+        },
+        {
+            "class": "Apple-Unhealthy-Diffusion-SPx2Px",
+            "precision": 1.0,
+            "recall": 0.9207317073170732,
+            "f1_score": 0.9587301587301588,
+            "support": 164
+        },
+        {
+            "class": "Apple-Unhealthy-GAN-StyleGAN2",
+            "precision": 1.0,
+            "recall": 0.9966703662597114,
+            "f1_score": 0.9983324068927182,
+            "support": 901
+        },
+        {
+            "class": "Apple-Unhealthy-GAN-Stylegan3",
+            "precision": 0.9988399071925754,
+            "recall": 0.9988399071925754,
+            "f1_score": 0.9988399071925754,
+            "support": 862
+        },
+        {
+            "class": "Apple-Unhealthy-Real-Real",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "support": 142
+        }
+    ],
+    "confusion_matrix": [
+        [
+            142,
+            1,
+            0,
+            0,
+            1,
+            4,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            150,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            935,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            2,
+            882,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            163,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            4,
+            0,
+            0,
+            0,
+            0,
+            147,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            13,
+            0,
+            0,
+            0,
+            0,
+            151,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            898,
+            1,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            861,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            142
+        ]
+    ],
+    "class_names": [
+        "Apple-Healthy-Diffusion-DS8",
+        "Apple-Healthy-Diffusion-SPx2Px",
+        "Apple-Healthy-GAN-StyleGAN2",
+        "Apple-Healthy-GAN-Stylegan3",
+        "Apple-Healthy-Real-Real",
+        "Apple-Unhealthy-Diffusion-DS8",
+        "Apple-Unhealthy-Diffusion-SPx2Px",
+        "Apple-Unhealthy-GAN-StyleGAN2",
+        "Apple-Unhealthy-GAN-Stylegan3",
+        "Apple-Unhealthy-Real-Real"
+    ]
+}

@@ -73,9 +73,12 @@ def evaluate_model(
             all_probs.extend(probs.cpu().numpy())
             running_loss += loss.item()
             
-            # Clear cache periodically for CUDA memory optimization
-            if torch.cuda.is_available() and batch_idx % 50 == 0:
-                torch.cuda.empty_cache()
+            # Clear cache periodically for GPU memory optimization (CUDA or MPS)
+            if batch_idx % 50 == 0:
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                elif torch.backends.mps.is_available():
+                    torch.mps.empty_cache()
             
             # Log progress
             if batch_idx % 10 == 0:

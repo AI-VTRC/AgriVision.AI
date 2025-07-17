@@ -1,0 +1,32 @@
+Enhanced Classification Report
+Date: 2025-07-08 00:47:18
+Classification Scheme: binary
+================================================================================
+
+              precision    recall  f1-score   support
+
+     Healthy     0.9856    0.9895    0.9875      2280
+   Unhealthy     0.9891    0.9851    0.9871      2220
+
+    accuracy                         0.9873      4500
+   macro avg     0.9874    0.9873    0.9873      4500
+weighted avg     0.9873    0.9873    0.9873      4500
+
+
+================================================================================
+Additional Metrics:
+  Cohen's Kappa: 0.9747
+
+Per-Class Performance (Percentage):
+
+  Healthy:
+    Precision: 98.56%
+    Recall: 98.95%
+    F1-Score: 98.75%
+    Support: 2280
+
+  Unhealthy:
+    Precision: 98.91%
+    Recall: 98.51%
+    F1-Score: 98.71%
+    Support: 2220

@@ -1,0 +1,36 @@
+================================================================================
+Model Evaluation Summary
+Date: 2025-07-11 02:40:43
+================================================================================
+
+Test Set Information:
+  Total samples: 2771
+  Number of classes: 3
+  Classes: Real, GAN, Diffusion
+
+Overall Performance:
+  Accuracy: 85.49%
+  Loss: 0.4255
+  Precision (weighted): 0.8875
+  Recall (weighted): 0.8549
+  F1-Score (weighted): 0.8645
+
+Per-Class Performance:
+
+  Real:
+    Precision: 0.5232
+    Recall: 0.8870
+    F1-Score: 0.6582
+    Support: 292
+
+  GAN:
+    Precision: 0.9860
+    Recall: 0.8888
+    F1-Score: 0.9348
+    Support: 1897
+
+  Diffusion:
+    Precision: 0.7491
+    Recall: 0.7285
+    F1-Score: 0.7387
+    Support: 582

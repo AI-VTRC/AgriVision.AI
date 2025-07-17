@@ -1,0 +1,28 @@
+Evaluation Date: 2025-07-11 11:09:53
+Model Evaluation Results
+================================================================================
+
+Overall Metrics:
+  Loss: 0.0368
+  Accuracy: 0.9936 (99.36%)
+  Precision: 0.9937
+  Recall: 0.9936
+  F1-Score: 0.9936
+
+Classification Report:
+                                   precision    recall  f1-score   support
+
+     Tomato-Healthy-Diffusion-DS8     1.0000    1.0000    1.0000       154
+  Tomato-Healthy-Diffusion-SPx2Px     1.0000    0.9747    0.9872       158
+     Tomato-Healthy-GAN-StyleGAN2     1.0000    1.0000    1.0000       897
+     Tomato-Healthy-GAN-Stylegan3     0.9960    1.0000    0.9980       496
+         Tomato-Healthy-Real-Real     0.9929    1.0000    0.9964       140
+      Tomato-Unhealthy--Real-Real     0.9679    0.9869    0.9773       153
+   Tomato-Unhealthy-Diffusion-DS8     0.9930    0.9660    0.9793       147
+Tomato-Unhealthy-Diffusion-SPx2Px     0.9605    0.9865    0.9733       148
+   Tomato-Unhealthy-GAN-StyleGAN2     0.9890    0.9989    0.9939       904
+   Tomato-Unhealthy-GAN-Stylegan3     0.9988    0.9863    0.9925       873
+
+                         accuracy                         0.9936      4070
+                        macro avg     0.9898    0.9899    0.9898      4070
+                     weighted avg     0.9937    0.9936    0.9936      4070

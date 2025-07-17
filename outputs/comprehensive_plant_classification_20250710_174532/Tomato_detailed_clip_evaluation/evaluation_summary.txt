@@ -1,0 +1,78 @@
+================================================================================
+Model Evaluation Summary
+Date: 2025-07-11 12:11:48
+================================================================================
+
+Test Set Information:
+  Total samples: 4070
+  Number of classes: 10
+  Classes: Tomato-Healthy-Diffusion-DS8, Tomato-Healthy-Diffusion-SPx2Px, Tomato-Healthy-GAN-StyleGAN2, Tomato-Healthy-GAN-Stylegan3, Tomato-Healthy-Real-Real, Tomato-Unhealthy--Real-Real, Tomato-Unhealthy-Diffusion-DS8, Tomato-Unhealthy-Diffusion-SPx2Px, Tomato-Unhealthy-GAN-StyleGAN2, Tomato-Unhealthy-GAN-Stylegan3
+
+Overall Performance:
+  Accuracy: 83.81%
+  Loss: 0.3967
+  Precision (weighted): 0.8509
+  Recall (weighted): 0.8381
+  F1-Score (weighted): 0.8399
+
+Per-Class Performance:
+
+  Tomato-Healthy-Diffusion-DS8:
+    Precision: 0.9868
+    Recall: 0.9675
+    F1-Score: 0.9770
+    Support: 154
+
+  Tomato-Healthy-Diffusion-SPx2Px:
+    Precision: 0.9562
+    Recall: 0.8291
+    F1-Score: 0.8881
+    Support: 158
+
+  Tomato-Healthy-GAN-StyleGAN2:
+    Precision: 0.8947
+    Recall: 0.8049
+    F1-Score: 0.8474
+    Support: 897
+
+  Tomato-Healthy-GAN-Stylegan3:
+    Precision: 0.8178
+    Recall: 0.8327
+    F1-Score: 0.8252
+    Support: 496
+
+  Tomato-Healthy-Real-Real:
+    Precision: 0.5625
+    Recall: 0.9643
+    F1-Score: 0.7105
+    Support: 140
+
+  Tomato-Unhealthy--Real-Real:
+    Precision: 0.6571
+    Recall: 0.9020
+    F1-Score: 0.7603
+    Support: 153
+
+  Tomato-Unhealthy-Diffusion-DS8:
+    Precision: 0.9160
+    Recall: 0.8163
+    F1-Score: 0.8633
+    Support: 147
+
+  Tomato-Unhealthy-Diffusion-SPx2Px:
+    Precision: 0.8421
+    Recall: 0.6486
+    F1-Score: 0.7328
+    Support: 148
+
+  Tomato-Unhealthy-GAN-StyleGAN2:
+    Precision: 0.8797
+    Recall: 0.8009
+    F1-Score: 0.8384
+    Support: 904
+
+  Tomato-Unhealthy-GAN-Stylegan3:
+    Precision: 0.8225
+    Recall: 0.8969
+    F1-Score: 0.8581
+    Support: 873

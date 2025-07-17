@@ -1,0 +1,4 @@
+,,Test Accuracy,Test Accuracy,Test Accuracy,Test F1-Score,Test F1-Score,Test F1-Score,Best Val Accuracy,Best Val Accuracy,Best Val Accuracy
+,,mean,std,max,mean,std,max,mean,std,max
+Plant,Classification,,,,,,,,,
+Tomato,2-way,0.9984,0.0012,0.9993,0.9984,0.0012,0.9993,0.998,0.0007,0.9985

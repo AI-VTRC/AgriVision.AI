@@ -1,0 +1,217 @@
+{
+    "timestamp": "2025-07-11T11:09:54.342682",
+    "overall_metrics": {
+        "loss": 0.036819178119884555,
+        "accuracy": 0.9936117936117936,
+        "precision": 0.9936921415193883,
+        "recall": 0.9936117936117936,
+        "f1_score": 0.993614279445911,
+        "num_samples": 4070
+    },
+    "per_class_metrics": [
+        {
+            "class": "Tomato-Healthy-Diffusion-DS8",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "support": 154
+        },
+        {
+            "class": "Tomato-Healthy-Diffusion-SPx2Px",
+            "precision": 1.0,
+            "recall": 0.9746835443037974,
+            "f1_score": 0.9871794871794872,
+            "support": 158
+        },
+        {
+            "class": "Tomato-Healthy-GAN-StyleGAN2",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "support": 897
+        },
+        {
+            "class": "Tomato-Healthy-GAN-Stylegan3",
+            "precision": 0.9959839357429718,
+            "recall": 1.0,
+            "f1_score": 0.9979879275653923,
+            "support": 496
+        },
+        {
+            "class": "Tomato-Healthy-Real-Real",
+            "precision": 0.9929078014184397,
+            "recall": 1.0,
+            "f1_score": 0.99644128113879,
+            "support": 140
+        },
+        {
+            "class": "Tomato-Unhealthy--Real-Real",
+            "precision": 0.967948717948718,
+            "recall": 0.9869281045751634,
+            "f1_score": 0.9773462783171522,
+            "support": 153
+        },
+        {
+            "class": "Tomato-Unhealthy-Diffusion-DS8",
+            "precision": 0.993006993006993,
+            "recall": 0.9659863945578231,
+            "f1_score": 0.9793103448275862,
+            "support": 147
+        },
+        {
+            "class": "Tomato-Unhealthy-Diffusion-SPx2Px",
+            "precision": 0.9605263157894737,
+            "recall": 0.9864864864864865,
+            "f1_score": 0.9733333333333334,
+            "support": 148
+        },
+        {
+            "class": "Tomato-Unhealthy-GAN-StyleGAN2",
+            "precision": 0.9890470974808324,
+            "recall": 0.9988938053097345,
+            "f1_score": 0.9939460649422125,
+            "support": 904
+        },
+        {
+            "class": "Tomato-Unhealthy-GAN-Stylegan3",
+            "precision": 0.9988399071925754,
+            "recall": 0.9862542955326461,
+            "f1_score": 0.992507204610951,
+            "support": 873
+        }
+    ],
+    "confusion_matrix": [
+        [
+            154,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            154,
+            0,
+            0,
+            1,
+            0,
+            0,
+            3,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            897,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            496,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            140,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            151,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            142,
+            2,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            146,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            903,
+            1
+        ],
+        [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            10,
+            861
+        ]
+    ],
+    "class_names": [
+        "Tomato-Healthy-Diffusion-DS8",
+        "Tomato-Healthy-Diffusion-SPx2Px",
+        "Tomato-Healthy-GAN-StyleGAN2",
+        "Tomato-Healthy-GAN-Stylegan3",
+        "Tomato-Healthy-Real-Real",
+        "Tomato-Unhealthy--Real-Real",
+        "Tomato-Unhealthy-Diffusion-DS8",
+        "Tomato-Unhealthy-Diffusion-SPx2Px",
+        "Tomato-Unhealthy-GAN-StyleGAN2",
+        "Tomato-Unhealthy-GAN-Stylegan3"
+    ]
+}

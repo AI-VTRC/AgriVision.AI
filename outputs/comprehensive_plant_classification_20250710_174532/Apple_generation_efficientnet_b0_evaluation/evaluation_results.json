@@ -1,0 +1,56 @@
+{
+    "timestamp": "2025-07-09T23:20:27.021288",
+    "overall_metrics": {
+        "loss": 0.00012527177106856998,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "num_samples": 4500
+    },
+    "per_class_metrics": [
+        {
+            "class": "Real",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "support": 305
+        },
+        {
+            "class": "GAN",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "support": 3582
+        },
+        {
+            "class": "Diffusion",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "support": 613
+        }
+    ],
+    "confusion_matrix": [
+        [
+            305,
+            0,
+            0
+        ],
+        [
+            0,
+            3582,
+            0
+        ],
+        [
+            0,
+            0,
+            613
+        ]
+    ],
+    "class_names": [
+        "Real",
+        "GAN",
+        "Diffusion"
+    ]
+}

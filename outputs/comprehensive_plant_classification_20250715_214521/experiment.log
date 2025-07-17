@@ -1,0 +1,323 @@
+2025-07-15 21:45:21,372 - __main__ - INFO - ================================================================================
+2025-07-15 21:45:21,372 - __main__ - INFO - Starting Comprehensive Plant Disease Classification Experiment
+2025-07-15 21:45:21,372 - __main__ - INFO - Configuration: {'data_dir': './datasets', 'output_dir': './outputs', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'weight_decay': 0.0001, 'num_workers': 4, 'train_ratio': 0.7, 'val_ratio': 0.15, 'random_seed': 42, 'resume_from': None}
+2025-07-15 21:45:21,372 - __main__ - INFO - ================================================================================
+2025-07-15 21:45:21,397 - __main__ - INFO - Using device: mps (MPS (Apple Silicon))
+2025-07-15 21:45:21,397 - __main__ - INFO - MPS (Metal Performance Shaders) acceleration enabled for Apple Silicon
+2025-07-15 21:45:21,397 - __main__ - INFO - Optimizations:
+2025-07-15 21:45:21,397 - __main__ - INFO -   - GPU acceleration via Metal
+2025-07-15 21:45:21,397 - __main__ - INFO -   - Optimized for Apple M-series chips
+2025-07-15 21:45:21,397 - __main__ - INFO - 
+============================================================
+2025-07-15 21:45:21,397 - __main__ - INFO - Experiment 1/4
+2025-07-15 21:45:21,397 - __main__ - INFO - Plant: Maize, Classification: 10-way (detailed), Model: efficientnet_b0
+2025-07-15 21:45:21,397 - __main__ - INFO - ============================================================
+2025-07-15 21:45:21,397 - __main__ - INFO - Training efficientnet_b0 for Maize - detailed classification
+2025-07-15 21:45:21,400 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:21,400 - training - INFO - Root directory exists: True
+2025-07-15 21:45:21,400 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:21,400 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:21,400 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:21,400 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:21,400 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:21,406 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:21,411 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:21,431 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:21,433 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:21,436 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:21,440 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:21,443 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:21,463 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:21,463 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:21,466 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:21,467 - training - INFO - Total samples: 18465
+2025-07-15 21:45:21,467 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:21,467 - training - INFO - Dataset split: train=12925, val=2769, test=2771
+2025-07-15 21:45:21,485 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:21,486 - training - INFO - Root directory exists: True
+2025-07-15 21:45:21,486 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:21,486 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:21,486 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:21,486 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:21,486 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:21,490 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:21,493 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:21,511 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:21,512 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:21,516 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:21,519 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:21,522 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:21,540 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:21,540 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:21,543 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:21,543 - training - INFO - Total samples: 18465
+2025-07-15 21:45:21,543 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:21,543 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:21,543 - training - INFO - Root directory exists: True
+2025-07-15 21:45:21,544 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:21,544 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:21,544 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:21,544 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:21,544 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:21,547 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:21,550 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:21,568 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:21,570 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:21,573 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:21,576 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:21,580 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:21,597 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:21,597 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:21,600 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:21,600 - training - INFO - Total samples: 18465
+2025-07-15 21:45:21,600 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:21,644 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/efficientnet_b0.ra_in1k)
+2025-07-15 21:45:21,647 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-07-15 21:45:22,042 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /timm/efficientnet_b0.ra_in1k/resolve/main/model.safetensors HTTP/1.1" 401 0
+2025-07-15 21:45:22,323 - training - INFO - Starting training for 50 epochs
+2025-07-15 21:45:22,323 - training - INFO - 
+Epoch 1/50
+2025-07-15 21:45:22,324 - training - INFO - --------------------------------------------------
+2025-07-15 21:45:34,829 - __main__ - ERROR - X Failed: Maize - 10-way - efficientnet_b0
+2025-07-15 21:45:34,829 - __main__ - ERROR -   Error: weight tensor should be defined either for all 10 classes or no classes but got weight tensor of shape: [9]
+2025-07-15 21:45:34,831 - __main__ - INFO - 
+============================================================
+2025-07-15 21:45:34,831 - __main__ - INFO - Experiment 2/4
+2025-07-15 21:45:34,831 - __main__ - INFO - Plant: Maize, Classification: 10-way (detailed), Model: resnet50
+2025-07-15 21:45:34,831 - __main__ - INFO - ============================================================
+2025-07-15 21:45:34,831 - __main__ - INFO - Training resnet50 for Maize - detailed classification
+2025-07-15 21:45:34,831 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:34,831 - training - INFO - Root directory exists: True
+2025-07-15 21:45:34,831 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:34,832 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:34,832 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:34,832 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:34,832 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:34,835 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:34,839 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:34,860 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:34,861 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:34,865 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:34,868 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:34,872 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:34,890 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:34,890 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:34,894 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:34,894 - training - INFO - Total samples: 18465
+2025-07-15 21:45:34,894 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:34,894 - training - INFO - Dataset split: train=12925, val=2769, test=2771
+2025-07-15 21:45:34,894 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:34,894 - training - INFO - Root directory exists: True
+2025-07-15 21:45:34,894 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:34,894 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:34,894 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:34,894 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:34,895 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:34,898 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:34,901 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:34,920 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:34,921 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:34,925 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:34,928 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:34,932 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:34,950 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:34,950 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:34,953 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:34,953 - training - INFO - Total samples: 18465
+2025-07-15 21:45:34,953 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:34,954 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:34,954 - training - INFO - Root directory exists: True
+2025-07-15 21:45:34,954 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:34,954 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:34,954 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:34,954 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:34,954 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:34,957 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:34,961 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:34,979 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:34,981 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:34,984 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:34,988 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:34,991 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:35,009 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:35,009 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:35,013 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:35,013 - training - INFO - Total samples: 18465
+2025-07-15 21:45:35,013 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:35,218 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/resnet50.a1_in1k)
+2025-07-15 21:45:35,259 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /timm/resnet50.a1_in1k/resolve/main/model.safetensors HTTP/1.1" 401 0
+2025-07-15 21:45:35,626 - training - INFO - Starting training for 50 epochs
+2025-07-15 21:45:35,626 - training - INFO - 
+Epoch 1/50
+2025-07-15 21:45:35,626 - training - INFO - --------------------------------------------------
+2025-07-15 21:45:45,494 - __main__ - ERROR - X Failed: Maize - 10-way - resnet50
+2025-07-15 21:45:45,495 - __main__ - ERROR -   Error: weight tensor should be defined either for all 10 classes or no classes but got weight tensor of shape: [9]
+2025-07-15 21:45:45,495 - __main__ - INFO - 
+============================================================
+2025-07-15 21:45:45,495 - __main__ - INFO - Experiment 3/4
+2025-07-15 21:45:45,495 - __main__ - INFO - Plant: Maize, Classification: 10-way (detailed), Model: clip
+2025-07-15 21:45:45,495 - __main__ - INFO - ============================================================
+2025-07-15 21:45:45,495 - __main__ - INFO - Training clip for Maize - detailed classification
+2025-07-15 21:45:45,496 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:45,496 - training - INFO - Root directory exists: True
+2025-07-15 21:45:45,497 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:45,497 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:45,497 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:45,497 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:45,497 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:45,500 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:45,503 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:45,522 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:45,524 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:45,527 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:45,531 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:45,534 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:45,560 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:45,560 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:45,563 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:45,563 - training - INFO - Total samples: 18465
+2025-07-15 21:45:45,563 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:45,564 - training - INFO - Dataset split: train=12925, val=2769, test=2771
+2025-07-15 21:45:45,564 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:45,564 - training - INFO - Root directory exists: True
+2025-07-15 21:45:45,564 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:45,564 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:45,564 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:45,564 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:45,564 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:45,569 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:45,572 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:45,591 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:45,592 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:45,595 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:45,599 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:45,602 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:45,621 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:45,621 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:45,624 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:45,624 - training - INFO - Total samples: 18465
+2025-07-15 21:45:45,624 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:45,625 - training - INFO - Looking for plant: Maize in directory: ./datasets
+2025-07-15 21:45:45,625 - training - INFO - Root directory exists: True
+2025-07-15 21:45:45,625 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:45:45,625 - training - INFO - Found directories for Maize: ['Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:45,625 - training - INFO - Full paths: ['./datasets/Maize-Unhealthy-GAN-Stylegan3', './datasets/Maize-Unhealthy-GAN-StyleGAN2', './datasets/Maize-Healthy-Diffusion-DS8', './datasets/Maize-Unhealthy-Real-Real', './datasets/Maize-Healthy-Real-Real', './datasets/Maize-Unhealthy-Diffusion-SPx2Px', './datasets/Maize-Healthy-GAN-StyleGAN2', './datasets/Maize-Unhealthy-Diffusion-DS8', './datasets/Maize-Healthy-GAN-Stylegan3', './datasets/Maize-Healthy-Diffusion-SPx2Px']
+2025-07-15 21:45:45,625 - training - INFO - Found 10 classes for Maize
+2025-07-15 21:45:45,625 - training - INFO - Classes: ['Maize-Healthy-Diffusion-DS8', 'Maize-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Healthy-GAN-Stylegan3', 'Maize-Healthy-Real-Real', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-StyleGAN2', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-Real-Real']
+2025-07-15 21:45:45,628 - training - INFO -   Maize-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:45,632 - training - INFO -   Maize-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:45,650 - training - INFO -   Maize-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:45,651 - training - INFO -   Maize-Healthy-GAN-Stylegan3: 465 images
+2025-07-15 21:45:45,655 - training - INFO -   Maize-Healthy-Real-Real: 1000 images
+2025-07-15 21:45:45,658 - training - INFO -   Maize-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:45:45,662 - training - INFO -   Maize-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:45:45,679 - training - INFO -   Maize-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:45:45,680 - training - INFO -   Maize-Unhealthy-GAN-Stylegan3: 0 images
+2025-07-15 21:45:45,683 - training - INFO -   Maize-Unhealthy-Real-Real: 1000 images
+2025-07-15 21:45:45,683 - training - INFO - Total samples: 18465
+2025-07-15 21:45:45,683 - training - INFO - Using detailed classification (all subdirectories as separate classes)
+2025-07-15 21:45:47,462 - training - INFO - Starting training for 50 epochs
+2025-07-15 21:45:47,462 - training - INFO - 
+Epoch 1/50
+2025-07-15 21:45:47,462 - training - INFO - --------------------------------------------------
+2025-07-15 21:45:57,279 - __main__ - ERROR - X Failed: Maize - 10-way - clip
+2025-07-15 21:45:57,279 - __main__ - ERROR -   Error: weight tensor should be defined either for all 10 classes or no classes but got weight tensor of shape: [9]
+2025-07-15 21:46:12,285 - __main__ - INFO - 
+============================================================
+2025-07-15 21:46:12,285 - __main__ - INFO - Experiment 4/4
+2025-07-15 21:46:12,285 - __main__ - INFO - Plant: Tomato, Classification: 2-way (binary), Model: clip
+2025-07-15 21:46:12,285 - __main__ - INFO - ============================================================
+2025-07-15 21:46:12,285 - __main__ - INFO - Training clip for Tomato - binary classification
+2025-07-15 21:46:12,286 - training - INFO - Looking for plant: Tomato in directory: ./datasets
+2025-07-15 21:46:12,286 - training - INFO - Root directory exists: True
+2025-07-15 21:46:12,286 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:46:12,286 - training - INFO - Found directories for Tomato: ['Tomato-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Tomato-Unhealthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Tomato-Unhealthy-Diffusion-DS8']
+2025-07-15 21:46:12,286 - training - INFO - Full paths: ['./datasets/Tomato-Healthy-Diffusion-SPx2Px', './datasets/Tomato-Unhealthy-Diffusion-SPx2Px', './datasets/Tomato-Unhealthy--Real-Real', './datasets/Tomato-Healthy-Real-Real', './datasets/Tomato-Healthy-Diffusion-DS8', './datasets/Tomato-Unhealthy-GAN-StyleGAN2', './datasets/Tomato-Unhealthy-GAN-Stylegan3', './datasets/Tomato-Healthy-GAN-Stylegan3', './datasets/Tomato-Healthy-GAN-StyleGAN2', './datasets/Tomato-Unhealthy-Diffusion-DS8']
+2025-07-15 21:46:12,286 - training - INFO - Found 10 classes for Tomato
+2025-07-15 21:46:12,286 - training - INFO - Classes: ['Tomato-Healthy-Diffusion-DS8', 'Tomato-Healthy-Diffusion-SPx2Px', 'Tomato-Healthy-GAN-StyleGAN2', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-Real-Real', 'Tomato-Unhealthy--Real-Real', 'Tomato-Unhealthy-Diffusion-DS8', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Tomato-Unhealthy-GAN-Stylegan3']
+2025-07-15 21:46:12,289 - training - INFO -   Tomato-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:46:12,293 - training - INFO -   Tomato-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:46:12,311 - training - INFO -   Tomato-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:46:12,320 - training - INFO -   Tomato-Healthy-GAN-Stylegan3: 3124 images
+2025-07-15 21:46:12,323 - training - INFO -   Tomato-Healthy-Real-Real: 1000 images
+2025-07-15 21:46:12,327 - training - INFO -   Tomato-Unhealthy--Real-Real: 1000 images
+2025-07-15 21:46:12,330 - training - INFO -   Tomato-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:46:12,333 - training - INFO -   Tomato-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:46:12,361 - training - INFO -   Tomato-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:46:12,379 - training - INFO -   Tomato-Unhealthy-GAN-Stylegan3: 6000 images
+2025-07-15 21:46:12,379 - training - INFO - Total samples: 27124
+2025-07-15 21:46:12,379 - training - INFO - Converting to binary classification (Healthy vs Unhealthy)
+2025-07-15 21:46:12,391 - training - INFO - Binary classification: Healthy=12124, Unhealthy=15000
+2025-07-15 21:46:12,391 - training - INFO - Dataset split: train=18986, val=4068, test=4070
+2025-07-15 21:46:12,391 - training - INFO - Looking for plant: Tomato in directory: ./datasets
+2025-07-15 21:46:12,391 - training - INFO - Root directory exists: True
+2025-07-15 21:46:12,391 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:46:12,391 - training - INFO - Found directories for Tomato: ['Tomato-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Tomato-Unhealthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Tomato-Unhealthy-Diffusion-DS8']
+2025-07-15 21:46:12,391 - training - INFO - Full paths: ['./datasets/Tomato-Healthy-Diffusion-SPx2Px', './datasets/Tomato-Unhealthy-Diffusion-SPx2Px', './datasets/Tomato-Unhealthy--Real-Real', './datasets/Tomato-Healthy-Real-Real', './datasets/Tomato-Healthy-Diffusion-DS8', './datasets/Tomato-Unhealthy-GAN-StyleGAN2', './datasets/Tomato-Unhealthy-GAN-Stylegan3', './datasets/Tomato-Healthy-GAN-Stylegan3', './datasets/Tomato-Healthy-GAN-StyleGAN2', './datasets/Tomato-Unhealthy-Diffusion-DS8']
+2025-07-15 21:46:12,392 - training - INFO - Found 10 classes for Tomato
+2025-07-15 21:46:12,392 - training - INFO - Classes: ['Tomato-Healthy-Diffusion-DS8', 'Tomato-Healthy-Diffusion-SPx2Px', 'Tomato-Healthy-GAN-StyleGAN2', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-Real-Real', 'Tomato-Unhealthy--Real-Real', 'Tomato-Unhealthy-Diffusion-DS8', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Tomato-Unhealthy-GAN-Stylegan3']
+2025-07-15 21:46:12,395 - training - INFO -   Tomato-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:46:12,398 - training - INFO -   Tomato-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:46:12,416 - training - INFO -   Tomato-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:46:12,425 - training - INFO -   Tomato-Healthy-GAN-Stylegan3: 3124 images
+2025-07-15 21:46:12,429 - training - INFO -   Tomato-Healthy-Real-Real: 1000 images
+2025-07-15 21:46:12,432 - training - INFO -   Tomato-Unhealthy--Real-Real: 1000 images
+2025-07-15 21:46:12,435 - training - INFO -   Tomato-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:46:12,438 - training - INFO -   Tomato-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:46:12,456 - training - INFO -   Tomato-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:46:12,474 - training - INFO -   Tomato-Unhealthy-GAN-Stylegan3: 6000 images
+2025-07-15 21:46:12,474 - training - INFO - Total samples: 27124
+2025-07-15 21:46:12,474 - training - INFO - Converting to binary classification (Healthy vs Unhealthy)
+2025-07-15 21:46:12,486 - training - INFO - Binary classification: Healthy=12124, Unhealthy=15000
+2025-07-15 21:46:12,487 - training - INFO - Looking for plant: Tomato in directory: ./datasets
+2025-07-15 21:46:12,487 - training - INFO - Root directory exists: True
+2025-07-15 21:46:12,487 - training - INFO - All directories in root: ['Apple-Unhealthy-Diffusion-SPx2Px', 'Maize-Unhealthy-GAN-Stylegan3', 'Maize-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Diffusion-SPx2Px', 'Maize-Healthy-Diffusion-DS8', 'Apple-Unhealthy-GAN-Stylegan3', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Apple-Unhealthy-GAN-StyleGAN2', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Apple-Healthy-Diffusion-SPx2Px', 'Apple-Unhealthy-Real-Real', 'Maize-Unhealthy-Real-Real', 'Maize-Healthy-Real-Real', 'Tomato-Unhealthy-GAN-Stylegan3', 'Apple-Healthy-Diffusion-DS8', 'Maize-Unhealthy-Diffusion-SPx2Px', 'Apple-Healthy-Real-Real', 'Maize-Healthy-GAN-StyleGAN2', 'Maize-Unhealthy-Diffusion-DS8', 'Maize-Healthy-GAN-Stylegan3', 'Apple-Unhealthy-Diffusion-DS8', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Maize-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-DS8', 'Apple-Healthy-GAN-Stylegan3', 'Apple-Healthy-GAN-StyleGAN2']
+2025-07-15 21:46:12,487 - training - INFO - Found directories for Tomato: ['Tomato-Healthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy--Real-Real', 'Tomato-Healthy-Real-Real', 'Tomato-Healthy-Diffusion-DS8', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Tomato-Unhealthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-GAN-StyleGAN2', 'Tomato-Unhealthy-Diffusion-DS8']
+2025-07-15 21:46:12,487 - training - INFO - Full paths: ['./datasets/Tomato-Healthy-Diffusion-SPx2Px', './datasets/Tomato-Unhealthy-Diffusion-SPx2Px', './datasets/Tomato-Unhealthy--Real-Real', './datasets/Tomato-Healthy-Real-Real', './datasets/Tomato-Healthy-Diffusion-DS8', './datasets/Tomato-Unhealthy-GAN-StyleGAN2', './datasets/Tomato-Unhealthy-GAN-Stylegan3', './datasets/Tomato-Healthy-GAN-Stylegan3', './datasets/Tomato-Healthy-GAN-StyleGAN2', './datasets/Tomato-Unhealthy-Diffusion-DS8']
+2025-07-15 21:46:12,487 - training - INFO - Found 10 classes for Tomato
+2025-07-15 21:46:12,487 - training - INFO - Classes: ['Tomato-Healthy-Diffusion-DS8', 'Tomato-Healthy-Diffusion-SPx2Px', 'Tomato-Healthy-GAN-StyleGAN2', 'Tomato-Healthy-GAN-Stylegan3', 'Tomato-Healthy-Real-Real', 'Tomato-Unhealthy--Real-Real', 'Tomato-Unhealthy-Diffusion-DS8', 'Tomato-Unhealthy-Diffusion-SPx2Px', 'Tomato-Unhealthy-GAN-StyleGAN2', 'Tomato-Unhealthy-GAN-Stylegan3']
+2025-07-15 21:46:12,490 - training - INFO -   Tomato-Healthy-Diffusion-DS8: 1000 images
+2025-07-15 21:46:12,494 - training - INFO -   Tomato-Healthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:46:12,511 - training - INFO -   Tomato-Healthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:46:12,521 - training - INFO -   Tomato-Healthy-GAN-Stylegan3: 3124 images
+2025-07-15 21:46:12,524 - training - INFO -   Tomato-Healthy-Real-Real: 1000 images
+2025-07-15 21:46:12,527 - training - INFO -   Tomato-Unhealthy--Real-Real: 1000 images
+2025-07-15 21:46:12,531 - training - INFO -   Tomato-Unhealthy-Diffusion-DS8: 1000 images
+2025-07-15 21:46:12,534 - training - INFO -   Tomato-Unhealthy-Diffusion-SPx2Px: 1000 images
+2025-07-15 21:46:12,552 - training - INFO -   Tomato-Unhealthy-GAN-StyleGAN2: 6000 images
+2025-07-15 21:46:12,570 - training - INFO -   Tomato-Unhealthy-GAN-Stylegan3: 6000 images
+2025-07-15 21:46:12,570 - training - INFO - Total samples: 27124
+2025-07-15 21:46:12,570 - training - INFO - Converting to binary classification (Healthy vs Unhealthy)
+2025-07-15 21:46:12,582 - training - INFO - Binary classification: Healthy=12124, Unhealthy=15000
+2025-07-15 21:46:14,079 - training - INFO - Starting training for 50 epochs
+2025-07-15 21:46:14,079 - training - INFO - 
+Epoch 1/50
+2025-07-15 21:46:14,079 - training - INFO - --------------------------------------------------
+2025-07-15 21:47:42,168 - training - INFO - Learning rate: 0.000100
+2025-07-15 21:47:42,169 - training - INFO - Train Loss: 0.1585, Train Acc: 95.70%
+2025-07-15 21:47:42,169 - training - INFO - Val Loss: 0.0471, Val Acc: 98.65%
+2025-07-15 21:47:42,169 - training - INFO - New best model! Saving to ./outputs/comprehensive_plant_classification_20250715_214521/Tomato_binary_clip_best_model.pth
+2025-07-15 21:47:47,315 - training - INFO - 
+Epoch 2/50
+2025-07-15 21:47:47,317 - training - INFO - --------------------------------------------------
+2025-07-15 21:48:56,128 - training - INFO - Learning rate: 0.000100
+2025-07-15 21:48:56,128 - training - INFO - Train Loss: 0.0417, Train Acc: 98.66%
+2025-07-15 21:48:56,128 - training - INFO - Val Loss: 0.0269, Val Acc: 99.09%
+2025-07-15 21:48:56,128 - training - INFO - New best model! Saving to ./outputs/comprehensive_plant_classification_20250715_214521/Tomato_binary_clip_best_model.pth
+2025-07-15 21:49:00,655 - training - INFO - 
+Epoch 3/50
+2025-07-15 21:49:00,656 - training - INFO - --------------------------------------------------
+2025-07-15 21:50:09,766 - training - INFO - Learning rate: 0.000099
+2025-07-15 21:50:09,767 - training - INFO - Train Loss: 0.0329, Train Acc: 98.92%
+2025-07-15 21:50:09,767 - training - INFO - Val Loss: 0.0214, Val Acc: 99.29%
+2025-07-15 21:50:09,767 - training - INFO - New best model! Saving to ./outputs/comprehensive_plant_classification_20250715_214521/Tomato_binary_clip_best_model.pth
+2025-07-15 21:50:13,920 - training - INFO - 
+Epoch 4/50
+2025-07-15 21:50:13,920 - training - INFO - --------------------------------------------------
+2025-07-15 21:51:21,924 - training - INFO - Learning rate: 0.000098
+2025-07-15 21:51:21,924 - training - INFO - Train Loss: 0.0277, Train Acc: 99.08%
+2025-07-15 21:51:21,925 - training - INFO - Val Loss: 0.0178, Val Acc: 99.39%
+2025-07-15 21:51:21,925 - training - INFO - New best model! Saving to ./outputs/comprehensive_plant_classification_20250715_214521/Tomato_binary_clip_best_model.pth
+2025-07-15 21:51:21,928 - __main__ - ERROR - X Failed: Tomato - 2-way - clip
+2025-07-15 21:51:21,928 - __main__ - ERROR -   Error: File ./outputs/comprehensive_plant_classification_20250715_214521/Tomato_binary_clip_best_model.pth cannot be opened.
+2025-07-15 21:52:01,949 - __main__ - ERROR - No experiments completed successfully!

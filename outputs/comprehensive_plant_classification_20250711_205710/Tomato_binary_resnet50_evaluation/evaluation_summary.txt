@@ -1,0 +1,30 @@
+================================================================================
+Model Evaluation Summary
+Date: 2025-07-13 01:33:21
+================================================================================
+
+Test Set Information:
+  Total samples: 4070
+  Number of classes: 2
+  Classes: Healthy, Unhealthy
+
+Overall Performance:
+  Accuracy: 99.93%
+  Loss: 0.0026
+  Precision (weighted): 0.9993
+  Recall (weighted): 0.9993
+  F1-Score (weighted): 0.9993
+
+Per-Class Performance:
+
+  Healthy:
+    Precision: 0.9989
+    Recall: 0.9995
+    F1-Score: 0.9992
+    Support: 1845
+
+  Unhealthy:
+    Precision: 0.9996
+    Recall: 0.9991
+    F1-Score: 0.9993
+    Support: 2225

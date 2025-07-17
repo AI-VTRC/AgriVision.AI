@@ -1,0 +1,72 @@
+================================================================================
+Model Evaluation Summary
+Date: 2025-07-16 02:56:29
+================================================================================
+
+Test Set Information:
+  Total samples: 2771
+  Number of classes: 9
+  Classes: Maize-Healthy-Diffusion-DS8, Maize-Healthy-Diffusion-SPx2Px, Maize-Healthy-GAN-StyleGAN2, Maize-Healthy-GAN-Stylegan3, Maize-Healthy-Real-Real, Maize-Unhealthy-Diffusion-DS8, Maize-Unhealthy-Diffusion-SPx2Px, Maize-Unhealthy-GAN-StyleGAN2, Maize-Unhealthy-Real-Real
+
+Overall Performance:
+  Accuracy: 75.71%
+  Loss: 0.6317
+  Precision (weighted): 0.8638
+  Recall (weighted): 0.7571
+  F1-Score (weighted): 0.7843
+
+Per-Class Performance:
+
+  Maize-Healthy-Diffusion-DS8:
+    Precision: 0.4110
+    Recall: 0.6736
+    F1-Score: 0.5105
+    Support: 144
+
+  Maize-Healthy-Diffusion-SPx2Px:
+    Precision: 0.9037
+    Recall: 0.8414
+    F1-Score: 0.8714
+    Support: 145
+
+  Maize-Healthy-GAN-StyleGAN2:
+    Precision: 0.9582
+    Recall: 0.5581
+    F1-Score: 0.7054
+    Support: 903
+
+  Maize-Healthy-GAN-Stylegan3:
+    Precision: 0.1691
+    Recall: 0.8169
+    F1-Score: 0.2802
+    Support: 71
+
+  Maize-Healthy-Real-Real:
+    Precision: 0.5247
+    Recall: 0.5862
+    F1-Score: 0.5537
+    Support: 145
+
+  Maize-Unhealthy-Diffusion-DS8:
+    Precision: 0.6000
+    Recall: 0.8542
+    F1-Score: 0.7049
+    Support: 144
+
+  Maize-Unhealthy-Diffusion-SPx2Px:
+    Precision: 0.8424
+    Recall: 0.9329
+    F1-Score: 0.8854
+    Support: 149
+
+  Maize-Unhealthy-GAN-StyleGAN2:
+    Precision: 1.0000
+    Recall: 0.9372
+    F1-Score: 0.9676
+    Support: 923
+
+  Maize-Unhealthy-Real-Real:
+    Precision: 0.7836
+    Recall: 0.7143
+    F1-Score: 0.7473
+    Support: 147
