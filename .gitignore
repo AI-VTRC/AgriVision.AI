@@ -9,7 +9,7 @@ datasets/**/*.webp
 
 #ignore model files
 outputs/**/*.pth
-
+*.pth
 # VS Code
 .vscode/
 
