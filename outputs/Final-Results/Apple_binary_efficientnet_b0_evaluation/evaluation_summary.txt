@@ -1,0 +1,24 @@
+Evaluation Summary for Apple Binary EfficientNet-B0
+===============================================
+
+Model: EfficientNet-B0
+Dataset: Apple Binary Classification
+Test Set Size: 4070 samples
+Classes: ['Healthy', 'Unhealthy']
+
+Overall Performance:
+- Test Accuracy: 0.9953 (99.53%)
+- Test Precision: 0.9948
+- Test Recall: 0.9958
+- Test F1-Score: 0.9953
+- Test Loss: 0.015673
+
+Per-Class Performance:
+- Healthy: Precision=0.9932, Recall=0.9967, F1=0.9949
+- Unhealthy: Precision=0.9967, Recall=0.9948, F1=0.9957
+
+Confusion Matrix:
+                Predicted
+                Healthy  Unhealthy
+Actual Healthy    1839       6
+       Unhealthy    12    2213

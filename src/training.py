@@ -42,29 +42,22 @@ class PlantDiseaseDataset(Dataset):
         
     def _load_dataset(self):
         """Load dataset by scanning directories."""
-        # Debug logging
         logger.info(f"Looking for plant: {self.plant_name} in directory: {self.root_dir}")
         logger.info(f"Root directory exists: {os.path.exists(self.root_dir)}")
-        
-        # Get all subdirectories for this plant - improved Windows compatibility
-        # First, get all directories in root and filter manually for better cross-platform compatibility
         try:
             all_dirs = [d for d in os.listdir(self.root_dir) if os.path.isdir(os.path.join(self.root_dir, d))]
             logger.info(f"All directories in root: {all_dirs}")
             
-            # Filter directories that start with plant name
             plant_dirs = [d for d in all_dirs if d.startswith(f"{self.plant_name}-")]
             logger.info(f"Found directories for {self.plant_name}: {plant_dirs}")
             
             if not plant_dirs:
-                # Try case-insensitive search
                 plant_dirs = [d for d in all_dirs if d.lower().startswith(f"{self.plant_name.lower()}-")]
                 logger.info(f"Case-insensitive match: {plant_dirs}")
                 
                 if not plant_dirs:
                     raise ValueError(f"No directories found for plant: {self.plant_name}. Available directories: {all_dirs}")
             
-            # Convert to full paths
             plant_dirs = [os.path.join(self.root_dir, d) for d in plant_dirs]
             logger.info(f"Full paths: {plant_dirs}")
             
@@ -72,10 +65,8 @@ class PlantDiseaseDataset(Dataset):
             logger.error(f"Error scanning directory {self.root_dir}: {e}")
             raise ValueError(f"Could not scan directory {self.root_dir}: {e}")
         
-        # Sort for consistent ordering
         plant_dirs.sort()
         
-        # Build class mappings
         for idx, dir_path in enumerate(plant_dirs):
             class_name = os.path.basename(dir_path)
             self.class_to_idx[class_name] = idx
@@ -84,7 +75,6 @@ class PlantDiseaseDataset(Dataset):
         logger.info(f"Found {len(plant_dirs)} classes for {self.plant_name}")
         logger.info(f"Classes: {list(self.class_to_idx.keys())}")
         
-        # Load all image files and filter out classes with no images
         valid_classes = {}
         new_class_idx = 0
         
@@ -159,17 +149,13 @@ class PlantDiseaseDataset(Dataset):
         """Convert multi-class labels to binary (healthy=0, unhealthy=1)."""
         new_samples = []
         for img_path, _ in self.samples:
-            # Determine binary label based on directory name
             dir_name = os.path.basename(os.path.dirname(img_path))
             
-            # Check for Healthy vs Unhealthy in directory name
-            # Handle cases like "Tomato-Unhealthy--Real-Real" with double dashes
             if "Healthy" in dir_name and "Unhealthy" not in dir_name:
                 label = 0  # Healthy
             elif "Unhealthy" in dir_name:
                 label = 1  # Unhealthy
             else:
-                # Fallback: if neither is explicitly found, log warning
                 logger.warning(f"Could not determine health status for directory: {dir_name}")
                 label = 1  # Default to unhealthy
             
@@ -184,7 +170,6 @@ class PlantDiseaseDataset(Dataset):
         unhealthy_count = len(self.samples) - healthy_count
         logger.info(f"Binary classification: Healthy={healthy_count}, Unhealthy={unhealthy_count}")
         
-        # Log class distribution for verification
         if healthy_count == 0:
             logger.warning("No healthy samples found!")
         if unhealthy_count == 0:
@@ -196,7 +181,6 @@ class PlantDiseaseDataset(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
         
-        # Load image
         try:
             image = Image.open(img_path).convert('RGB')
         except Exception as e:
@@ -277,7 +261,6 @@ def create_dataloaders(
                                std=[0.229, 0.224, 0.225])
         ])
     
-    # Create full dataset
     full_dataset = PlantDiseaseDataset(
         root_dir=root_dir,
         plant_name=plant_name,
@@ -286,7 +269,6 @@ def create_dataloaders(
         model_type=model_type
     )
     
-    # Calculate split sizes
     total_size = len(full_dataset)
     train_size = int(train_ratio * total_size)
     val_size = int(val_ratio * total_size)
@@ -294,15 +276,12 @@ def create_dataloaders(
     
     logger.info(f"Dataset split: train={train_size}, val={val_size}, test={test_size}")
     
-    # Split dataset
     train_dataset, val_dataset, test_dataset = random_split(
         full_dataset,
         [train_size, val_size, test_size],
         generator=torch.Generator().manual_seed(random_state)
     )
     
-    # Update transforms for validation and test sets
-    # Create new datasets with appropriate transforms
     val_dataset_copy = PlantDiseaseDataset(
         root_dir=root_dir,
         plant_name=plant_name,
@@ -321,11 +300,9 @@ def create_dataloaders(
     )
     test_dataset_copy.samples = [full_dataset.samples[i] for i in test_dataset.indices]
     
-    # Device optimization settings (CUDA or MPS)
     pin_memory = torch.cuda.is_available() or torch.backends.mps.is_available()
     persistent_workers = num_workers > 0 and (torch.cuda.is_available() or torch.backends.mps.is_available())
     
-    # Create data loaders with CUDA optimizations
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
@@ -435,39 +412,31 @@ class Trainer:
         correct = 0
         total = 0
         
-        # Progress bar
         pbar = tqdm(self.train_loader, desc=f'Epoch {epoch} - Training')
         
         for batch_idx, (inputs, labels) in enumerate(pbar):
-            # Move data to device with non_blocking for CUDA optimization
             inputs = inputs.to(self.device, non_blocking=True)
             labels = labels.to(self.device, non_blocking=True)
             
-            # Zero gradients
             self.optimizer.zero_grad()
             
-            # Forward pass
             outputs = self.model(inputs)
             loss = self.criterion(outputs, labels)
             
-            # Backward pass
             loss.backward()
             self.optimizer.step()
             
-            # Statistics
             running_loss += loss.item()
             _, predicted = outputs.max(1)
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
             
-            # Clear cache periodically for GPU memory optimization (CUDA or MPS)
             if batch_idx % 50 == 0:
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
                 elif torch.backends.mps.is_available():
                     torch.mps.empty_cache()
             
-            # Update progress bar
             if batch_idx % self.progress_interval == 0:
                 avg_loss = running_loss / (batch_idx + 1)
                 accuracy = 100. * correct / total
@@ -476,7 +445,6 @@ class Trainer:
                     'Acc': f'{accuracy:.2f}%'
                 })
         
-        # Calculate epoch metrics
         epoch_loss = running_loss / len(self.train_loader)
         epoch_acc = 100. * correct / total
         
@@ -497,24 +465,20 @@ class Trainer:
                 inputs = inputs.to(self.device, non_blocking=True)
                 labels = labels.to(self.device, non_blocking=True)
                 
-                # Forward pass
                 outputs = self.model(inputs)
                 loss = self.criterion(outputs, labels)
                 
-                # Statistics
                 running_loss += loss.item()
                 _, predicted = outputs.max(1)
                 total += labels.size(0)
                 correct += predicted.eq(labels).sum().item()
                 
-                # Clear cache periodically for GPU memory optimization (CUDA or MPS)
                 if batch_idx % 50 == 0:
                     if torch.cuda.is_available():
                         torch.cuda.empty_cache()
                     elif torch.backends.mps.is_available():
                         torch.mps.empty_cache()
         
-        # Calculate validation metrics
         val_loss = running_loss / len(self.val_loader)
         val_acc = 100. * correct / total
         
@@ -547,25 +511,20 @@ class Trainer:
             self.metrics['val_loss'].append(val_loss)
             self.metrics['val_acc'].append(val_acc)
             
-            # Update learning rate
             if self.scheduler:
                 self.scheduler.step()
                 current_lr = self.scheduler.get_last_lr()[0]
                 logger.info(f"Learning rate: {current_lr:.6f}")
             
-            # Log metrics
             logger.info(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%")
             logger.info(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}%")
             
-            # Save best model
             if val_acc > self.best_val_acc:
                 self.best_val_acc = val_acc
                 self.best_epoch = epoch
                 
                 logger.info(f"New best model! Saving to {save_path}")
                 
-                # Save checkpoint
-                # Try to get class names from the dataset
                 class_names = None
                 try:
                     if hasattr(self.train_loader.dataset, 'dataset'):
@@ -590,7 +549,6 @@ class Trainer:
                     'class_names': class_names
                 }
                 
-                # Robust saving: save to temp file, then rename
                 save_dir = os.path.dirname(save_path)
                 os.makedirs(save_dir, exist_ok=True)
                 
@@ -600,10 +558,9 @@ class Trainer:
                     os.rename(temp_file_path, save_path)
                 except Exception as e:
                     logger.error(f"Failed to save checkpoint to {save_path}: {e}")
-                    # Clean up temp file if it exists
                     if os.path.exists(temp_file_path):
                         os.remove(temp_file_path)
-                    raise   # Re-raise the exception to stop the process if saving fails
+                    raise 
         
         logger.info(f"\nTraining completed!")
         logger.info(f"Best validation accuracy: {self.best_val_acc:.2f}% at epoch {self.best_epoch}")

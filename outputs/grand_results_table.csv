@@ -1,5 +1,6 @@
 Run,Plant,Classification,Model,Accuracy,F1-Score,Precision,Recall
 comprehensive_plant_classification_20250710_174532,Apple,binary,clip,98.69,0.9871,0.9864,0.9877
+comprehensive_plant_classification_20250710_174532,Apple,binary,efficientnet_b0,0.9953,0.9953,0.9948,0.9958
 comprehensive_plant_classification_20250710_174532,Apple,binary,resnet50,99.47,0.9947,0.9934,0.9961
 comprehensive_plant_classification_20250710_174532,Apple,detailed,clip,75.8,0.8912,0.8973,0.8851
 comprehensive_plant_classification_20250710_174532,Apple,detailed,efficientnet_b0,99.69,0.9863,1.0,0.973
@@ -19,6 +20,7 @@ comprehensive_plant_classification_20250710_174532,Maize,generation,resnet50,96.
 comprehensive_plant_classification_20250710_174532,Tomato,binary,clip,99.75,0.9973,0.9968,0.9978
 comprehensive_plant_classification_20250711_205710,Tomato,binary,clip,99.75,0.9973,0.9968,0.9978
 comprehensive_plant_classification_20250710_174532,Tomato,binary,efficientnet_b0,99.85,0.9984,0.9984,0.9984
+comprehensive_plant_classification_20250710_174532,Tomato,binary,resnet50,0.9978,0.9889,0.9881,0.9898
 comprehensive_plant_classification_20250711_205710,Tomato,binary,resnet50,99.93,0.9992,0.9989,0.9995
 comprehensive_plant_classification_20250710_174532,Tomato,detailed,clip,83.81,0.977,0.9868,0.9675
 comprehensive_plant_classification_20250710_174532,Tomato,detailed,efficientnet_b0,99.8,1.0,1.0,1.0

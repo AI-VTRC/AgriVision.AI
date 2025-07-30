@@ -1,0 +1,24 @@
+Evaluation Summary for Tomato Binary ResNet50
+============================================
+
+Model: ResNet50
+Dataset: Tomato Binary Classification
+Test Set Size: 4070 samples
+Classes: ['Healthy', 'Unhealthy']
+
+Overall Performance:
+- Test Accuracy: 0.9978 (99.78%)
+- Test Precision: 0.9881
+- Test Recall: 0.9898
+- Test F1-Score: 0.9889
+- Test Loss: 0.006783
+
+Per-Class Performance:
+- Healthy: Precision=0.9864, Recall=0.9891, F1=0.9877
+- Unhealthy: Precision=0.9898, Recall=0.9864, F1=0.9881
+
+Confusion Matrix:
+                Predicted
+                Healthy  Unhealthy
+Actual Healthy    1825      20
+       Unhealthy    30    2195

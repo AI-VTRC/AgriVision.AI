@@ -36,67 +36,54 @@ def evaluate_model(
     Returns:
         Dictionary containing evaluation metrics
     """
-    # Create save directory
     os.makedirs(save_dir, exist_ok=True)
     
     logger.info("Starting model evaluation...")
     logger.info(f"Number of test batches: {len(test_loader)}")
     logger.info(f"Batch size: {test_loader.batch_size}")
     
-    # Set model to evaluation mode
     model.eval()
     
-    # Initialize lists to store predictions and labels
     all_predictions = []
     all_labels = []
     all_probs = []
     running_loss = 0.0
     
-    # Disable gradient computation
     with torch.no_grad():
         for batch_idx, (inputs, labels) in enumerate(test_loader):
-            # Move data to device with non_blocking for CUDA optimization
             inputs = inputs.to(device, non_blocking=True)
             labels = labels.to(device, non_blocking=True)
             
-            # Forward pass
             outputs = model(inputs)
             loss = criterion(outputs, labels)
             
-            # Get predictions
             probs = torch.softmax(outputs, dim=1)
             _, predicted = outputs.max(1)
             
-            # Store results
             all_predictions.extend(predicted.cpu().numpy())
             all_labels.extend(labels.cpu().numpy())
             all_probs.extend(probs.cpu().numpy())
             running_loss += loss.item()
             
-            # Clear cache periodically for GPU memory optimization (CUDA or MPS)
             if batch_idx % 50 == 0:
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
                 elif torch.backends.mps.is_available():
                     torch.mps.empty_cache()
             
-            # Log progress
             if batch_idx % 10 == 0:
                 logger.info(f"Processed batch {batch_idx}/{len(test_loader)}")
     
-    # Convert to numpy arrays
     all_predictions = np.array(all_predictions)
     all_labels = np.array(all_labels)
     all_probs = np.array(all_probs)
     
-    # Calculate metrics
     avg_loss = running_loss / len(test_loader)
     accuracy = accuracy_score(all_labels, all_predictions)
     precision, recall, f1_score, support = precision_recall_fscore_support(
         all_labels, all_predictions, average='weighted', zero_division=0
     )
     
-    # Log overall metrics
     logger.info(f"\nOverall Metrics:")
     logger.info(f"  Loss: {avg_loss:.4f}")
     logger.info(f"  Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)")
@@ -104,20 +91,16 @@ def evaluate_model(
     logger.info(f"  Recall: {recall:.4f}")
     logger.info(f"  F1-Score: {f1_score:.4f}")
     
-    # Get per-class metrics
     precision_per_class, recall_per_class, f1_per_class, support_per_class = precision_recall_fscore_support(
         all_labels, all_predictions, average=None, zero_division=0
     )
     
-    # Adjust class names if binary classification
     actual_num_classes = len(np.unique(all_labels))
     if actual_num_classes == 2 and len(class_names) > 2:
-        # Binary classification case
         class_names_to_use = ["Healthy", "Unhealthy"]
     else:
         class_names_to_use = class_names[:actual_num_classes]
     
-    # Generate classification report
     try:
         report_str = classification_report(
             all_labels, all_predictions,
@@ -148,7 +131,6 @@ def evaluate_model(
     try:
         cm = confusion_matrix(all_labels, all_predictions)
         
-        # Plot confusion matrix
         plt.figure(figsize=(10, 8))
         sns.heatmap(
             cm, annot=True, fmt='d', cmap='Blues',
@@ -160,13 +142,11 @@ def evaluate_model(
         plt.ylabel('True Label', fontsize=12)
         plt.tight_layout()
         
-        # Save confusion matrix
         cm_path = os.path.join(save_dir, 'confusion_matrix.png')
         plt.savefig(cm_path, dpi=300, bbox_inches='tight')
         plt.close()
         logger.info(f"Confusion matrix saved to: {cm_path}")
         
-        # Save normalized confusion matrix
         cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         cm_normalized = np.nan_to_num(cm_normalized)
         
@@ -189,7 +169,6 @@ def evaluate_model(
     except Exception as e:
         logger.error(f"Error generating confusion matrix: {e}")
     
-    # Save per-class metrics
     per_class_metrics = []
     if isinstance(precision_per_class, np.ndarray) and len(precision_per_class) > 0:
         for i, class_name in enumerate(class_names_to_use):
@@ -202,12 +181,10 @@ def evaluate_model(
                     'support': int(support_per_class[i]) if support_per_class is not None and i < len(support_per_class) else 0
                 })
     
-    # Plot per-class metrics
     if per_class_metrics:
         try:
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
             
-            # Precision and Recall
             class_labels = [m['class'] for m in per_class_metrics]
             precisions = [m['precision'] for m in per_class_metrics]
             recalls = [m['recall'] for m in per_class_metrics]
@@ -225,7 +202,6 @@ def evaluate_model(
             ax1.legend()
             ax1.grid(axis='y', alpha=0.3)
             
-            # F1-Score
             f1_scores = [m['f1_score'] for m in per_class_metrics]
             ax2.bar(x, f1_scores, alpha=0.8, color='green')
             ax2.set_xlabel('Class')
@@ -243,7 +219,6 @@ def evaluate_model(
         except Exception as e:
             logger.error(f"Error generating per-class metrics plot: {e}")
     
-    # Save all metrics to JSON
     results = {
         'timestamp': datetime.now().isoformat(),
         'overall_metrics': {
@@ -264,11 +239,9 @@ def evaluate_model(
         json.dump(results, f, indent=4)
     logger.info(f"Evaluation results saved to: {results_path}")
     
-    # Plot confidence distribution
     try:
         plt.figure(figsize=(10, 6))
         
-        # Get the confidence of the predicted class
         predicted_probs = []
         for i, pred in enumerate(all_predictions):
             predicted_probs.append(all_probs[i, pred])
@@ -286,7 +259,6 @@ def evaluate_model(
     except Exception as e:
         logger.error(f"Error generating confidence distribution plot: {e}")
     
-    # Create a summary report
     summary_path = os.path.join(save_dir, 'evaluation_summary.txt')
     with open(summary_path, 'w') as f:
         f.write("="*80 + "\n")

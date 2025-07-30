@@ -35,7 +35,7 @@ def setup_logging(output_dir, experiment_name):
     console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     
     file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.DEBUG)
+    # file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(file_formatter)
     
     console_handler = logging.StreamHandler()
@@ -43,7 +43,7 @@ def setup_logging(output_dir, experiment_name):
     console_handler.setFormatter(console_formatter)
     
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
+    # root_logger.setLevel(logging.DEBUG)
     
     for handler in root_logger.handlers[:]:
         root_logger.removeHandler(handler)
@@ -388,7 +388,6 @@ def main():
         torch.manual_seed(args.random_seed)
         np.random.seed(args.random_seed)
         
-        # Enhanced device detection with MPS support for Apple Silicon
         if torch.cuda.is_available():
             device = torch.device('cuda')
             device_type = 'CUDA'
@@ -401,12 +400,10 @@ def main():
         
         logger.info(f"Using device: {device} ({device_type})")
         
-        # Device-specific optimizations
         if torch.cuda.is_available():
             logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
             
-            # Enable CUDA optimizations
             torch.backends.cudnn.benchmark = True
             torch.backends.cudnn.deterministic = False
             torch.cuda.empty_cache()
@@ -416,7 +413,6 @@ def main():
             logger.info("  - Memory cache cleared")
             
         elif torch.backends.mps.is_available():
-            # Apple Silicon MPS optimizations
             logger.info("MPS (Metal Performance Shaders) acceleration enabled for Apple Silicon")
             logger.info("Optimizations:")
             logger.info("  - GPU acceleration via Metal")
@@ -432,7 +428,6 @@ def main():
             {'plant': 'Tomato', 'classification_type': 'binary', 'model': 'clip'},
         ]
 
-        # Mapping for classification display names
         classification_names_map = {
             'detailed': '10-way',
             'generation': '3-way',

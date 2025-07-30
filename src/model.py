@@ -23,7 +23,6 @@ class LeafClassifier(nn.Module):
         """
         super(LeafClassifier, self).__init__()
         
-        # Enhanced device detection with MPS support
         if torch.cuda.is_available():
             self.device = torch.device('cuda')
         elif torch.backends.mps.is_available():
@@ -31,7 +30,6 @@ class LeafClassifier(nn.Module):
         else:
             self.device = torch.device('cpu')
         
-        # Load the pretrained model with fallback to torchvision
         try:
             print(f"Loading pretrained weights from Hugging Face hub (timm/{model_name})")
             self.backbone = timm.create_model(model_name, pretrained=pretrained)
@@ -39,27 +37,21 @@ class LeafClassifier(nn.Module):
             print(f"Failed to load from Hugging Face: {e}")
             print(f"Falling back to torchvision or non-pretrained weights")
             if pretrained and 'efficientnet' in model_name:
-                # Use torchvision EfficientNet
                 import torchvision.models as models
                 if model_name == 'efficientnet_b0':
                     self.backbone = models.efficientnet_b0(pretrained=True)
                 else:
-                    # Fallback to non-pretrained timm model
                     self.backbone = timm.create_model(model_name, pretrained=False)
             elif pretrained and 'resnet' in model_name:
-                # Use torchvision ResNet
                 import torchvision.models as models
                 if model_name == 'resnet50':
                     self.backbone = models.resnet50(pretrained=True)
                 else:
-                    # Fallback to non-pretrained timm model
                     self.backbone = timm.create_model(model_name, pretrained=False)
             else:
-                # Fallback to non-pretrained timm model
                 self.backbone = timm.create_model(model_name, pretrained=False)
         
-        # Get the feature dimension from the backbone - simplified approach
-        feature_dim = 512  # Default fallback
+        feature_dim = 512  
         
         try:
             if 'efficientnet' in model_name:
@@ -99,7 +91,6 @@ class LeafClassifier(nn.Module):
             print(f"Error extracting features from {model_name}: {e}")
             print(f"Using default feature dimension: {feature_dim}")
             
-        # Custom classifier head
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),
             nn.Linear(feature_dim, 512),
@@ -108,7 +99,6 @@ class LeafClassifier(nn.Module):
             nn.Linear(512, num_classes)
         )
         
-        # Move model to device
         self.to(self.device)
         
     def forward(self, x):
@@ -150,7 +140,6 @@ class CLIPClassifier(nn.Module):
         """
         super(CLIPClassifier, self).__init__()
         
-        # Enhanced device detection with MPS support
         if torch.cuda.is_available():
             self.device = torch.device('cuda')
         elif torch.backends.mps.is_available():
@@ -158,7 +147,6 @@ class CLIPClassifier(nn.Module):
         else:
             self.device = torch.device('cpu')
         
-        # Load the pretrained CLIP model - special handling for MPS
         if self.device.type == 'mps':
             # Load to CPU first, then move to MPS to avoid compatibility issues
             self.clip_model, self.preprocess = clip.load(clip_model_name, device='cpu')
@@ -166,17 +154,14 @@ class CLIPClassifier(nn.Module):
         else:
             self.clip_model, self.preprocess = clip.load(clip_model_name, device=self.device)
         
-        # Freeze the CLIP model parameters
         for param in self.clip_model.parameters():
             param.requires_grad = False
             
-        # Get the feature dimension from CLIP
         if "ViT" in clip_model_name:
             feature_dim = self.clip_model.visual.output_dim
         else:  # ResNet-based models
             feature_dim = self.clip_model.visual.output_dim
             
-        # Custom classifier head
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),
             nn.Linear(feature_dim, 512),
@@ -185,7 +170,6 @@ class CLIPClassifier(nn.Module):
             nn.Linear(512, num_classes)
         )
         
-        # Move classifier to device (CLIP model is already on device)
         self.classifier.to(self.device)
         
     def forward(self, x):
@@ -198,7 +182,6 @@ class CLIPClassifier(nn.Module):
         Returns:
             torch.Tensor: Logits for each class
         """
-        # Ensure input is on the correct device
         x = x.to(self.device)
         
         with torch.no_grad():
@@ -217,7 +200,6 @@ class CLIPClassifier(nn.Module):
         Returns:
             torch.Tensor: Extracted features
         """
-        # Ensure input is on the correct device
         x = x.to(self.device)
         
         with torch.no_grad():
@@ -247,7 +229,6 @@ def get_model(model_name='efficientnet_b0', num_classes=10, pretrained=True, dev
     Returns:
         nn.Module: Instantiated model
     """
-    # Enhanced device detection with MPS support if not provided
     if device is None:
         if torch.cuda.is_available():
             device = torch.device('cuda')
@@ -269,14 +250,12 @@ def get_model(model_name='efficientnet_b0', num_classes=10, pretrained=True, dev
             pretrained=pretrained
         )
     else:
-        # For timm models
         model = LeafClassifier(
             num_classes=num_classes,
             model_name=model_name,
             pretrained=pretrained
         )
     
-    # Ensure model is on the correct device
     model = model.to(device)
     
     return model
