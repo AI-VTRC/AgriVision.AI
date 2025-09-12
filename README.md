@@ -1,14 +1,26 @@
-# CV for Ag
+# CV for Agriculture: Real vs Generated Image Detection  
 
-A system for classifying healthy and unhealthy leaf images across different plant species using ResNet, and OpenAI's CLIP.
 
-## Installation
+We provide **tools, models, and generation recipes** to detect whether plant leaf images are **real or AI-generated** (GAN/diffusion), and to benchmark robustness across different sources of adversarial images.  
 
+---
+
+## 🚀 Features
+- Train and evaluate classifiers for **binary (real vs fake)**, **3-way**, and **multi-class attribution** (Pix2Pix, BLIP diffusion, DreamShaper-8, StyleGAN2/3).  
+- Reproduce **adversarial image generation pipelines** used in the paper.  
+- Support for **ResNet**, **EfficientNet**, and **OpenAI CLIP** backbones.  
+- Dataset schema that scales across **multiple plants, health states, and sources**.  
+
+---
+
+## 🛠️ Installation
 ```bash
 git clone https://github.com/yourusername/Foundation.git
 cd Foundation
 pip install -r requirements.txt
 ```
+
+---
 
 ## Dataset Structure
 
@@ -31,18 +43,27 @@ datasets/
 └── Tomato/
 | ...
 ```
-## Usage
 
-### Sample Commands
+Recommended label schema:  
+```
+plant={apple|maize|tomato}
+health={healthy|unhealthy}
+source={real|pix2pix|blip|ds8|stylegan2|stylegan3}
+split={train|val|test}
+```
 
+---
+
+## 📊 Usage
+
+### Training
 ```bash
 # Train with CLIP ViT-B/32 model
 python src/main.py --model_name clip-ViT-B/32 --plant Apple --data_dir ./datasets --output_dir ./outputs
+```
 
-# Train with EfficientNet B0 model
-python src/main.py --model_name efficientnet_b0 --plant Apple
-
-# Evaluate a trained model
+### Evaluation
+```bash
 python src/main.py --eval --checkpoint ./outputs/Apple_best_model.pth --plant Apple
 ```
 
@@ -75,6 +96,32 @@ The system generates the following in your output directory:
   - Sample predictions
   - Classification metrics
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+## 📜 Citation
+If you use this repo or paper:  
+```bibtex
+@article{Sikder2025AgriAdversarial,
+  title   = {Adversarial Image Detection Using Deep Learning in Agricultural Contexts},
+  author  = {Sikder, Md Nazmul Kabir and Yardimci, Mehmet and Ward, Trey and Deshmukh, Shubham Laxmikant and Batarseh, Feras A.},
+  journal = {Preprint},
+  year    = {2025},
+  month   = {September}
+}
+```
+
+---
+
+## 👥 Authors
+- Md Nazmul Kabir Sikder  
+- Mehmet Yardimci  
+- Trey Ward  
+- Shubham L. Deshmukh  
+- Feras A. Batarseh  
+
+Affiliation: Virginia Tech.  
+
+---
+
+## 📄 License
+MIT License (code). For datasets or generated samples, consider CC BY 4.0.  
