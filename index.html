@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Adversarial Image Detection Using Deep Learning in Agricultural Contexts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Project page for: Adversarial Image Detection Using Deep Learning in Agricultural Contexts." />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;600;700&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#ffffff; --text:#1f2937; --muted:#6b7280; --soft:#f8fafc; --line:#e5e7eb; --card:#ffffff;
+      --btn:#111827; --btnText:#ffffff; --link:#2563eb;
+      --wrap:1100px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0e12; --text:#e5e7eb; --muted:#9aa4b2; --soft:#0f1319; --line:#1f2733; --card:#0d1117;
+        --btn:#1f2937; --btnText:#e5e7eb; --link:#8ab4ff;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+    header.hero{padding:56px 0 22px}
+    h1{font-family:"Google Sans",sans-serif;font-weight:700;line-height:1.12;letter-spacing:.2px;
+       font-size:clamp(28px,5.2vw,56px);text-align:center;margin:0 0 12px}
+    .venue{font-family:"Google Sans",sans-serif;text-align:center;color:var(--muted);font-size:20px;margin:4px 0 10px}
+    .authors,.affils{font-size:16px;text-align:center}
+    .authors a{color:#2a6bf4}
+    .authors sup{font-size:12px;vertical-align:top}
+    .affils{color:var(--muted);line-height:1.6;margin-top:6px}
+    .buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:20px 0 6px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;border:1px solid var(--line);
+         background:var(--btn);color:var(--btnText);font-weight:700}
+    .btn.light{background:transparent;color:var(--text)}
+    .btn:hover{opacity:.95;text-decoration:none}
+
+    section{padding:40px 0;border-top:1px solid var(--line)}
+    h2{font-family:"Google Sans",sans-serif;font-size:30px;margin:0 0 14px;text-align:center}
+    .content{max-width:900px;margin:0 auto;font-size:17px;line-height:1.7}
+    .figure{max-width:980px;margin:16px auto 6px}
+    .figure img{width:100%;height:auto;border-radius:12px;background:var(--soft);display:block}
+    .caption{color:var(--muted);font-size:14px;text-align:center;margin-top:6px}
+
+    /* two-up images */
+    .grid-2{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:920px){ .grid-2{grid-template-columns:1fr 1fr} }
+
+    /* simple image slider (used elsewhere if needed) */
+    .scroller{display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:14px;overflow-x:auto;
+              scroll-snap-type:x mandatory;padding:10px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}
+    .slide{scroll-snap-align:center}
+    .slide img{width:100%;border-radius:12px}
+
+    /* RESULTS: horizontal scroller with equal card sizes + captions */
+    .results-scroller{
+      display:grid;
+      grid-auto-flow:column;
+      grid-auto-columns:520px;
+      gap:14px;
+      overflow-x:auto;
+      padding:10px 0;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior-x:contain;
+    }
+    .results-scroller::-webkit-scrollbar{height:8px}
+    .results-scroller::-webkit-scrollbar-thumb{background:#c6c6c6;border-radius:6px}
+    .results-scroller::-webkit-scrollbar-track{background:transparent}
+
+    .result-card{
+      position:relative;
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.06);
+      padding:10px 10px 12px;
+      scroll-snap-align:start;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .result-card .img-wrap{
+      width:100%;
+      height:320px;
+      border-radius:8px;
+      background:var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .result-card img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+    .result-label{
+      position:absolute;
+      top:10px; left:10px;
+      background:#111827;
+      color:#fff;
+      font-family:"Google Sans",sans-serif;
+      font-weight:700;
+      font-size:13px;
+      line-height:1;
+      padding:6px 9px;
+      border-radius:999px;
+      letter-spacing:.3px;
+    }
+
+    /* Full-width figures keep captions; add optional label */
+    .figure-full{
+      position:relative;
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.06);
+      padding:10px;
+      margin-top:14px;
+    }
+    .figure-full img{width:100%;height:auto;display:block;border-radius:8px}
+    .figure-full .figure-label{
+      position:absolute; top:10px; left:10px;
+      background:#111827; color:#fff; font-weight:700; font-size:13px;
+      padding:6px 9px; border-radius:999px; letter-spacing:.3px;
+      font-family:"Google Sans",sans-serif;
+    }
+
+    pre{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto}
+    footer{padding:34px 0;text-align:center;color:var(--muted);font-size:14px}
+  </style>
+</head>
+<body>
+
+<!-- =================== HERO =================== -->
+<header class="hero container">
+  <h1>Adversarial Image Detection Using Deep Learning in Agricultural Contexts</h1>
+  <div class="venue">Preprint 2025</div>
+
+  <div class="authors">
+  <a href="https://scholar.google.com/citations?user=1meq3gcAAAAJ&hl=en" target="_blank" rel="noopener">Md Nazmul Kabir Sikder</a><sup>1</sup>,
+  <a href="https://scholar.google.com/citations?user=rJlnm08AAAAJ&hl=en" target="_blank" rel="noopener">Mehmet Oguz Yardimci</a><sup>2</sup>,
+  <a href="https://scholar.google.com/citations?user=XXXXXXX" target="_blank" rel="noopener">Trey Ward</a><sup>3</sup>,
+  <a href="https://scholar.google.co.uk/citations?view_op=list_works&hl=en&user=ezYZLzgAAAAJ" target="_blank" rel="noopener">Shubham Laxmikant Deshmukh</a><sup>2</sup>,
+  <a href="https://scholar.google.co.uk/citations?user=oQiAulIAAAAJ&hl=en" target="_blank" rel="noopener">Feras A. Batarseh</a><sup>3</sup>
+</div>
+
+  <div class="affils">
+    <sup>1</sup>Virginia Tech, Commonwealth Cyber Initiative (CCI), Arlington, VA, USA<br/>
+    <sup>2</sup>Virginia Tech, Department of Computer Science, Arlington, VA, USA<br/>
+    <sup>3</sup>Virginia Tech, Department of Biological Systems Engineering, Arlington, VA, USA
+  </div>
+
+  <div class="buttons">
+    <a class="btn" href="./Adversarial_Image_Detection_Using_Deep_Learning_in_Agricultural_Contexts.pdf" target="_blank" rel="noopener">📄 Paper (PDF)</a>
+    <a class="btn light" href="https://github.com/AI-VTRC/CV_In_Ag" target="_blank" rel="noopener">💻 Code (GitHub)</a>
+  </div>
+</header>
+
+<!-- =================== ABSTRACT =================== -->
+<section id="abstract">
+  <div class="container">
+    <h2>Abstract</h2>
+    <div class="content">
+      <p>
+        The gradual digitalization of agricultural systems through data-driven techniques has reshaped production growth. However, this transformation has also introduced new vulnerabilities, exposing these systems to cyber threats. While numerous domain-specific attack detection methods have been proposed, there is a lack of comprehensive cybersecurity frameworks tailored for agriculture, particularly as AI becomes increasingly integrated into these systems. To address this gap, we propose a novel framework capable of classifying high-fidelity adversarial plant images. This supervised approach not only detects attacks but also able to identify their specific source models. We employ state-of-the-art GAN architectures, including StyleGAN2 and StyleGAN3, alongside powerful diffusion models such as DS8, BLIP, and Pix2Pix, to produce diverse adversarial images via both image-to-image and text-to-image generation. These images are then used to train a classifier capable of distinguishing among all generation classes. Our experiments include comparative classification tasks, and logarithmic accuracy degradation with increasing class count. This demonstrates the scalability of the framework, allowing additional computer vision tasks to be incorporated without compromising performance. As GAN and diffusion models continue to advance, our framework is designed to evolve, ensuring its generation and detection capabilities remain robust against emerging threats.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== OVERVIEW / PIPELINE =================== -->
+<section id="overview">
+  <div class="container">
+    <h2>Overview</h2>
+    <div class="content">
+      <p>
+        We target cyber-biosecurity risks in Agriculture 4.0 by detecting and attributing synthetic plant images introduced by adversaries. Our framework generates high-fidelity fakes with GANs (StyleGAN2/3) and diffusion pipelines (Pix2Pix, BLIP, DS8-inpainting), then trains a classifier to perform: (i) binary health detection, (ii) 3-way source detection (Real / GAN / Diffusion), and (iii) detailed 10-way crop–health–generator attribution.
+      </p>
+    </div>
+
+    <div class="grid-2 figure">
+      <img src="static/images/pipeline_simplified.png" alt="Simplified pipeline: Original & Synthetic images feed a classifier." />
+      <img src="static/images/framework_overview.png" alt="High-level framework overview diagram." />
+    </div>
+    <p class="caption">Left: simplified adversarial image generation → detection pipeline. Right: framework overview across crops and generators.</p>
+
+    <div class="content">
+      <p>
+        StyleGAN models are trained per crop–health class to improve fidelity under limited data. Diffusion pipelines preserve scene layout while editing only leaf regions, producing subtle yet realistic perturbations. The downstream classifier (EfficientNet-B0 / ResNet-50 / CLIP-ViT) learns generator fingerprints in addition to crop and health cues.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== METHODS =================== -->
+<section id="methods">
+  <div class="container">
+    <h2>Methods</h2>
+    <div class="content">
+      <p><strong>GAN synthesis.</strong> We adopt StyleGAN2-ADA and StyleGAN3 to synthesize class-conditional leaves (Apple/Tomato/Maize × Healthy/Unhealthy). Models are monitored with FID over training kimg; best checkpoints are retained for dataset creation and analysis.</p>
+      <p><strong>Diffusion pipelines.</strong> Three complementary image-to-image strategies are used: (1) <em>Instruct-Pix2Pix</em> for prompt-driven edits with strict structure preservation; (2) <em>BLIP-Diffusion</em> for concept-conditioned edits aligned to “leaf”; and (3) <em>DS8 inpainting</em> guided by OpenCV masks to localize changes. Prompts are tuned to avoid hallucinations and keep context intact.</p>
+      <p><strong>Detectors.</strong> We evaluate EfficientNet-B0, ResNet-50, and CLIP (ViT-B/32) across three tasks: Binary (Healthy/Unhealthy), Generation Source (Real/GAN/Diffusion), and Detailed 10-way (crop–health–source). Metrics include Accuracy, F1, Precision/Recall; confusion matrices are used for diagnostics.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== RESULTS ======================== -->
+<section id="results" class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+        <p class="content has-text-justified">
+          We evaluate (i) GAN training dynamics and best FID (StyleGAN2-ADA vs StyleGAN3),
+          (ii) diffusion image quality, and (iii) classifier performance for binary, source,
+          and detailed (10-way) attribution. Below we show quantitative trends followed by
+          qualitative examples and a summary table.
+        </p>
+      </div>
+    </div>
+
+    <!-- Quantitative: GAN FID and training curves -->
+    <h3 class="title is-4">Quantitative (FID &amp; Training Dynamics)</h3>
+    <div class="results-scroller" aria-label="Quantitative results scroller" tabindex="0">
+      <!-- (a) -->
+      <figure class="result-card">
+        <span class="result-label">(a)</span>
+        <div class="img-wrap">
+          <img src="static/images/gan_fid_synthetic.png" alt="Best FID and FID trajectories for StyleGAN2-ADA vs StyleGAN3 across crops." />
+        </div>
+        <figcaption class="caption">
+          Best FID (bars) and FID vs kimg (lines) across Apple, Tomato, and Maize for StyleGAN2-ADA and StyleGAN3.
+        </figcaption>
+      </figure>
+
+      <!-- (b) -->
+      <figure class="result-card">
+        <span class="result-label">(b)</span>
+        <div class="img-wrap">
+          <img src="static/images/fid_vs_kimg_all_in_one_V2.png" alt="FID vs kimg curves across datasets." />
+        </div>
+        <figcaption class="caption">
+          FID training curves (lower is better) across all six crop–health datasets.
+        </figcaption>
+      </figure>
+
+      <!-- (c) -->
+      <figure class="result-card">
+        <span class="result-label">(c)</span>
+        <div class="img-wrap">
+          <img src="static/images/fid_vs_kimg_all_in_one.png" alt="Additional FID vs kimg trends." />
+        </div>
+        <figcaption class="caption">
+          Additional FID trends showing convergence and stability differences.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Qualitative grid -->
+    <h3 class="title is-4">Qualitative (Real vs Synthetic)</h3>
+    <figure class="figure-full">
+      <span class="figure-label">(d)</span>
+      <img src="static/images/leaf_fake_image_detection.png" alt="Real vs synthetic (Pix2Pix, BLIP, DS8, StyleGAN2, StyleGAN3) examples across crops and health." />
+      <figcaption class="caption">
+        Real and synthetic leaves across crops (Apple, Maize, Tomato) and health (H/Un). Diffusion pipelines
+        yield minimally edited, high-fidelity images; StyleGAN3 often improves texture realism.
+      </figcaption>
+    </figure>
+
+    <!-- Quantitative table -->
+    <h3 class="title is-4">Model Performance Summary</h3>
+    <p class="content">
+      The table below summarizes Accuracy / F1 / Precision / Recall / Loss for CLIP, ResNet-50, and EfficientNet-B0
+      on Binary, Generation, and Detailed tasks across crops.
+    </p>
+    <figure class="figure-full">
+      <span class="figure-label">(e)</span>
+      <img src="static/images/results_table.png" alt="Model performance table across plants and classification types." />
+      <figcaption class="caption">
+        EfficientNet-B0 achieves near-perfect attribution, while CLIP degrades on detailed 10-way classes.
+      </figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<!-- =================== APPENDIX (EXTENDED DETAILS) =================== -->
+<section id="appendix">
+  <div class="container">
+    <h2>Appendix (Extended Details)</h2>
+    <div class="content">
+      <p>
+        The appendix provides extended experimental details and supplementary figures
+        beyond the main text. This includes:
+      </p>
+      <ul>
+        <li><strong>Diffusion prompts:</strong> Complete lists of prompts used for Pix2Pix,
+            BLIP-Diffusion, and DS8 inpainting pipelines, including positive/negative prompt
+            templates.</li>
+        <li><strong>Hyper-parameter grids:</strong> Training configurations and tuning ranges
+            for StyleGAN2-ADA, StyleGAN3, and diffusion models (learning rates, augmentation
+            probabilities, kimg checkpoints).</li>
+        <li><strong>DS8 inpainting masks:</strong> Leaf-level segmentation masks and
+            before/after composites demonstrating localized edits and preservation of
+            background context.</li>
+        <li><strong>Crop-specific adjustments:</strong> Maize segmentation refinements and
+            custom preprocessing applied to ensure faithful leaf isolation.</li>
+        <li><strong>HP tuning examples:</strong> Side-by-side qualitative comparisons before
+            and after hyper-parameter adjustments for GAN and diffusion outputs.</li>
+        <li><strong>Confusion matrices:</strong> Detailed matrices for Binary, Generation,
+            and 10-way classification tasks with EfficientNet-B0, ResNet-50, and CLIP-ViT.</li>
+        <li><strong>Additional qualitative panels:</strong> Extended real vs synthetic
+            comparisons across Apple, Tomato, and Maize, covering multiple health states
+            and generator types.</li>
+      </ul>
+      <p>
+        For the full set of tables, figures, and experimental configurations, please
+        refer to the <a href="./Adversarial_Image_Detection_Using_Deep_Learning_in_Agricultural_Contexts.pdf" target="_blank">PDF appendix</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- =================== BIBTEX =================== -->
+<section id="bibtex">
+  <div class="container">
+    <h2>BibTeX</h2>
+    <div class="content">
+<pre><code>@misc{sikder2025adversarial-ag,
+  title        = {Adversarial Image Detection Using Deep Learning in Agricultural Contexts},
+  author       = {Md Nazmul Kabir Sikder and Mehmet Oguz Yardimci and Trey Ward and
+                  Shubham Laxmikant Deshmukh and Feras A. Batarseh},
+  year         = {2025},
+  howpublished = {\url{https://github.com/AI-VTRC/CV_In_Ag}},
+  note         = {Project page and PDF.}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Inspired by modern CVPR-style project pages. © 2025 The Authors.
+  </div>
+</footer>
+</body>
+</html>
