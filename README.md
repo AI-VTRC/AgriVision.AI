@@ -1,7 +1,8 @@
 # CV for Agriculture: Real vs Generated Image Detection  
 
 
-We provide **tools, models, and generation recipes** to detect whether plant leaf images are **real or AI-generated** (GAN/diffusion), and to benchmark robustness across different sources of adversarial images.  
+We present a novel framework capable of classifying high-fidelity adversarial plant images. This supervised approach not only detects attacks but also identifies their specific source models. This study employs state-of-the-art GAN architectures, including StyleGAN2 and
+StyleGAN3, alongside powerful diffusion models such as Dreamshaper-8, BLIP-Diffusion, and Pix2Pix, to produce diverse adversarial images through both image-to-image and text-to-image methods. As GANs and diffusion models advance, the proposed approach is designed to evolve, maintaining strong generation and detection capabilities against emerging threats in agricultural cyber-physical systems.  
 
 ---
 
