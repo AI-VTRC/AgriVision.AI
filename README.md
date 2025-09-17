@@ -103,10 +103,10 @@ If you use this repo or paper:
 ```bibtex
 @article{Sikder2025AgriAdversarial,
   title   = {Adversarial Image Detection Using Deep Learning in Agricultural Contexts},
-  author  = {Sikder, Md Nazmul Kabir and Yardimci, Mehmet and Ward, Trey and Deshmukh, Shubham Laxmikant and Batarseh, Feras A.},
-  journal = {Preprint},
+  author  = {Sikder, M. K., Yardimci, M., and Ward, T., and Deshmukh, S., and Batarseh, F. A.},
+  journal = {Preprint (in submission)},
   year    = {2025},
-  month   = {September}
+  month   = {October}
 }
 ```
 
@@ -119,7 +119,7 @@ If you use this repo or paper:
 - Shubham L. Deshmukh  
 - Feras A. Batarseh  
 
-Affiliation: Virginia Tech.  
+Affiliation: Virginia Tech; A3 Lab.  
 
 ---
 
