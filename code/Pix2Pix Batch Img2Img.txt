@@ -1,0 +1,135 @@
+#%% md
+# Pix2Pix Batch Img2Img
+#%%
+# Setup for InstructPix2Pix using Hugging Face diffusers
+
+# Install required libraries
+!pip install --upgrade diffusers transformers scipy ftfy accelerate
+
+import torch
+from diffusers import StableDiffusionInstructPix2PixPipeline
+
+# Check GPU availability and show GPU info
+if torch.cuda.is_available():
+    !nvidia-smi
+
+# Load the InstructPix2Pix model pipeline
+print("Attempting to load InstructPix2Pix model...")
+
+try:
+    # Load the pipeline with reduced precision if supported
+    pipe_ip2p = StableDiffusionInstructPix2PixPipeline.from_pretrained(
+        "timbrooks/instruct-pix2pix",
+        safety_checker=None,
+        requires_safety_checker=False,
+        torch_dtype=torch.float16
+    )
+
+    # Select the best available device
+    if torch.cuda.is_available():
+        device_ip2p = torch.device("cuda")
+        print("CUDA available. Model will run on GPU.")
+    elif torch.backends.mps.is_available():
+        device_ip2p = torch.device("mps")
+        print("MPS available. Model will run on MPS.")
+    else:
+        device_ip2p = torch.device("cpu")
+        print("Running on CPU. This may be slow.")
+
+    # Move pipeline to the appropriate device
+    pipe_ip2p = pipe_ip2p.to(device_ip2p)
+
+    print("InstructPix2Pix setup complete. Use 'pipe_ip2p' to perform image edits.")
+
+except Exception as e:
+    print(f"Failed to load InstructPix2Pix model: {e}")
+    print("Ensure internet access and verify model path 'timbrooks/instruct-pix2pix'.")
+    pipe_ip2p = None
+#%% md
+# Batch processing function for InstructPix2Pix
+#%%
+# Pulls input_images to generate output_images from subfolders
+
+import os
+from PIL import Image
+
+# Define the base input and output folders
+base_input_folder = "Dataset/real-real"  # Base folder containing subfolders with images
+base_output_folder = "output_images_ip2p" # Base folder to save results in corresponding subfolders
+
+# Use prompt for image generation
+prompt = "a single leaf, detailed texture, against a matte background, retaining the original image's overall composition, lighting, and surrounding elements, realistic" #@param {type:"string"}
+
+# Check if the base input folder exists and the InstructPix2Pix pipeline is ready
+if not os.path.exists(base_input_folder):
+    print(f"Base input folder '{base_input_folder}' not found. Please create it and upload your images in subfolders.")
+elif 'pipe_ip2p' not in locals() or pipe_ip2p is None:
+     print("InstructPix2Pix pipeline ('pipe_ip2p') was not successfully set up in a previous cell. Cannot process images.")
+else:
+    print(f"Scanning base input folder '{base_input_folder}' for subfolders...")
+
+    # Iterate through all items in the base input folder
+    for item in os.listdir(base_input_folder):
+        item_path = os.path.join(base_input_folder, item)
+
+        # Check if the item is a directory
+        if os.path.isdir(item_path):
+            subfolder_input_path = item_path
+            subfolder_output_path = os.path.join(base_output_folder, item) # Create corresponding output subfolder
+
+            print(f"\nEntering subfolder: {subfolder_input_path}")
+
+            # Create the output subfolder if it doesn't exist
+            if not os.path.exists(subfolder_output_path):
+                os.makedirs(subfolder_output_path)
+                print(f"Created output subfolder: {subfolder_output_path}")
+
+            # Get a list of image files in the current subfolder
+            image_files = [f for f in os.listdir(subfolder_input_path)
+                           if os.path.isfile(os.path.join(subfolder_input_path, f)) and
+                              f.lower().endswith(('.png', '.jpg', '.jpeg', '.JPG' , '.JPEG' , '.bmp', '.gif', '.tiff'))]
+
+            if len(image_files) == 0:
+                print(f"No supported image files found in '{subfolder_input_path}'.")
+            else:
+                print(f"Found {len(image_files)} image files in '{subfolder_input_path}'.")
+                print("Starting image processing with InstructPix2Pix for this subfolder...")
+
+                # Process each image file in the subfolder
+                for filename in image_files:
+                    base, ext = os.path.splitext(filename)
+                    input_path = os.path.join(subfolder_input_path, filename)
+                    print(f"Processing: {input_path}")
+
+                    try:
+                        # Load the image into a PIL Image object
+                        init_image = Image.open(input_path).convert("RGB")
+
+                        # Generate the new image based on the input image and prompt using pipe_ip2p
+                        edited_image = pipe_ip2p(
+                            image=init_image,
+                            prompt=prompt,
+                            num_inference_steps=50,
+                            strength=0.05,
+                            cfg_scale=25,
+                        ).images[0]
+
+                        # Save the new image in the corresponding output subfolder
+                        output_filename = f"{base}_instruct_pix2pix{ext}"
+                        output_path = os.path.join(subfolder_output_path, output_filename)
+                        edited_image.save(output_path)
+
+                        print(f"Saved: {output_path}")
+
+                    except Exception as e:
+                        print(f"Error processing {filename} in {subfolder_input_path}: {e}")
+
+                print(f"Finished processing images in '{subfolder_input_path}'.")
+        # else:
+            # Optional: Add a print statement if an item is not a directory
+            # print(f"Skipping non-directory item: {item_path}")
+
+    print("\n------------------------------------")
+    print("Finished processing all subfolders.")
+    print(f"Edited images are saved in subfolders within '{base_output_folder}'.")
+    print("------------------------------------")

@@ -1,0 +1,138 @@
+#%% md
+# DreamShaper 8 inpainting
+#%% md
+## Setting up models
+#%%
+# ── Cell A: install, imports, config & guarded GrabCut ─────────────────────────
+
+# 1) (Run once in your venv/kernel)
+!pip install --quiet opencv-python-headless diffusers accelerate safetensors transformers
+
+import os, torch, numpy as np
+import cv2
+from PIL import Image
+from diffusers import StableDiffusionInpaintPipeline
+
+# ── Config ───────────────────────────────────────────────────────────────────
+input_base     = "Dataset/real-real"
+output_base    = "output_images_DS8-Inpainting"
+device         = "cuda" if torch.cuda.is_available() else "cpu"
+
+inpaint_prompt = (
+    "Replace the masked area with a healthy green leaf that perfectly matches "
+    "scene lighting, shadows, color tone, perspective, and scale. Leave everything else untouched."
+)
+neg_prompt     = "person, human, hand, animal, insect, text, logo, tool, vehicle, blur, noise"
+
+# ── Build Inpainting Pipeline ────────────────────────────────────────────────
+inpaint_pipe = StableDiffusionInpaintPipeline.from_pretrained(
+    "Lykon/dreamshaper-8-inpainting",
+    safety_checker=None,
+    torch_dtype=torch.float16 if device=="cuda" else torch.float32
+).to(device)
+
+# ── Leaf Segmentation Helper ─────────────────────────────────────────────────
+def segment_leaf_grabcut(img_rgb: np.ndarray) -> np.ndarray:
+    """
+    1) Rough green‐hue threshold in HSV to get initial mask.
+    2) Morphological close/open to clean.
+    3) Guard against all‐FG or all‐BG.
+    4) GrabCut refine using that mask as initialization.
+    Returns a binary mask (0/255 uint8).
+    """
+    hsv = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2HSV)
+    lower = np.array([35, 50, 50])
+    upper = np.array([85, 255, 255])
+    init_mask = cv2.inRange(hsv, lower, upper)
+
+    # clean up
+    kern = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11,11))
+    init_mask = cv2.morphologyEx(init_mask, cv2.MORPH_CLOSE, kern)
+    init_mask = cv2.morphologyEx(init_mask, cv2.MORPH_OPEN,  kern)
+
+    # guard: ensure we have both FG & BG samples
+    fg_count = cv2.countNonZero(init_mask)
+    bg_count = init_mask.size - fg_count
+    if fg_count == 0 or bg_count == 0:
+        # no GrabCut → return raw threshold mask (or zero mask)
+        return init_mask
+
+    # set up GrabCut mask
+    gc_mask = np.full(init_mask.shape, cv2.GC_PR_BGD, dtype=np.uint8)
+    gc_mask[init_mask>0] = cv2.GC_PR_FGD
+
+    bgdModel = np.zeros((1,65), np.float64)
+    fgdModel = np.zeros((1,65), np.float64)
+    cv2.grabCut(img_rgb, gc_mask, None, bgdModel, fgdModel, 5,
+                cv2.GC_INIT_WITH_MASK)
+
+    # final binary mask
+    fg = np.where((gc_mask==cv2.GC_FGD)|(gc_mask==cv2.GC_PR_FGD),
+                  255, 0).astype(np.uint8)
+    return fg
+
+print("✅ Cell A: installed, pipeline & segmenter ready.")
+#%% md
+## Processing images
+#%%
+# ── Cell B: walk input tree, segment, inpaint, composite ──────────────────────
+
+import os
+import numpy as np
+from PIL import Image
+
+def mkdirs(base, rel):
+    paths = {
+        "mask":       os.path.join(base, "masks",      rel),
+        "inpainted":  os.path.join(base, "inpainted",  rel),
+        "composited": os.path.join(base, "composited", rel),
+    }
+    for p in paths.values():
+        os.makedirs(p, exist_ok=True)
+    return paths
+
+for root, _, files in os.walk(input_base):
+    imgs = sorted(f for f in files if f.lower().endswith((".png","jpg","jpeg")))
+    if not imgs:
+        continue
+
+    rel  = os.path.relpath(root, input_base)
+    dirs = mkdirs(output_base, rel)
+
+    for fn in imgs:
+        src = os.path.join(root, fn)
+        stem = os.path.splitext(fn)[0]
+        pil_img = Image.open(src).convert("RGB")
+        rgb_np = np.array(pil_img)
+        print(f"\n▶ Processing {src}")
+
+        # 1) Segment leaf with guarded GrabCut
+        leaf_mask = segment_leaf_grabcut(rgb_np)
+        mask_img  = Image.fromarray(leaf_mask, mode="L")
+        mask_img.save(os.path.join(dirs["mask"], f"{stem}_mask.png"))
+        print("   ✓ mask saved")
+
+        # 2) Inpaint the masked region
+        out_img = inpaint_pipe(
+            prompt=inpaint_prompt,
+            negative_prompt=neg_prompt,
+            image=pil_img,
+            mask_image=mask_img,
+            guidance_scale=7.5,
+            num_inference_steps=50
+        ).images[0]
+        out_img.save(os.path.join(dirs["inpainted"], f"{stem}_inpainted.png"))
+        print("   ✓ inpainted saved")
+
+        # 3) Composite inpainted leaf over original background
+        w, h    = out_img.size
+        orig_rs = pil_img.resize((w,h), Image.LANCZOS)
+        mask_rs = mask_img.resize((w,h), Image.NEAREST)
+
+        orig_np = np.array(orig_rs)
+        in_np   = np.array(out_img)
+        m_np    = (np.array(mask_rs)/255.0)[...,None]
+        comp_np = (in_np * m_np + orig_np * (1 - m_np)).astype(np.uint8)
+        comp_img = Image.fromarray(comp_np)
+        comp_img.save(os.path.join(dirs["composited"], f"{stem}_composited.png"))
+        print("   ✓ composite saved")

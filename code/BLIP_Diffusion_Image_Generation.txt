@@ -1,0 +1,87 @@
+import os
+from PIL import Image
+from diffusers.pipelines import BlipDiffusionPipeline
+import torch
+from tqdm import tqdm
+
+# Prompt and subject settings
+prompt = (
+    "Generate a high-fidelity image closely resembling the input, preserving key details "
+    "such as composition, color balance, and lighting. Maintain a realistic style, ensuring "
+    "textures, depth, and fine details remain natural and coherent. Modify only the leaf "
+    "element in the image, keeping the background, surrounding objects, and lighting conditions "
+    "completely unchanged. Do not alter the context, perspective, or environment outside of the leaf. "
+    "Ensure the leaf's integration remains consistent with the original image's style and realism."
+)
+cond_subject = "leaf"
+tgt_subject = "leaf"
+
+# Base input and output directories
+base_input_folder = "../Dataset/real-real"
+base_output_folder = "../output_images_blipdiffusion"
+
+# Load BLIP-Diffusion pipeline
+try:
+    pipe_blip = BlipDiffusionPipeline.from_pretrained(
+        "Salesforce/blipdiffusion",
+        torch_dtype=torch.float16
+    ).to("cuda" if torch.cuda.is_available() else "cpu")
+    print("✅ BLIP-Diffusion pipeline loaded successfully.")
+except Exception as e:
+    print(f"❌ Failed to load BLIP-Diffusion model: {e}")
+    pipe_blip = None
+
+# Check input folder and pipeline readiness
+if not os.path.exists(base_input_folder):
+    print(f"❌ Base input folder '{base_input_folder}' not found.")
+elif pipe_blip is None:
+    print("❌ Pipeline not initialized. Exiting.")
+else:
+    print(f"📂 Scanning base input folder '{base_input_folder}'...")
+
+    subfolders = [item for item in os.listdir(base_input_folder) if os.path.isdir(os.path.join(base_input_folder, item))]
+
+    for subfolder in tqdm(subfolders, desc="Processing subfolders"):
+        subfolder_input_path = os.path.join(base_input_folder, subfolder)
+        subfolder_output_path = os.path.join(base_output_folder, subfolder)
+
+        os.makedirs(subfolder_output_path, exist_ok=True)
+
+        image_files = [f for f in os.listdir(subfolder_input_path)
+                       if os.path.isfile(os.path.join(subfolder_input_path, f)) and
+                          f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff'))]
+
+        if len(image_files) == 0:
+            print(f"⚠️ No images found in {subfolder_input_path}")
+            continue
+
+        for filename in tqdm(image_files, desc=f"→ {subfolder}", leave=False):
+            base, ext = os.path.splitext(filename)
+            input_path = os.path.join(subfolder_input_path, filename)
+
+            try:
+                cond_image = Image.open(input_path).convert("RGB")
+
+                # Run BLIP-Diffusion pipeline
+                edited_image = pipe_blip(
+                    prompt,
+                    cond_image,
+                    cond_subject,
+                    tgt_subject,
+                    guidance_scale=7.5,
+                    num_inference_steps=50,
+                    neg_prompt="over-exposure, under-exposure, saturated, duplicate, out of frame, lowres, cropped, worst quality, low quality, jpeg artifacts, morbid, mutilated, ugly, bad anatomy, bad proportions, deformed, blurry",
+                    height=512,
+                    width=512
+                ).images[0]
+
+                # Save output image
+                output_filename = f"{base}_blipdiffusion{ext}"
+                output_path = os.path.join(subfolder_output_path, output_filename)
+                edited_image.save(output_path)
+
+            except Exception as e:
+                print(f"❌ Error processing {filename}: {e}")
+
+    print("\n✅ Finished processing all subfolders with BLIP-Diffusion.")
+    print(f"📁 Edited images are saved in '{base_output_folder}'.")

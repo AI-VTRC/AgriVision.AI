@@ -1,0 +1,175 @@
+#%% md
+# DreamShaper 8 inpainting
+#%% md
+## Setting up models
+#%%
+# ── ENV SETUP (run once) ─────────────────────────────────────────────────────
+# %pip install --quiet opencv-python-headless scikit-image diffusers accelerate safetensors transformers tqdm
+
+import os, torch, cv2, numpy as np
+from PIL import Image
+from skimage.segmentation import slic
+from skimage.measure import regionprops
+from diffusers import StableDiffusionInpaintPipeline
+
+# ── CONFIG ───────────────────────────────────────────────────────────────────
+DEVICE        = "cuda" if torch.cuda.is_available() else "cpu"
+INPUT_DIR     = "Dataset/real-real/Maize Temp"
+OUTPUT_DIR    = "output_images_maize_replacement"
+SEED          = 42
+
+# inpaint prompt: generic maize-leaf imitation
+PROMPT        = (
+    "Macro photograph of a maize leaf—replace the masked region with a "
+    "plausible, unrecognizable maize-leaf surface, matching color, "
+    "lighting and scale perfectly, no trees, no sky, no people."
+)
+NEG_PROMPT    = (
+    "tree, forest, sky, person, animal, insect, building, vehicle, blur, noise"
+)
+N_PATCHES     = 5     # how many “main” regions to replace each image
+
+# ── HELPER: find top-N “feature” masks via superpixels and variance ──────────
+def segment_main_features(img: np.ndarray, n_patches=N_PATCHES):
+    """
+    1) Super-pixel (SLIC) to break the image into ~200 regions
+    2) Score each region by texture variance (variance of L channel in Lab space)
+    3) Return a list of the top-n binary masks (0/255 uint8).
+    """
+    # convert to Lab and get L channel
+    lab = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
+    L   = lab[...,0].astype(np.float32) / 255.0
+
+    # SLIC superpixels
+    segments = slic(img, n_segments=200, compactness=10, start_label=1)
+    
+    # compute variance per segment
+    props = regionprops(segments, intensity_image=L)
+    # sort by variance descending
+    props = sorted(props, key=lambda p: p.intensity_variance, reverse=True)
+    
+    masks = []
+    for p in props[:n_patches]:
+        mask = (segments == p.label).astype(np.uint8) * 255
+        # dilate slightly so we cover full feature
+        mask = cv2.dilate(mask,
+                          cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(7,7)),
+                          iterations=1)
+        masks.append(mask)
+    return masks
+
+# ── LOAD INPAINT PIPELINE ────────────────────────────────────────────────────
+torch.manual_seed(SEED)
+pipe = StableDiffusionInpaintPipeline.from_pretrained(
+    "Lykon/dreamshaper-8-inpainting",
+    safety_checker=None,
+    torch_dtype=torch.float16 if DEVICE=="cuda" else torch.float32
+).to(DEVICE)
+pipe.enable_attention_slicing()
+print("✅ Cell A ready—feature segmenter + inpaint pipeline loaded.")
+#%% md
+## Processing images
+#%%
+# ── CELL B: main‐feature replacement loop ────────────────────────────────────
+import os
+import cv2
+import numpy as np
+import torch
+from PIL import Image
+from skimage.segmentation import slic
+from tqdm.auto import tqdm
+
+# ── CONFIG (same as Cell A) ─────────────────────────────────────────────────
+INPUT_DIR   = "Dataset/real-real/Maize Temp"
+OUTPUT_DIR  = "output_images_feature_replacement"
+SEED        = 42
+N_PATCHES   = 5
+
+# ── FIXED segment_main_features (manual variance) ──────────────────────────
+def segment_main_features(img: np.ndarray, n_patches=N_PATCHES):
+    # Convert to Lab and normalize L channel
+    lab      = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
+    L        = lab[...,0].astype(np.float32) / 255.0
+
+    # SLIC superpixels
+    segments = slic(img, n_segments=200, compactness=10, start_label=1)
+
+    # Compute variance of L in each segment
+    variances = {}
+    for label in np.unique(segments):
+        mask         = (segments == label)
+        variances[label] = float(np.var(L[mask]))
+
+    # Select top‐N labels by variance
+    top_labels = sorted(variances, key=lambda lbl: variances[lbl], reverse=True)[:n_patches]
+
+    # Build binary masks and dilate
+    masks = []
+    for lbl in top_labels:
+        m = (segments == lbl).astype(np.uint8) * 255
+        m = cv2.dilate(
+            m,
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7,7)),
+            iterations=1
+        )
+        masks.append(m)
+    return masks
+
+# ── DIRECTORY UTILS ────────────────────────────────────────────────────────
+def makedirs(base, rel):
+    paths = {
+        "mask":       os.path.join(base, "masks",      rel),
+        "inpainted":  os.path.join(base, "inpainted",  rel),
+        "composited": os.path.join(base, "composited", rel),
+    }
+    for p in paths.values(): os.makedirs(p, exist_ok=True)
+    return paths
+
+# ── MAIN LOOP ───────────────────────────────────────────────────────────────
+for root, _, files in os.walk(INPUT_DIR):
+    imgs = [f for f in sorted(files) if f.lower().endswith((".jpg","png","jpeg"))]
+    if not imgs:
+        continue
+
+    rel  = os.path.relpath(root, INPUT_DIR)
+    outs = makedirs(OUTPUT_DIR, rel)
+
+    for fn in tqdm(imgs, desc=f"Dir {rel}", leave=False):
+        src    = os.path.join(root, fn)
+        stem   = os.path.splitext(fn)[0]
+        pil    = Image.open(src).convert("RGB")
+        rgb_np = np.array(pil)
+
+        # 1) segment top-N “main feature” masks
+        masks = segment_main_features(rgb_np)
+
+        # union masks into one
+        union_mask = np.clip(sum(masks), 0, 255).astype(np.uint8)
+        mask_img   = Image.fromarray(union_mask, mode="L")
+        mask_img.save(os.path.join(outs["mask"], f"{stem}_mask.png"))
+
+        # 2) inpaint via pipeline from Cell A
+        #    (assumes `pipe` & PROMPT/NEG_PROMPT loaded in your notebook)
+        gen = pipe(
+            prompt=PROMPT,
+            negative_prompt=NEG_PROMPT,
+            image=pil,
+            mask_image=mask_img,
+            guidance_scale=7.5,
+            num_inference_steps=50,
+            generator=torch.Generator(DEVICE).manual_seed(SEED)
+        )
+        out_img = gen.images[0]
+        out_img.save(os.path.join(outs["inpainted"], f"{stem}_inpainted.png"))
+
+        # 3) composite only the masked region
+        w, h     = out_img.size
+        orig_rs  = pil.resize((w, h), Image.LANCZOS)
+        m_rs     = mask_img.resize((w, h), Image.NEAREST)
+        orig_np  = np.array(orig_rs)
+        out_np   = np.array(out_img)
+        m_np     = (np.array(m_rs)[..., None] / 255.0)
+        comp_np  = (out_np * m_np + orig_np * (1 - m_np)).astype(np.uint8)
+        comp_img = Image.fromarray(comp_np)
+        comp_img.save(os.path.join(outs["composited"], f"{stem}_composited.png"))
+
