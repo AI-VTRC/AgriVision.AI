@@ -121,6 +121,7 @@ If you use this repo or paper:
 - Feras A. Batarseh  
 
 Affiliation: Virginia Tech; A3 Lab.  
+Web link: https://ai-vtrc.github.io/AgriVision.AI/
 
 ---
 
