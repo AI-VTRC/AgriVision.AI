@@ -102,11 +102,11 @@ The system generates the following in your output directory:
 ## 📜 Citation
 If you use this repo or paper:  
 ```bibtex
-@article{Sikder2025AgriAdversarial,
+@article{Yardimci2026AgriAdversarial,
   title   = {Adversarial Image Detection Using Deep Learning in Agricultural Contexts},
-  author  = {Sikder, M. K., Yardimci, M., Ward, T., and Deshmukh, S., and Batarseh, F. A.},
+  author  = {Yardimci, M., Sikder, N. K., Ward, T., and Batarseh, F. A.},
   journal = {Preprint (in submission)},
-  year    = {2025},
+  year    = {2026},
   month   = {October}
 }
 ```
@@ -114,8 +114,8 @@ If you use this repo or paper:
 ---
 
 ## 👥 Authors
-- Md Nazmul Kabir Sikder  
-- Mehmet Yardimci  
+- Mehmet Yardimci
+- Md Nazmul Kabir Sikder    
 - Trey Ward  
 - Feras A. Batarseh  
 
