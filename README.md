@@ -1,7 +1,7 @@
-# CV for Agriculture: Real vs Generated Image Detection  
+# AgriVision: Real vs Generated Image Detection  
 
 
-We present a novel framework capable of classifying high-fidelity adversarial plant images. This supervised approach not only detects attacks but also identifies their specific source models. This study employs state-of-the-art GAN architectures, including StyleGAN2 and
+We present a novel framework (namely: AgriVision) capable of classifying high-fidelity adversarial plant images. This supervised approach not only detects attacks but also identifies their specific source models. This study employs state-of-the-art GAN architectures, including StyleGAN2 and
 StyleGAN3, alongside powerful diffusion models such as Dreamshaper-8, BLIP-Diffusion, and Pix2Pix, to produce diverse adversarial images through both image-to-image and text-to-image methods. As GANs and diffusion models advance, the proposed approach is designed to evolve, maintaining strong generation and detection capabilities against emerging threats in agricultural cyber-physical systems.  
 
 ---
@@ -117,7 +117,6 @@ If you use this repo or paper:
 - Md Nazmul Kabir Sikder  
 - Mehmet Yardimci  
 - Trey Ward  
-- Shubham L. Deshmukh  
 - Feras A. Batarseh  
 
 Affiliation: Virginia Tech; A3 Lab.  
