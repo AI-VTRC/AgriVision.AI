@@ -129,8 +129,54 @@
       font-family:"Google Sans",sans-serif;
     }
 
-    pre{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto}
-    footer{padding:34px 0;text-align:center;color:var(--muted);font-size:14px}
+    pre{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto;font-size:14px;line-height:1.6}
+    footer{padding:34px 0;text-align:center;color:var(--muted);font-size:14px;line-height:1.7}
+    footer a{color:var(--muted)}
+
+    /* smooth in-page scrolling */
+    html{scroll-behavior:smooth}
+    section{scroll-margin-top:72px}
+
+    /* top navigation */
+    .nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
+    .nav-inner{max-width:var(--wrap);margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .nav-brand{font-family:"Google Sans",sans-serif;font-weight:700;font-size:16px;color:var(--text);white-space:nowrap}
+    .nav-brand:hover{text-decoration:none;opacity:.85}
+    .nav-links{display:flex;gap:2px;flex-wrap:wrap}
+    .nav-links a{color:var(--muted);font-size:14px;font-weight:600;padding:7px 11px;border-radius:8px}
+    .nav-links a:hover{color:var(--text);background:var(--soft);text-decoration:none}
+    @media (max-width:760px){.nav-links{display:none}}
+
+    /* hero polish */
+    .tagline{max-width:780px;margin:6px auto 2px;text-align:center;color:var(--muted);font-size:18px;line-height:1.6}
+    .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px}
+    .chip{font-size:12.5px;font-weight:600;color:var(--muted);background:var(--soft);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
+
+    /* section heading block */
+    .eyebrow{display:block;text-align:center;text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;font-weight:700;color:var(--link);margin:0 0 6px;font-family:"Google Sans",sans-serif}
+    h2 + .content{margin-top:4px}
+    h3.sub{font-family:"Google Sans",sans-serif;font-size:21px;font-weight:600;margin:36px auto 10px;max-width:980px;display:flex;align-items:center;gap:11px;line-height:1.3}
+    h3.sub::before{content:"";flex:0 0 auto;width:4px;height:22px;border-radius:3px;background:var(--link)}
+
+    /* numbered figure / table captions */
+    .cap{color:var(--muted);font-size:14px;line-height:1.62;margin-top:10px;text-align:left}
+    .cap .lbl{color:var(--text);font-weight:700;font-family:"Google Sans",sans-serif}
+    figcaption.caption{text-align:left}
+
+    /* highlight cards */
+    .cards{max-width:980px;margin:6px auto 0;display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:780px){.cards{grid-template-columns:repeat(3,1fr)}}
+    .card-h{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 18px;box-shadow:0 4px 16px rgba(0,0,0,.04)}
+    .card-h .ic{font-size:22px;display:block;margin-bottom:10px}
+    .card-h h4{font-family:"Google Sans",sans-serif;margin:0 0 6px;font-size:16px}
+    .card-h p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.6}
+
+    /* key-number strip */
+    .stats{max-width:980px;margin:22px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    @media (min-width:780px){.stats{grid-template-columns:repeat(4,1fr)}}
+    .stat{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px 14px;text-align:center}
+    .stat .n{font-family:"Google Sans",sans-serif;font-weight:700;font-size:26px;color:var(--text);line-height:1.1}
+    .stat .l{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.45}
 
     /* data tables */
     .table-wrap{max-width:980px;margin:8px auto 4px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
@@ -151,10 +197,27 @@
 </head>
 <body>
 
+<!-- =================== NAV =================== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top">🌿 AgriVision</a>
+    <div class="nav-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#overview">Overview</a>
+      <a href="#methods">Methods</a>
+      <a href="#results">Results</a>
+      <a href="#appendix">Appendix</a>
+      <a href="#bibtex">BibTeX</a>
+      <a href="https://github.com/AI-VTRC/AgriVision.AI" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
 <!-- =================== HERO =================== -->
-<header class="hero container">
+<header class="hero container" id="top">
   <h1>AgriVision: Adversarial Image Detection Using Deep Learning in Agricultural Contexts</h1>
   <div class="venue">Preprint &middot; 2026</div>
+  <p class="tagline">A unified framework that <strong>detects</strong> synthetic plant imagery and <strong>attributes</strong> it to its generative source — defending agricultural cyber-physical systems against GAN- and diffusion-based attacks.</p>
 
   <div class="authors">
   <a href="https://scholar.google.com/citations?user=rJlnm08AAAAJ&hl=en" target="_blank" rel="noopener">Mehmet Oguz Yardimci</a><sup>1,&lowast;</sup>,
@@ -174,16 +237,50 @@
     <a class="btn" href="./Adversarial_Image_Detection_Using_Deep_Learning_in_Agricultural_Contexts.pdf" target="_blank" rel="noopener">📄 Paper (PDF)</a>
     <a class="btn light" href="https://github.com/AI-VTRC/AgriVision.AI" target="_blank" rel="noopener">💻 Code (GitHub)</a>
   </div>
+
+  <div class="chips">
+    <span class="chip">Cyberbiosecurity</span>
+    <span class="chip">GANs &amp; Diffusion</span>
+    <span class="chip">Synthetic-image forensics</span>
+    <span class="chip">Source attribution</span>
+    <span class="chip">Unseen-generator robustness</span>
+  </div>
 </header>
 
 <!-- =================== ABSTRACT =================== -->
 <section id="abstract">
   <div class="container">
+    <span class="eyebrow">Paper</span>
     <h2>Abstract</h2>
     <div class="content">
       <p>
         The digital transformation of agriculture has introduced cyber-physical systems in which biological processes are monitored and adjusted through sensory, digital, and vision pipelines. As these systems increasingly rely on artificial intelligence, controlled agriculture environments use leaf images for disease detection and yield estimation, amongst other goals. Images used as input for on-the-farm decision making are exposed to adversarial manipulation and to synthetic images created by new generative models. Prior studies in this domain focused mainly on pixel-level attacks or simple binary detection and offered limited support for identifying the generative source of an image and for handling unseen generators. In this work, we propose a unified detection and attribution framework for agricultural cyber-physical systems. Synthetic concealment and fabrication attack scenarios are created using multiple generative adversarial networks (StyleGAN2, StyleGAN3, R3GAN) and diffusion models (Instruct-Pix2Pix, BLIP-Diffusion, DreamShaper-8) across apple, maize, and tomato imagery. These synthetic samples are used to evaluate three vision classifier architectures: EfficientNet-B0, ResNet-50, and CLIP (ViT-B/32), for binary authenticity classification (Real vs. Synthetic), source identification (Real, GAN, or Diffusion), and detailed plant-health-source attribution. In the in-distribution setting, the convolutional models reach near-saturated performance for the generators and preprocessing conditions present in training, while CLIP performs well on detailed attribution but shows weaker performance on binary authenticity classification. When the models are evaluated on images from generators not seen during training, accuracy drops for source attribution and CLIP shows plant-specific failures. These results demonstrate both the promise and the limits of current generative-image detection methods in controlled agricultural imagery and motivate layered, continuously updated defenses for preserving the integrity of automated agricultural monitoring pipelines.
       </p>
+    </div>
+
+    <div class="cards">
+      <div class="card-h">
+        <span class="ic">🛡️</span>
+        <h4>Detect &amp; attribute</h4>
+        <p>A single classifier decides Real vs. Synthetic <em>and</em> attributes each fake to its generative family (GAN vs. diffusion), enabling forensic threat intelligence.</p>
+      </div>
+      <div class="card-h">
+        <span class="ic">🧬</span>
+        <h4>Six generators, three crops</h4>
+        <p>StyleGAN2/3 and R3GAN plus Instruct-Pix2Pix, BLIP-Diffusion, and DreamShaper-8 span apple, maize, and tomato across healthy and unhealthy states.</p>
+      </div>
+      <div class="card-h">
+        <span class="ic">🚨</span>
+        <h4>Zero-day stress test</h4>
+        <p>R3GAN and DreamShaper-8 are held out entirely, exposing a real generalization gap when adversaries adopt unseen generative models.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">192K</div><div class="l">real + synthetic images</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">classifier architectures</div></div>
+      <div class="stat"><div class="n">~100%</div><div class="l">in-distribution accuracy (CNNs)</div></div>
+      <div class="stat"><div class="n">↓ to 47%</div><div class="l">CLIP source attribution on unseen generators</div></div>
     </div>
   </div>
 </section>
@@ -191,6 +288,7 @@
 <!-- =================== OVERVIEW / PIPELINE =================== -->
 <section id="overview">
   <div class="container">
+    <span class="eyebrow">How it works</span>
     <h2>Overview</h2>
     <div class="content">
       <p>
@@ -200,17 +298,17 @@
 
     <figure class="figure-full">
       <img src="static/images/simplifies_diagram.png" alt="AgriVision authenticity and source-attribution workflow for agriculture." />
-      <figcaption class="caption">AgriVision authenticity and source-attribution workflow: real and synthetic leaf images feed a classifier that outputs both an authenticity decision and a generator-source attribution.</figcaption>
+      <figcaption class="caption cap"><span class="lbl">Figure 1.</span> AgriVision authenticity and source-attribution workflow. Real and synthetic leaf images feed a classifier that outputs both an authenticity decision (Real vs. Synthetic) and a generator-source attribution.</figcaption>
     </figure>
 
     <figure class="figure-full" style="margin-top:18px">
       <img src="static/images/leaf_fake_image_detection.png" alt="Overview of the synthetic leaf image generation and classification framework." />
-      <figcaption class="caption">Detailed framework: GAN (StyleGAN2/3, R3GAN) and diffusion (Instruct-Pix2Pix, BLIP-Diffusion, DreamShaper-8) pipelines build a synthetic corpus that is combined with real PlantVillage imagery to train and evaluate the detection / attribution classifiers.</figcaption>
+      <figcaption class="caption cap"><span class="lbl">Figure 2.</span> Detailed framework. GAN (StyleGAN2/3, R3GAN) and diffusion (Instruct-Pix2Pix, BLIP-Diffusion, DreamShaper-8) pipelines build a synthetic corpus that is combined with real PlantVillage imagery to train and evaluate the detection / attribution classifiers.</figcaption>
     </figure>
 
     <figure class="figure-full" style="margin-top:18px">
       <img src="static/images/threat_model.png" alt="Threat model for synthetic image injection in agricultural cyber-physical systems." />
-      <figcaption class="caption">Threat model: an adversary injects synthetic leaf images into either the training corpus (poisoning) or the operational image stream (inference), while the defender's classifier outputs authenticity labels and generator-source attributions for downstream CPS components.</figcaption>
+      <figcaption class="caption cap"><span class="lbl">Figure 3.</span> Threat model. An adversary injects synthetic leaf images into either the training corpus (poisoning) or the operational image stream (inference), while the defender's classifier outputs authenticity labels and generator-source attributions for downstream CPS components.</figcaption>
     </figure>
 
     <div class="content">
@@ -224,6 +322,7 @@
 <!-- =================== METHODS =================== -->
 <section id="methods">
   <div class="container">
+    <span class="eyebrow">Approach</span>
     <h2>Methods</h2>
     <div class="content">
       <p><strong>GAN synthesis.</strong> We adopt StyleGAN2-ADA and StyleGAN3 to synthesize class-conditional leaves (Apple/Tomato/Maize × Healthy/Unhealthy), with ~1,000 PlantVillage images per class resized to 256×256 for training and 6,000 synthetic images generated per class from the best checkpoints. Models are monitored with FID over training kimg. <em>R3GAN</em> — an architecturally distinct, non-alias-free GAN — is included only as a held-out, unseen generator for generalization testing.</p>
@@ -234,99 +333,47 @@
 </section>
 
 <!-- ======================== RESULTS ======================== -->
-<section id="results" class="section">
-  <div class="container is-max-desktop">
+<section id="results">
+  <div class="container">
 
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Results</h2>
-        <p class="content has-text-justified">
-          We evaluate (i) GAN training dynamics and best FID (R3GAN, StyleGAN2-ADA, StyleGAN3),
-          (ii) diffusion image quality, and (iii) classifier performance for binary, source,
-          and detailed attribution — both in-distribution and on the held-out, unseen
-          R3GAN and DreamShaper-8 generators. In-distribution, the CNN baselines (EfficientNet-B0,
-          ResNet-50) reach near-saturated accuracy, while CLIP trails on the imbalanced binary
-          task. On unseen generators, accuracy can drop sharply (e.g., source attribution on maize),
-          revealing a non-trivial generalization gap. Below we show quantitative trends followed by
-          qualitative examples and a summary table.
-        </p>
-      </div>
+    <span class="eyebrow">Experiments</span>
+    <h2>Results</h2>
+    <div class="content">
+      <p>
+        We report (i) the fidelity of the GAN generators (FID), (ii) in-distribution classifier
+        performance on binary authenticity, source, and detailed attribution, and (iii) robustness
+        when the attack distribution shifts to the held-out R3GAN and DreamShaper-8 generators.
+        The headline finding: the CNN baselines (EfficientNet-B0, ResNet-50) are near-saturated
+        <em>in-distribution</em>, but accuracy can fall sharply on unseen generators — a gap that
+        complementary architectures address only partially.
+      </p>
     </div>
 
-    <!-- Quantitative: GAN FID and training curves -->
-    <h3 class="title is-4">Quantitative (FID &amp; Training Dynamics)</h3>
-    <div class="results-scroller" aria-label="Quantitative results scroller" tabindex="0">
-      <!-- (a) -->
-      <figure class="result-card">
-        <span class="result-label">(a)</span>
-        <div class="img-wrap">
-          <img src="static/images/gan_fid_synthetic_trends.png" alt="FID trajectories over training progress for R3GAN, StyleGAN2, and StyleGAN3." />
-        </div>
-        <figcaption class="caption">
-          FID trajectories over training progress for R3GAN, StyleGAN2, and StyleGAN3 (lower is better). StyleGAN3 converges smoothly; StyleGAN2 is competitive on complex maize; R3GAN converges more slowly but monotonically.
-        </figcaption>
-      </figure>
-
-      <!-- (b) -->
-      <figure class="result-card">
-        <span class="result-label">(b)</span>
-        <div class="img-wrap">
-          <img src="static/images/gan_fid_synthetic_best.png" alt="Best FID achieved by each GAN model and class." />
-        </div>
-        <figcaption class="caption">
-          Best FID achieved by each model and crop–health class across Apple, Tomato, and Maize.
-        </figcaption>
-      </figure>
-    </div>
-
-    <!-- Generalization to unseen generators -->
-    <h3 class="title is-4">Generalization to Unseen Generators</h3>
+    <!-- ---- 1. GAN fidelity ---- -->
+    <h3 class="sub">Generator fidelity (FID)</h3>
     <figure class="figure-full">
-      <span class="figure-label">(d)</span>
-      <img src="static/images/generalization_robustness.png" alt="Mapped accuracy under unseen R3GAN and DreamShaper-8 generators for binary authenticity and source-attribution tasks." />
-      <figcaption class="caption">
-        Mapped accuracy on the held-out R3GAN and DreamShaper-8 generators for binary authenticity and source
-        attribution. CNN source accuracy drops markedly (e.g., maize falls to 83.81% / 75.60%), and CLIP source
-        attribution collapses on maize (49.75%) and tomato (47.66%) — yet CLIP leads binary authenticity on
-        unseen apple (100%) and maize (98.71%), exposing complementary, plant-specific failure modes.
+      <div class="grid-2" style="gap:12px">
+        <img src="static/images/gan_fid_synthetic_trends.png" alt="FID trajectories over training progress for R3GAN, StyleGAN2, and StyleGAN3." />
+        <img src="static/images/gan_fid_synthetic_best.png" alt="Best FID achieved by each GAN model and crop-health class." />
+      </div>
+      <figcaption class="caption cap">
+        <span class="lbl">Figure 4.</span> GAN fidelity across R3GAN, StyleGAN2, and StyleGAN3 (lower FID is better).
+        <em>(a, left)</em> FID trajectories over training progress — StyleGAN3 converges smoothly, StyleGAN2 stays
+        competitive on complex maize, and R3GAN converges more slowly but monotonically. <em>(b, right)</em> Best FID
+        achieved by each model for every crop–health class across apple, tomato, and maize.
       </figcaption>
     </figure>
 
-    <!-- Qualitative explainability -->
-    <h3 class="title is-4">Qualitative Explainability</h3>
-    <p class="content">
-      Grad-CAM maps for the CNNs and transformer attention for CLIP on the binary authenticity task
-      (apple validation split). CNNs attend to leaf venation, edges, texture, and border regions, while
-      CLIP attention is more diffuse and can focus on broad leaf structure even when its prediction is wrong.
-    </p>
-    <div class="grid-3 figure">
-      <div>
-        <img src="static/images/explainability/Apple_binary_resnet50_20251122_020646_true-Real_pred-Real_notext.png" alt="ResNet-50 Grad-CAM on a real apple leaf." style="width:100%;border-radius:10px" />
-        <img src="static/images/explainability/Apple_binary_resnet50_20251122_020646_true-Synthetic_pred-Synthetic_notext.png" alt="ResNet-50 Grad-CAM on a synthetic apple leaf." style="width:100%;border-radius:10px;margin-top:8px" />
-        <p class="caption">ResNet-50 (Grad-CAM): real (top) &amp; synthetic (bottom)</p>
-      </div>
-      <div>
-        <img src="static/images/explainability/Apple_binary_efficientnet_b0_20251122_031953_true-Real_pred-Real_notext.png" alt="EfficientNet-B0 Grad-CAM on a real apple leaf." style="width:100%;border-radius:10px" />
-        <img src="static/images/explainability/Apple_binary_efficientnet_b0_20251122_031953_true-Synthetic_pred-Synthetic_notext.png" alt="EfficientNet-B0 Grad-CAM on a synthetic apple leaf." style="width:100%;border-radius:10px;margin-top:8px" />
-        <p class="caption">EfficientNet-B0 (Grad-CAM): real (top) &amp; synthetic (bottom)</p>
-      </div>
-      <div>
-        <img src="static/images/explainability/Apple_binary_clip_20251122_043136_attention_true-Real_pred-Synthetic_notext.png" alt="CLIP attention on a real apple leaf misclassified as synthetic." style="width:100%;border-radius:10px" />
-        <img src="static/images/explainability/Apple_binary_clip_20251122_043136_attention_true-Synthetic_pred-Synthetic_notext.png" alt="CLIP attention on a synthetic apple leaf." style="width:100%;border-radius:10px;margin-top:8px" />
-        <p class="caption">CLIP (attention): real (top) &amp; synthetic (bottom)</p>
-      </div>
-    </div>
-
-    <!-- Quantitative summary figure -->
-    <h3 class="title is-4">Model Performance Summary</h3>
+    <!-- ---- 2. In-distribution performance ---- -->
+    <h3 class="sub">In-distribution performance</h3>
     <figure class="figure-full">
-      <span class="figure-label">(e)</span>
       <img src="static/images/model_performance_summary.png" alt="In-distribution validation performance by model, plant, and task (support-weighted F1)." />
-      <figcaption class="caption">
-        In-distribution validation performance (support-weighted F1) by model, plant, and task. EfficientNet-B0
-        and ResNet-50 reach near-saturated accuracy across tasks, while CLIP remains competitive on detailed
-        attribution but lags on the imbalanced binary authenticity task. These near-perfect scores reflect
-        controlled imagery and known generators — accuracy falls on unseen generators (R3GAN, DreamShaper-8).
+      <figcaption class="caption cap">
+        <span class="lbl">Figure 5.</span> In-distribution validation performance (support-weighted F1) by model,
+        plant, and task. EfficientNet-B0 and ResNet-50 reach near-saturated accuracy across tasks, while CLIP
+        remains competitive on detailed attribution but lags on the imbalanced binary authenticity task. These
+        near-perfect scores reflect controlled imagery and known generators — accuracy falls on unseen generators
+        (Figure&nbsp;6).
       </figcaption>
     </figure>
 
@@ -414,13 +461,69 @@
     </div>
     <p class="table-note">Paired McNemar tests (Holm-corrected) find ResNet-50 and EfficientNet-B0 statistically indistinguishable in every plant/task, while both CNNs significantly outperform CLIP (accuracy gaps of 3.82–17.35 pp).</p>
 
+    <!-- ---- 3. Generalization to unseen generators ---- -->
+    <h3 class="sub">Generalization to unseen generators</h3>
+    <div class="content" style="margin-bottom:4px">
+      <p>
+        R3GAN and DreamShaper-8 are withheld entirely from training to emulate "zero-day" attacks.
+        Here the near-perfect in-distribution scores no longer hold: failure modes become
+        architecture- and plant-specific.
+      </p>
+    </div>
+    <figure class="figure-full">
+      <img src="static/images/generalization_robustness.png" alt="Mapped accuracy under unseen R3GAN and DreamShaper-8 generators for binary authenticity and source-attribution tasks." />
+      <figcaption class="caption cap">
+        <span class="lbl">Figure 6.</span> Mapped accuracy on the held-out R3GAN and DreamShaper-8 generators for
+        binary authenticity and source attribution. CNN source accuracy drops markedly (e.g., maize falls to
+        83.81% / 75.60%), and CLIP source attribution collapses on maize (49.75%) and tomato (47.66%) — yet CLIP
+        leads binary authenticity on unseen apple (100%) and maize (98.71%). The architectures fail in
+        complementary, plant-specific ways.
+      </figcaption>
+    </figure>
+
+    <!-- ---- 4. Explainability ---- -->
+    <h3 class="sub">Qualitative explainability</h3>
+    <div class="content" style="margin-bottom:4px">
+      <p>
+        Grad-CAM (CNNs) and transformer attention (CLIP) for the binary authenticity task on the apple
+        validation split. CNNs concentrate on leaf venation, edges, texture, and border regions, whereas
+        CLIP attention is more diffuse and can fixate on broad leaf structure even when its prediction is
+        wrong — consistent with its weaker binary performance.
+      </p>
+    </div>
+    <figure class="figure-full">
+      <div class="grid-3">
+        <div>
+          <img src="static/images/explainability/Apple_binary_resnet50_20251122_020646_true-Real_pred-Real_notext.png" alt="ResNet-50 Grad-CAM on a real apple leaf." />
+          <img src="static/images/explainability/Apple_binary_resnet50_20251122_020646_true-Synthetic_pred-Synthetic_notext.png" alt="ResNet-50 Grad-CAM on a synthetic apple leaf." style="margin-top:10px" />
+          <p class="cap" style="text-align:center"><strong>ResNet-50</strong> · Grad-CAM<br/>real (top) &amp; synthetic (bottom)</p>
+        </div>
+        <div>
+          <img src="static/images/explainability/Apple_binary_efficientnet_b0_20251122_031953_true-Real_pred-Real_notext.png" alt="EfficientNet-B0 Grad-CAM on a real apple leaf." />
+          <img src="static/images/explainability/Apple_binary_efficientnet_b0_20251122_031953_true-Synthetic_pred-Synthetic_notext.png" alt="EfficientNet-B0 Grad-CAM on a synthetic apple leaf." style="margin-top:10px" />
+          <p class="cap" style="text-align:center"><strong>EfficientNet-B0</strong> · Grad-CAM<br/>real (top) &amp; synthetic (bottom)</p>
+        </div>
+        <div>
+          <img src="static/images/explainability/Apple_binary_clip_20251122_043136_attention_true-Real_pred-Synthetic_notext.png" alt="CLIP attention on a real apple leaf misclassified as synthetic." />
+          <img src="static/images/explainability/Apple_binary_clip_20251122_043136_attention_true-Synthetic_pred-Synthetic_notext.png" alt="CLIP attention on a synthetic apple leaf." style="margin-top:10px" />
+          <p class="cap" style="text-align:center"><strong>CLIP</strong> · attention<br/>real (top) &amp; synthetic (bottom)</p>
+        </div>
+      </div>
+      <figcaption class="caption cap">
+        <span class="lbl">Figure 7.</span> Representative explainability visualizations for binary authenticity
+        detection. CNN examples use Grad-CAM; CLIP examples show transformer attention. The CLIP "real" example
+        (right, top) is misclassified as synthetic, illustrating its diffuse, semantics-driven attention.
+      </figcaption>
+    </figure>
+
   </div>
 </section>
 
 <!-- =================== APPENDIX (EXTENDED DETAILS) =================== -->
 <section id="appendix">
   <div class="container">
-    <h2>Appendix (Extended Details)</h2>
+    <span class="eyebrow">Supplementary</span>
+    <h2>Appendix &amp; Extended Details</h2>
     <div class="content">
       <p>
         The appendix provides extended experimental details and supplementary figures
@@ -459,6 +562,7 @@
 <!-- =================== BIBTEX =================== -->
 <section id="bibtex">
   <div class="container">
+    <span class="eyebrow">Cite</span>
     <h2>BibTeX</h2>
     <div class="content">
 <pre><code>@article{Yardimci2026AgriVision,
@@ -474,7 +578,11 @@
 
 <footer>
   <div class="container">
-    Inspired by modern CVPR-style project pages. © 2026 The Authors.
+    AgriVision — Virginia Tech (A3 Lab) &amp; Old Dominion University<br/>
+    <a href="https://github.com/AI-VTRC/AgriVision.AI" target="_blank" rel="noopener">Code</a> ·
+    <a href="./Adversarial_Image_Detection_Using_Deep_Learning_in_Agricultural_Contexts.pdf" target="_blank" rel="noopener">Paper</a> ·
+    <a href="#top">Back to top</a><br/>
+    <span style="opacity:.8">Page design inspired by modern academic project pages. © 2026 The Authors.</span>
   </div>
 </footer>
 </body>
