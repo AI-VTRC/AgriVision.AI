@@ -131,6 +131,22 @@
 
     pre{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto}
     footer{padding:34px 0;text-align:center;color:var(--muted);font-size:14px}
+
+    /* data tables */
+    .table-wrap{max-width:980px;margin:8px auto 4px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+    table.data{border-collapse:collapse;width:100%;font-size:14px;line-height:1.45;min-width:560px}
+    table.data caption{caption-side:top;text-align:left;font-weight:600;color:var(--text);padding:12px 14px 8px;font-size:15px}
+    table.data th,table.data td{padding:8px 12px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+    table.data thead th{background:var(--soft);font-family:"Google Sans",sans-serif;font-weight:600;position:sticky;top:0}
+    table.data th:first-child,table.data td:first-child{text-align:left}
+    table.data tbody tr:hover{background:rgba(127,127,127,.06)}
+    table.data td.best{font-weight:700;color:var(--text)}
+    .table-note{max-width:980px;margin:6px auto 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .row-group td{border-top:2px solid var(--line)}
+
+    /* framework figure row */
+    .grid-3{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:920px){ .grid-3{grid-template-columns:1fr 1fr 1fr} }
   </style>
 </head>
 <body>
@@ -182,11 +198,20 @@
       </p>
     </div>
 
-    <div class="grid-2 figure">
-      <img src="static/images/pipeline_simplified.png" alt="Simplified pipeline: Original & Synthetic images feed a classifier." />
-      <img src="static/images/framework_overview.png" alt="High-level framework overview diagram." />
-    </div>
-    <p class="caption">Left: simplified adversarial image generation → detection / attribution pipeline. Right: framework overview across crops and generators.</p>
+    <figure class="figure-full">
+      <img src="static/images/simplifies_diagram.png" alt="AgriVision authenticity and source-attribution workflow for agriculture." />
+      <figcaption class="caption">AgriVision authenticity and source-attribution workflow: real and synthetic leaf images feed a classifier that outputs both an authenticity decision and a generator-source attribution.</figcaption>
+    </figure>
+
+    <figure class="figure-full" style="margin-top:18px">
+      <img src="static/images/leaf_fake_image_detection.png" alt="Overview of the synthetic leaf image generation and classification framework." />
+      <figcaption class="caption">Detailed framework: GAN (StyleGAN2/3, R3GAN) and diffusion (Instruct-Pix2Pix, BLIP-Diffusion, DreamShaper-8) pipelines build a synthetic corpus that is combined with real PlantVillage imagery to train and evaluate the detection / attribution classifiers.</figcaption>
+    </figure>
+
+    <figure class="figure-full" style="margin-top:18px">
+      <img src="static/images/threat_model.png" alt="Threat model for synthetic image injection in agricultural cyber-physical systems." />
+      <figcaption class="caption">Threat model: an adversary injects synthetic leaf images into either the training corpus (poisoning) or the operational image stream (inference), while the defender's classifier outputs authenticity labels and generator-source attributions for downstream CPS components.</figcaption>
+    </figure>
 
     <div class="content">
       <p>
@@ -235,10 +260,10 @@
       <figure class="result-card">
         <span class="result-label">(a)</span>
         <div class="img-wrap">
-          <img src="static/images/gan_fid_synthetic.png" alt="Best FID and FID trajectories for StyleGAN2-ADA vs StyleGAN3 across crops." />
+          <img src="static/images/gan_fid_synthetic_trends.png" alt="FID trajectories over training progress for R3GAN, StyleGAN2, and StyleGAN3." />
         </div>
         <figcaption class="caption">
-          Best FID (bars) and FID vs kimg (lines) across Apple, Tomato, and Maize for R3GAN, StyleGAN2-ADA, and StyleGAN3.
+          FID trajectories over training progress for R3GAN, StyleGAN2, and StyleGAN3 (lower is better). StyleGAN3 converges smoothly; StyleGAN2 is competitive on complex maize; R3GAN converges more slowly but monotonically.
         </figcaption>
       </figure>
 
@@ -246,53 +271,148 @@
       <figure class="result-card">
         <span class="result-label">(b)</span>
         <div class="img-wrap">
-          <img src="static/images/fid_vs_kimg_all_in_one_V2.png" alt="FID vs kimg curves across datasets." />
+          <img src="static/images/gan_fid_synthetic_best.png" alt="Best FID achieved by each GAN model and class." />
         </div>
         <figcaption class="caption">
-          FID training curves (lower is better) across all six crop–health datasets.
-        </figcaption>
-      </figure>
-
-      <!-- (c) -->
-      <figure class="result-card">
-        <span class="result-label">(c)</span>
-        <div class="img-wrap">
-          <img src="static/images/fid_vs_kimg_all_in_one.png" alt="Additional FID vs kimg trends." />
-        </div>
-        <figcaption class="caption">
-          Additional FID trends showing convergence and stability differences.
+          Best FID achieved by each model and crop–health class across Apple, Tomato, and Maize.
         </figcaption>
       </figure>
     </div>
 
-    <!-- Qualitative grid -->
-    <h3 class="title is-4">Qualitative (Real vs Synthetic)</h3>
+    <!-- Generalization to unseen generators -->
+    <h3 class="title is-4">Generalization to Unseen Generators</h3>
     <figure class="figure-full">
       <span class="figure-label">(d)</span>
-      <img src="static/images/leaf_fake_image_detection.png" alt="Real vs synthetic (Pix2Pix, BLIP, DS8, StyleGAN2, StyleGAN3) examples across crops and health." />
+      <img src="static/images/generalization_robustness.png" alt="Mapped accuracy under unseen R3GAN and DreamShaper-8 generators for binary authenticity and source-attribution tasks." />
       <figcaption class="caption">
-        Real and synthetic leaves across crops (Apple, Maize, Tomato) and health (H/Un). Diffusion pipelines
-        yield minimally edited, high-fidelity images; StyleGAN3 often improves texture realism, while R3GAN
-        produces perceptually realistic yet slightly smoother textures.
+        Mapped accuracy on the held-out R3GAN and DreamShaper-8 generators for binary authenticity and source
+        attribution. CNN source accuracy drops markedly (e.g., maize falls to 83.81% / 75.60%), and CLIP source
+        attribution collapses on maize (49.75%) and tomato (47.66%) — yet CLIP leads binary authenticity on
+        unseen apple (100%) and maize (98.71%), exposing complementary, plant-specific failure modes.
       </figcaption>
     </figure>
 
-    <!-- Quantitative table -->
-    <h3 class="title is-4">Model Performance Summary</h3>
+    <!-- Qualitative explainability -->
+    <h3 class="title is-4">Qualitative Explainability</h3>
     <p class="content">
-      The table below summarizes Accuracy / F1 / Precision / Recall / Loss for CLIP, ResNet-50, and EfficientNet-B0
-      on Binary, Generation, and Detailed tasks across crops (in-distribution validation splits).
+      Grad-CAM maps for the CNNs and transformer attention for CLIP on the binary authenticity task
+      (apple validation split). CNNs attend to leaf venation, edges, texture, and border regions, while
+      CLIP attention is more diffuse and can focus on broad leaf structure even when its prediction is wrong.
     </p>
+    <div class="grid-3 figure">
+      <div>
+        <img src="static/images/explainability/Apple_binary_resnet50_20251122_020646_true-Real_pred-Real_notext.png" alt="ResNet-50 Grad-CAM on a real apple leaf." style="width:100%;border-radius:10px" />
+        <img src="static/images/explainability/Apple_binary_resnet50_20251122_020646_true-Synthetic_pred-Synthetic_notext.png" alt="ResNet-50 Grad-CAM on a synthetic apple leaf." style="width:100%;border-radius:10px;margin-top:8px" />
+        <p class="caption">ResNet-50 (Grad-CAM): real (top) &amp; synthetic (bottom)</p>
+      </div>
+      <div>
+        <img src="static/images/explainability/Apple_binary_efficientnet_b0_20251122_031953_true-Real_pred-Real_notext.png" alt="EfficientNet-B0 Grad-CAM on a real apple leaf." style="width:100%;border-radius:10px" />
+        <img src="static/images/explainability/Apple_binary_efficientnet_b0_20251122_031953_true-Synthetic_pred-Synthetic_notext.png" alt="EfficientNet-B0 Grad-CAM on a synthetic apple leaf." style="width:100%;border-radius:10px;margin-top:8px" />
+        <p class="caption">EfficientNet-B0 (Grad-CAM): real (top) &amp; synthetic (bottom)</p>
+      </div>
+      <div>
+        <img src="static/images/explainability/Apple_binary_clip_20251122_043136_attention_true-Real_pred-Synthetic_notext.png" alt="CLIP attention on a real apple leaf misclassified as synthetic." style="width:100%;border-radius:10px" />
+        <img src="static/images/explainability/Apple_binary_clip_20251122_043136_attention_true-Synthetic_pred-Synthetic_notext.png" alt="CLIP attention on a synthetic apple leaf." style="width:100%;border-radius:10px;margin-top:8px" />
+        <p class="caption">CLIP (attention): real (top) &amp; synthetic (bottom)</p>
+      </div>
+    </div>
+
+    <!-- Quantitative summary figure -->
+    <h3 class="title is-4">Model Performance Summary</h3>
     <figure class="figure-full">
       <span class="figure-label">(e)</span>
-      <img src="static/images/results_table.png" alt="Model performance table across plants and classification types." />
+      <img src="static/images/model_performance_summary.png" alt="In-distribution validation performance by model, plant, and task (support-weighted F1)." />
       <figcaption class="caption">
-        In-distribution, EfficientNet-B0 and ResNet-50 reach near-saturated accuracy across tasks, while CLIP
-        remains competitive on detailed attribution but lags on the imbalanced binary authenticity task.
-        These near-perfect scores reflect controlled imagery and known generators — accuracy falls on unseen
-        generators (R3GAN, DreamShaper-8).
+        In-distribution validation performance (support-weighted F1) by model, plant, and task. EfficientNet-B0
+        and ResNet-50 reach near-saturated accuracy across tasks, while CLIP remains competitive on detailed
+        attribution but lags on the imbalanced binary authenticity task. These near-perfect scores reflect
+        controlled imagery and known generators — accuracy falls on unseen generators (R3GAN, DreamShaper-8).
       </figcaption>
     </figure>
+
+    <!-- Table 5: exact in-distribution metrics -->
+    <div class="table-wrap">
+      <table class="data">
+        <caption>Table 5. Exact in-distribution validation metrics by plant, task, and classifier architecture. F1 is support-weighted; AUROC is macro one-vs-rest for multi-class tasks.</caption>
+        <thead>
+          <tr><th>Plant</th><th>Task</th><th>Architecture</th><th>Accuracy (%)</th><th>Weighted F1 (%)</th><th>AUROC</th></tr>
+        </thead>
+        <tbody>
+          <tr class="row-group"><td rowspan="9">Apple</td><td rowspan="3">Binary</td><td>ResNet-50</td><td>99.99</td><td>99.99</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td class="best">100.00</td><td class="best">100.00</td><td>1.0000</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>96.00</td><td>94.04</td><td>0.6892</td></tr>
+          <tr><td rowspan="3">Source</td><td>ResNet-50</td><td>100.00</td><td>100.00</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td>100.00</td><td>100.00</td><td>1.0000</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>82.65</td><td>82.00</td><td>0.8827</td></tr>
+          <tr><td rowspan="3">Detailed</td><td>ResNet-50</td><td class="best">98.57</td><td class="best">98.57</td><td>0.9997</td></tr>
+          <tr><td>EfficientNet-B0</td><td>98.36</td><td>98.36</td><td>0.9997</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>93.90</td><td>93.42</td><td>0.9929</td></tr>
+          <tr class="row-group"><td rowspan="9">Maize</td><td rowspan="3">Binary</td><td>ResNet-50</td><td class="best">99.95</td><td class="best">99.95</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td>99.93</td><td>99.93</td><td>0.9998</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>95.48</td><td>93.83</td><td>0.6744</td></tr>
+          <tr><td rowspan="3">Source</td><td>ResNet-50</td><td class="best">99.97</td><td class="best">99.97</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td>99.93</td><td>99.93</td><td>1.0000</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>91.90</td><td>92.49</td><td>0.9550</td></tr>
+          <tr><td rowspan="3">Detailed</td><td>ResNet-50</td><td class="best">99.83</td><td class="best">99.83</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td>99.78</td><td>99.78</td><td>1.0000</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>95.56</td><td>95.48</td><td>0.9945</td></tr>
+          <tr class="row-group"><td rowspan="9">Tomato</td><td rowspan="3">Binary</td><td>ResNet-50</td><td class="best">99.95</td><td class="best">99.95</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td>99.94</td><td>99.94</td><td>0.9999</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>86.21</td><td>89.44</td><td>0.7959</td></tr>
+          <tr><td rowspan="3">Source</td><td>ResNet-50</td><td class="best">99.99</td><td class="best">99.99</td><td>1.0000</td></tr>
+          <tr><td>EfficientNet-B0</td><td>99.96</td><td>99.96</td><td>1.0000</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>91.68</td><td>92.45</td><td>0.9602</td></tr>
+          <tr><td rowspan="3">Detailed</td><td>ResNet-50</td><td class="best">99.30</td><td class="best">99.30</td><td>0.9999</td></tr>
+          <tr><td>EfficientNet-B0</td><td>99.26</td><td>99.26</td><td>0.9999</td></tr>
+          <tr><td>CLIP ViT-B/32</td><td>95.44</td><td>94.97</td><td>0.9930</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note"><strong>Bold</strong> marks the best architecture per plant–task on accuracy / weighted F1.</p>
+
+    <!-- Table 6: aggregated validation metrics -->
+    <div class="table-wrap" style="margin-top:22px">
+      <table class="data">
+        <caption>Table 6. In-distribution validation metrics aggregated across plants (30,000 validation images per task/architecture). Accuracy is reported with a 95% CI.</caption>
+        <thead>
+          <tr><th>Task</th><th>Model</th><th>Accuracy 95% CI</th><th>F1<sub>w</sub></th><th>MCC</th><th>AUROC</th><th>ECE</th><th>Brier</th></tr>
+        </thead>
+        <tbody>
+          <tr class="row-group"><td rowspan="3">Binary</td><td>CLIP</td><td>0.9256 [0.9226, 0.9285]</td><td>0.9244</td><td>0.0457</td><td>0.7199</td><td>0.2394</td><td>0.2768</td></tr>
+          <tr><td>EfficientNet-B0</td><td>0.9996 [0.9993, 0.9997]</td><td>0.9996</td><td>0.9944</td><td>0.9999</td><td>0.0003</td><td>0.0007</td></tr>
+          <tr><td>ResNet-50</td><td>0.9996 [0.9993, 0.9998]</td><td>0.9996</td><td>0.9953</td><td>1.0000</td><td>0.0005</td><td>0.0005</td></tr>
+          <tr class="row-group"><td rowspan="3">Detailed</td><td>CLIP</td><td>0.9497 [0.9471, 0.9521]</td><td>0.9462</td><td>0.9431</td><td>0.9935</td><td>0.0394</td><td>0.0888</td></tr>
+          <tr><td>EfficientNet-B0</td><td>0.9913 [0.9902, 0.9923]</td><td>0.9913</td><td>0.9902</td><td>0.9998</td><td>0.0051</td><td>0.0139</td></tr>
+          <tr><td>ResNet-50</td><td>0.9923 [0.9913, 0.9933]</td><td>0.9923</td><td>0.9913</td><td>0.9999</td><td>0.0047</td><td>0.0125</td></tr>
+          <tr class="row-group"><td rowspan="3">Source</td><td>CLIP</td><td>0.8874 [0.8838, 0.8910]</td><td>0.8898</td><td>0.7979</td><td>0.9327</td><td>0.0580</td><td>0.1790</td></tr>
+          <tr><td>EfficientNet-B0</td><td>0.9996 [0.9993, 0.9998]</td><td>0.9996</td><td>0.9993</td><td>1.0000</td><td>0.0004</td><td>0.0007</td></tr>
+          <tr><td>ResNet-50</td><td>0.9999 [0.9997, 0.9999]</td><td>0.9999</td><td>0.9998</td><td>1.0000</td><td>0.0002</td><td>0.0002</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">CLIP shows much higher calibration error (ECE) and lower MCC on the imbalanced binary task; CNNs remain near-perfect and well-calibrated in-distribution.</p>
+
+    <!-- Table 7: statistical reliability -->
+    <div class="table-wrap" style="margin-top:22px">
+      <table class="data">
+        <caption>Table 7. Statistical reliability of the strongest in-distribution checkpoint per plant and task. Accuracy and macro F1 with 95% nonparametric bootstrap CIs over the reconstructed validation split (n = 10,000).</caption>
+        <thead>
+          <tr><th>Plant</th><th>Task</th><th>Best architecture</th><th>Accuracy 95% CI</th><th>Macro F1 95% CI</th></tr>
+        </thead>
+        <tbody>
+          <tr class="row-group"><td rowspan="3">Apple</td><td>Binary</td><td>EfficientNet-B0</td><td>100.00 [100.00, 100.00]</td><td>1.0000 [1.0000, 1.0000]</td></tr>
+          <tr><td>Source</td><td>ResNet-50 / EfficientNet-B0</td><td>100.00 [100.00, 100.00]</td><td>1.0000 [1.0000, 1.0000]</td></tr>
+          <tr><td>Detailed</td><td>ResNet-50</td><td>98.57 [98.34, 98.80]</td><td>0.9881 [0.9862, 0.9900]</td></tr>
+          <tr class="row-group"><td rowspan="3">Maize</td><td>Binary</td><td>ResNet-50</td><td>99.95 [99.90, 99.99]</td><td>0.9968 [0.9936, 0.9994]</td></tr>
+          <tr><td>Source</td><td>ResNet-50</td><td>99.97 [99.93, 100.00]</td><td>0.9986 [0.9969, 1.0000]</td></tr>
+          <tr><td>Detailed</td><td>ResNet-50</td><td>99.83 [99.74, 99.90]</td><td>0.9986 [0.9979, 0.9992]</td></tr>
+          <tr class="row-group"><td rowspan="3">Tomato</td><td>Binary</td><td>ResNet-50</td><td>99.95 [99.90, 99.99]</td><td>0.9968 [0.9936, 0.9993]</td></tr>
+          <tr><td>Source</td><td>ResNet-50</td><td>99.99 [99.97, 100.00]</td><td>0.9995 [0.9986, 1.0000]</td></tr>
+          <tr><td>Detailed</td><td>ResNet-50</td><td>99.30 [99.12, 99.46]</td><td>0.9927 [0.9905, 0.9947]</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">Paired McNemar tests (Holm-corrected) find ResNet-50 and EfficientNet-B0 statistically indistinguishable in every plant/task, while both CNNs significantly outperform CLIP (accuracy gaps of 3.82–17.35 pp).</p>
 
   </div>
 </section>
