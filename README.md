@@ -127,7 +127,7 @@ If you use this repo or paper:
 - Mehmet Oguz Yardimci — Department of Computer Science, Virginia Tech *(corresponding author)*
 - Md Nazmul Kabir Sikder — School of Cybersecurity, Old Dominion University
 - Trey Ward — Department of Biological Systems Engineering, Virginia Tech
-- Feras A. Batarseh — Department of Biological Systems Engineering, Virginia Tech
+- Feras A. Batarseh — Department of Biological Systems Engineering & The Commonwealth Cyber Initiative, Virginia Tech
 
 Mehmet Oguz Yardimci and Md Nazmul Kabir Sikder contributed equally to this work.
 
